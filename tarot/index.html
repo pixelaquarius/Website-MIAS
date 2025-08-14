@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ứng Dụng Bóc Bài Tarot Nâng Cao Với Tùy Chọn</title>
+    <title>Ứng Dụng Bóc Bài Tarot Với Tùy Chọn và Gợi Ý Tiếp Theo</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -177,21 +177,28 @@
             resize: vertical;
             margin-bottom: 1rem;
         }
-        .ai-reading-area button {
+        .ai-reading-actions {
+            display: flex;
+            flex-wrap: wrap; /* Allows buttons to wrap on smaller screens */
+            gap: 0.75rem; /* Space between buttons */
+            margin-top: 1rem;
+            justify-content: center;
+        }
+        .ai-reading-actions button {
             background-color: #f39c12; /* Orange button */
             color: white;
-            padding: 0.6rem 1.5rem;
+            padding: 0.6rem 1.2rem; /* Adjusted padding for multiple buttons */
             border-radius: 9999px;
-            font-size: 1rem;
+            font-size: 0.95rem; /* Adjusted font size */
             font-weight: bold;
             cursor: pointer;
             transition: background-color 0.3s ease-in-out;
             border: none;
         }
-        .ai-reading-area button:hover:not(:disabled) {
+        .ai-reading-actions button:hover:not(:disabled) {
             background-color: #e67e22; /* Darker orange on hover */
         }
-        .ai-reading-area button:disabled {
+        .ai-reading-actions button:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
         }
@@ -458,7 +465,12 @@
                 <input type="text" id="additional-question" placeholder="Câu hỏi bổ sung (nếu có)" class="p-2 border rounded-lg">
             </div>
 
-            <button id="get-ai-reading-button" disabled class="mt-4">Nhận Giải Thích Từ AI</button>
+            <div class="ai-reading-actions">
+                <button id="get-ai-reading-button" disabled>Nhận Giải Thích Từ AI</button>
+                <button id="coi-sau-them-btn" disabled class="bg-blue-500">Coi Sâu Thêm</button>
+                <button id="boc-bai-moi-btn" disabled class="bg-red-500">Bóc Bài Mới</button>
+            </div>
+
             <div id="ai-response-display" class="ai-response-sections">
                 <!-- AI response will be structured here -->
                 <div id="loading-ai-response" class="ai-response loading hidden">Đang phân tích...</div>
@@ -488,6 +500,11 @@
     </div>
 
     <script>
+        // API Key for Gemini API.
+        // In Canvas, this will be automatically provided.
+        // If hosting on GitHub/your server, replace "" with your actual API Key.
+        const apiKey = ""; 
+
         // Danh sách đầy đủ 78 lá bài Tarot (Major Arcana và Minor Arcana)
         const allTarotCards = [
             "0 - The Fool", "I - The Magician", "II - The High Priestess", "III - The Empress",
@@ -538,6 +555,9 @@
         const additionalQuestionInput = document.getElementById('additional-question');
 
         const getAiReadingButton = document.getElementById('get-ai-reading-button');
+        const coiSauThemBtn = document.getElementById('coi-sau-them-btn'); // New button
+        const bocBaiMoiBtn = document.getElementById('boc-bai-moi-btn');   // New button
+
         const aiResponseDisplay = document.getElementById('ai-response-display');
         const loadingAiResponse = document.getElementById('loading-ai-response');
         const aiCardInterpretationsContainer = document.getElementById('ai-card-interpretations-container');
@@ -713,8 +733,21 @@
 
         /**
          * Function to complete the current spread and save it to history.
+         * This function is also called when starting a new spread from the modal.
          */
         function completeSpread() {
+            // This function is also called by bocBaiMoiBtn.
+            // If currentDrawnCards is empty, it means we are coming from 'Bóc Bài Mới' button.
+            if (currentDrawnCards.length === 0 && historySpreads.length > 0) {
+                clearAiResponseDisplay();
+                questionInput.value = '';
+                resetGuidedQuestionInputs();
+                resetGameVisuals();
+                shuffleDeck();
+                showMessage("Đang bắt đầu lượt bóc bài mới!", "info");
+                return;
+            }
+
             if (currentDrawnCards.length === numCardsToDraw) {
                 const timestamp = new Date().toLocaleString('vi-VN', {
                     year: 'numeric', month: '2-digit', day: '2-digit',
@@ -791,6 +824,8 @@
             clearAiResponseDisplay(); // Clear previous AI responses
             loadingAiResponse.classList.remove('hidden'); // Show loading indicator
             getAiReadingButton.disabled = true;
+            coiSauThemBtn.disabled = true; // Disable until AI response
+            bocBaiMoiBtn.disabled = true;   // Disable until AI response
 
             const cardsString = currentDrawnCards.join(", ");
             const cardInterpretationsPrompt = currentDrawnCards.map((card, index) => `{ "cardName": "${card}", "interpretation": "Giải thích chi tiết cho lá bài ${index + 1} (${card}), bao gồm ý nghĩa của nó trong bối cảnh chung của bộ bài và liên quan đến câu hỏi. Có thể dài vài câu." }`).join(',');
@@ -832,7 +867,6 @@
                     }
                 }
             };
-            const apiKey = ""; // Canvas will automatically provide the API key here.
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
             try {
@@ -862,6 +896,9 @@
                         const parsedJson = JSON.parse(jsonText);
                         displayAiResponse(parsedJson);
                         showMessage("AI đã đưa ra lời giải thích!", "success");
+                        // Enable new buttons after successful AI reading
+                        coiSauThemBtn.disabled = false;
+                        bocBaiMoiBtn.disabled = false;
                     } catch (parseError) {
                         console.error("Lỗi khi phân tích JSON từ AI:", parseError);
                         loadingAiResponse.textContent = "Lỗi: AI trả về định dạng không hợp lệ. Vui lòng thử lại.";
@@ -880,7 +917,8 @@
                 showMessage(`Lỗi: ${error.message}`, "error");
             } finally {
                 loadingAiResponse.classList.add('hidden'); // Hide loading indicator
-                getAiReadingButton.disabled = false;
+                // Keep getAiReadingButton disabled if already done reading for this set
+                // Only re-enable if 'Coi Sâu Thêm' is selected
             }
         }
 
@@ -890,14 +928,18 @@
          */
         function displayAiResponse(responseData) {
             aiCardInterpretationsRow.innerHTML = ''; // Clear previous card interpretations
-            responseData.cardInterpretations.forEach(card => {
-                const cardInterpretationDiv = document.createElement('div');
-                cardInterpretationDiv.classList.add('ai-card-interpretation');
-                cardInterpretationDiv.innerHTML = `<h4>${card.cardName}:</h4><p>${card.interpretation}</p>`;
-                aiCardInterpretationsRow.appendChild(cardInterpretationDiv);
-            });
-            aiCardInterpretationsContainer.classList.remove('hidden');
-            aiCardInterpretationsRow.classList.remove('hidden');
+            if (responseData.cardInterpretations && responseData.cardInterpretations.length > 0) {
+                responseData.cardInterpretations.forEach(card => {
+                    const cardInterpretationDiv = document.createElement('div');
+                    cardInterpretationDiv.classList.add('ai-card-interpretation');
+                    cardInterpretationDiv.innerHTML = `<h4>${card.cardName}:</h4><p>${card.interpretation}</p>`;
+                    aiCardInterpretationsRow.appendChild(cardInterpretationDiv);
+                });
+                aiCardInterpretationsContainer.classList.remove('hidden');
+                aiCardInterpretationsRow.classList.remove('hidden');
+            } else {
+                 aiCardInterpretationsContainer.classList.add('hidden');
+            }
 
 
             overallText.textContent = responseData.overallInterpretation;
@@ -950,7 +992,12 @@
             drawButton.disabled = false;
             completeSpreadButton.disabled = true;
             getAiReadingButton.disabled = true; // Disable AI button until enough cards are drawn
+            coiSauThemBtn.disabled = true;       // Disable new buttons
+            bocBaiMoiBtn.disabled = true;       // Disable new buttons
+
             clearAiResponseDisplay(); // Clear AI response when resetting game visuals
+            questionInput.value = ''; // Clear question input
+            resetGuidedQuestionInputs(); // Clear guided inputs
         }
 
         // Event Listeners
@@ -976,6 +1023,27 @@
                     guidedQuestionOptions.classList.add('active');
                 }
             });
+        });
+
+        // Inline Buttons Event Listeners
+        coiSauThemBtn.addEventListener('click', () => {
+            // User wants to continue with the same spread.
+            // Re-enable AI reading button for new questions on the same cards.
+            getAiReadingButton.disabled = false;
+            coiSauThemBtn.disabled = true; // Disable itself until new reading
+            bocBaiMoiBtn.disabled = true;   // Disable itself until new reading
+            
+            // Optionally clear previous AI response to make way for a new one
+            clearAiResponseDisplay();
+            // Keep currentDrawnCards as they are
+            showMessage("Sẵn sàng cho câu hỏi tiếp theo với bộ bài hiện tại.", "info");
+        });
+
+        bocBaiMoiBtn.addEventListener('click', () => {
+            // User wants a new spread. Call completeSpread logic directly.
+            // This will save the current spread to history, clear, shuffle, and reset.
+            completeSpread(); // This function already handles saving, clearing, shuffling, and resetting visuals.
+            // Buttons will be re-disabled by resetGameVisuals()
         });
 
 
