@@ -1,8 +1,8 @@
 // ===== Config =====
 const API_BASE = (window.__API_BASE && window.__API_BASE.replace(/\/+$/, "")) || "/api";
 
-// Bạn có thể thay bằng map ảnh thật nếu có CDN riêng.
-const CARD_IMAGES = {}; // { "Ace of Cups": "https://.../ace_of_cups.jpg", ... }
+// Map ảnh lá bài (nếu có CDN riêng thì điền ở đây). Để trống vẫn chạy (hiện tên).
+const CARD_IMAGES = {}; // ví dụ: { "Page of Pentacles": "https://.../page_of_pentacles.jpg", ... }
 
 // ===== Data =====
 const ALL_CARDS = [
@@ -30,7 +30,7 @@ const ALL_CARDS = [
 let deck = [];
 let current = [];
 let numCardsToDraw = 1;
-let history = []; // [{timestamp, cards, spreadType, ai?: {cards, overall, next}}]
+let history = []; // [{timestamp, cards, spreadType, ai?}]
 let aiLast = null;
 
 // ===== DOM =====
@@ -67,24 +67,17 @@ const extraInp = $("#extra");
 
 const spreadRadios = $$all('input[name="spread-type"]');
 
-const modal = $("#history-modal");
-const modalContent = $("#modal-content");
-const modalClose = $("#close-modal");
-
-// ===== Utils =====
-function $(sel){return document.querySelector(sel);}
-function $$all(sel){return Array.from(document.querySelectorAll(sel));}
-function $$(sel){return document.querySelector(sel);}
-function showMsg(text, type="ok"){
-  msgBox.textContent = text;
+function $(s){return document.querySelector(s);}
+function $$all(s){return Array.from(document.querySelectorAll(s));}
+function $$(s){return document.querySelector(s);}
+function showMsg(t, type="ok"){
+  msgBox.textContent = t;
   msgBox.classList.remove("hidden","ok","err");
   msgBox.classList.add(type==="ok"?"ok":"err");
 }
 function hideMsg(){ msgBox.classList.add("hidden"); }
-function shuffle(arr){ for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]];} return arr; }
-function nowVN(){
-  return new Date().toLocaleString("vi-VN",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
-}
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a;}
+function nowVN(){ return new Date().toLocaleString("vi-VN",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}); }
 
 // ===== Deck & Render =====
 function resetDeck(){ deck = shuffle([...ALL_CARDS]); }
@@ -103,7 +96,7 @@ function resetBoard(){
 }
 
 function drawOne(){
-  if(current.length>=numCardsToDraw){ showMsg(`Bạn đã bóc đủ ${numCardsToDraw} lá.`, "ok"); return; }
+  if(current.length >= numCardsToDraw){ showMsg(`Bạn đã bóc đủ ${numCardsToDraw} lá.`, "ok"); return; }
   if(deck.length===0) resetDeck();
   const idx = Math.floor(Math.random()*deck.length);
   const card = deck.splice(idx,1)[0];
@@ -237,8 +230,7 @@ function buildUserQuestion(){
 
 async function askAI(){
   if(current.length !== numCardsToDraw){
-    showMsg(`Vui lòng bóc đủ ${numCardsToDraw} lá trước khi hỏi AI.`, "err");
-    return;
+    showMsg(`Vui lòng bóc đủ ${numCardsToDraw} lá trước khi hỏi AI.`, "err"); return;
   }
   const question = buildUserQuestion();
   if(!question){ showMsg("Vui lòng nhập/chọn câu hỏi.", "err"); return; }
@@ -251,21 +243,25 @@ async function askAI(){
 
   try{
     const payload = { cards: current, question, meta: { spreadCount: numCardsToDraw } };
+
+    // client timeout 35s để không treo
+    const controller = new AbortController();
+    const t = setTimeout(()=>controller.abort(), 35000);
+
     const resp = await fetch(`${API_BASE}/ai-reading`, {
-      method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(payload)
+      method:"POST", headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify(payload), signal: controller.signal
     });
+    clearTimeout(t);
+
     const text = await resp.text();
     let data;
     try{ data = JSON.parse(text); }
-    catch{
-      // server trả html/snippet
-      throw new Error(`Phản hồi không phải JSON (status ${resp.status}). Snippet: ${text.slice(0,100)}...`);
-    }
-    if(!resp.ok){
-      throw new Error(data?.error || `HTTP ${resp.status}`);
-    }
+    catch{ throw new Error(`Phản hồi không phải JSON (status ${resp.status}). Snippet: ${text.slice(0,110)}...`); }
 
-    // render
+    if(!resp.ok) throw new Error(data?.error || `HTTP ${resp.status}`);
+
+    // render từ 1 lần trả lời
     const list = data.cardInterpretations || [];
     aiCardsRow.innerHTML = "";
     list.forEach(it=>{
@@ -289,7 +285,6 @@ async function askAI(){
   }finally{
     aiLoading.classList.add("hidden");
     askBtn.classList.remove("loading");
-    // sau khi đọc xong, cho phép "Coi sâu thêm" hỏi tiếp mà không cần bóc lại
     askBtn.disabled = false;
     deepenBtn.disabled = false;
   }
@@ -307,20 +302,17 @@ completeBtn.addEventListener("click", ()=>{
 });
 
 newBtn.addEventListener("click", ()=>{
-  // Lưu nếu đang có bộ
   if(current.length>0) pushHistory();
   resetBoard(); resetDeck();
   showMsg("Bắt đầu bộ mới.","ok");
 });
 
 deepenBtn.addEventListener("click", ()=>{
-  // Cho phép hỏi tiếp với bộ hiện tại (không bóc thêm)
   askBtn.disabled = false;
   showMsg("Bạn có thể hỏi tiếp cho bộ hiện tại.","ok");
 });
 
 mergeBtn.addEventListener("click", ()=>{
-  // Tổng quan nhanh 4-5 dòng: dùng nội dung trong panel
   if(!aiLast){ showMsg("Hãy nhận giải thích AI trước.","err"); return; }
   const merged = `${aiLast.overall}\n— ${aiLast.next}`;
   alert(`Tổng quan ngắn:\n\n${merged}`);
@@ -356,9 +348,12 @@ document.addEventListener("click",(e)=>{
 });
 
 // Modal
+const modal = $("#history-modal");
+const modalContent = $("#modal-content");
+const modalClose = $("#close-modal");
 modalClose.addEventListener("click", ()=>modal.close());
 
-// ===== Init =====
+// Init
 resetDeck();
 resetBoard();
 renderHistory();
