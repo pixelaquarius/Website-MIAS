@@ -1,10 +1,8 @@
-// /api/ai-reading.js — Vercel Serverless Function (Node.js)
+// /api/ai-reading.js — Vercel Serverless (Node.js). Gọi Gemini 2.0 qua v1beta, trả JSON chuẩn + retry.
 
 export default async function handler(req, res) {
   try {
-    if (req.method !== "POST") {
-      return res.status(405).json({ error: "Method not allowed" });
-    }
+    if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
     const { cards, question, meta } = req.body || {};
     if (!Array.isArray(cards) || cards.length === 0 || !question) {
@@ -19,7 +17,6 @@ export default async function handler(req, res) {
     const payload = {
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       generationConfig: {
-        // Structured output – Gemini 2.0 vẫn hỗ trợ
         response_mime_type: "application/json",
         responseSchema: {
           type: "OBJECT",
@@ -41,59 +38,50 @@ export default async function handler(req, res) {
       }
     };
 
-    const MODEL = "gemini-2.0-flash"; // <— dùng model 2.0
+    const MODEL = "gemini-2.0-flash";
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
 
-    const data = await callWithRetry(url, payload, 5); // retry 429/5xx
+    const data = await callWithRetry(url, payload, 5);
 
-    // Chuẩn hóa & parse JSON trả về
-    const text =
+    const raw =
       data?.candidates?.[0]?.content?.parts?.[0]?.text ??
       data?.candidates?.[0]?.content?.parts?.[0]?.functionCall?.args ??
       "";
 
     let parsed;
-    try {
-      parsed = typeof text === "string" ? JSON.parse(text) : text;
-    } catch {
-      // Nếu model trả kèm rác, cố gắng bóc JSON trong chuỗi
-      const m = (text || "").match(/\{[\s\S]*\}$/);
-      if (m) {
-        parsed = JSON.parse(m[0]);
-      } else {
-        throw new Error("Bad AI JSON");
-      }
+    try { parsed = typeof raw === "string" ? JSON.parse(raw) : raw; }
+    catch {
+      const m = (raw || "").match(/\{[\s\S]*\}$/);
+      if (m) parsed = JSON.parse(m[0]);
+      else throw new Error("Bad AI JSON");
     }
 
     return res.status(200).json(parsed);
   } catch (err) {
     const msg = err?.message || "Unknown error";
-    const code = /timeout|fetch/i.test(msg) ? 504 : 500;
+    const code = /timeout|fetch|aborted/i.test(msg) ? 504 : 500;
     return res.status(code).json({ error: msg });
   }
 }
 
-/* ---------- Helpers ---------- */
-
 function buildPrompt(cards, question, meta = {}) {
   const list = cards.join(", ");
   const n = meta.spreadCount || cards.length;
-  const round = meta.round ? ` (lượt hỏi ${meta.round})` : "";
   return `
-Bạn là Tarot reader chuyên nghiệp. Tôi đã bóc ${n} lá: "${list}". Câu hỏi của tôi${round}: "${question}".
-Hãy trả lời CHỈ BẰNG MỘT ĐỐI TƯỢNG JSON hợp lệ với schema:
+Bạn là Tarot reader chuyên nghiệp. Tôi đã bóc ${n} lá: "${list}". Câu hỏi của tôi: "${question}".
+Trả lời CHỈ BẰNG MỘT ĐỐI TƯỢNG JSON hợp lệ theo schema:
 {
-  "cardInterpretations": [
-    { "cardName": "<tên lá>", "interpretation": "Giải thích ngắn gọn, súc tích, bám sát câu hỏi." }
+  "cardInterpretations":[
+    {"cardName":"<tên lá>","interpretation":"Giải thích ngắn gọn, súc tích, bám sát câu hỏi."}
   ],
-  "overallInterpretation": "Tổng quan mạch chuyện khi kết hợp tất cả lá, trả lời trực tiếp câu hỏi.",
-  "nextStepsSuggestion": "1-2 gợi ý hành động thiết thực."
+  "overallInterpretation":"Tổng quan khi kết hợp tất cả lá, trả lời trực tiếp câu hỏi.",
+  "nextStepsSuggestion":"1-2 gợi ý hành động thiết thực."
 }
-Không chèn thêm text ngoài JSON.
+Không chèn thêm văn bản ngoài JSON.
   `.trim();
 }
 
-async function callWithRetry(url, body, max = 5) {
+async function callWithRetry(url, body, maxTry = 5) {
   let attempt = 0;
   while (true) {
     try {
@@ -109,12 +97,11 @@ async function callWithRetry(url, body, max = 5) {
 
       clearTimeout(timeout);
 
-      const raw = await resp.text();
+      const text = await resp.text();
       let json;
-      try { json = JSON.parse(raw); }
+      try { json = JSON.parse(text); }
       catch {
-        // Khi server trả HTML lỗi (405/403/429...), trả thẳng text để hiển thị snippet
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}: ${raw.slice(0, 120)}`);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}: ${text.slice(0, 120)}`);
         throw new Error("Non-JSON response from Gemini");
       }
 
@@ -126,8 +113,8 @@ async function callWithRetry(url, body, max = 5) {
     } catch (e) {
       attempt++;
       const msg = String(e?.message || e);
-      const retriable = /429|5\d\d|timeout|aborted|fetch failed/i.test(msg);
-      if (!retriable || attempt >= max) throw e;
+      const retriable = /429|5\d\d|timeout|fetch failed|aborted/i.test(msg);
+      if (!retriable || attempt >= maxTry) throw e;
       const delay = 800 * Math.pow(2, attempt - 1) + Math.floor(Math.random() * 300);
       await new Promise(r => setTimeout(r, delay));
     }
