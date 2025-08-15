@@ -2,37 +2,37 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Ứng Dụng Bói Bài Tarot</title>
 
-  <!-- Fonts + Tailwind CDN -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Sửa API BASE nếu cần (domain Vercel của bạn) -->
+  <script>window.__API_BASE="https://website-mias.vercel.app/api";</script>
+
+  <!-- Fonts (có Vietnamese) + Tailwind -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Be+Vietnam+Pro:wght@400;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- App styles -->
-  <link rel="stylesheet" href="./styles.css"/>
+  <link rel="stylesheet" href="./styles.css" />
 </head>
-<body class="min-h-screen bg-gradient-to-b from-[#0b0f1a] via-[#0e1527] to-[#0b0f1a] text-slate-100">
+<body class="min-h-screen bg-gradient-to-b from-[#0b0f1a] via-[#0e1527] to-[#0b0f1a] text-slate-100 antialiased">
 
-  <!-- background stars + aura -->
+  <!-- BG fx -->
   <div class="fixed inset-0 -z-10">
     <div class="stars"></div>
     <div class="aura"></div>
   </div>
 
-  <main class="container mx-auto px-4 py-10 max-w-5xl">
+  <main class="container mx-auto px-4 py-8 max-w-6xl">
     <!-- Header -->
-    <header class="text-center mb-8">
-      <h1 class="font-[Cinzel] text-4xl sm:text-5xl font-bold tracking-wide">
-        Ứng Dụng Bói Bài Tarot
-      </h1>
-      <p class="mt-2 text-slate-300">Giao diện ma thuật, ảnh lá bài thật, đủ tính năng nâng cao.</p>
+    <header class="text-center mb-6">
+      <h1 class="font-title text-4xl sm:text-5xl font-bold tracking-wide">ỨNG DỤNG BÓI BÀI TAROT</h1>
+      <p class="mt-2 text-slate-300 font-ui">Giao diện ma thuật, ảnh lá bài thật, đủ tính năng nâng cao.</p>
     </header>
 
     <!-- Controls -->
-    <section class="glass p-4 sm:p-6 rounded-2xl mb-6">
-      <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 justify-center">
+    <section class="glass p-4 sm:p-5 rounded-2xl mb-6">
+      <div class="flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-6 justify-center">
         <div class="flex items-center gap-3 flex-wrap justify-center">
           <span class="label">Số lá/lượt:</span>
           <label class="chip"><input type="radio" name="spread-type" value="1" checked> 1 Lá</label>
@@ -49,16 +49,16 @@
         </div>
       </div>
 
-      <p class="hint mt-3 text-center">Bạn có thể “Coi sâu thêm” nhiều lần. Nếu đổi chủ đề, cứ hỏi mới — không cần bóc lại.</p>
-      <div id="msg" class="msg hidden"></div>
+      <p class="hint mt-3 text-center font-ui">Bạn có thể “Coi sâu thêm” nhiều lần. Nếu đổi chủ đề, cứ hỏi mới — không cần bóc lại.</p>
+      <div id="msg" class="msg hidden font-ui"></div>
     </section>
 
-    <!-- Current spread display -->
+    <!-- Current spread -->
     <section class="glass p-4 sm:p-6 rounded-2xl mb-6">
-      <div id="big-card" class="big-card">
-        <div class="card-back">BÓC<br/>BÀI</div>
-        <img id="big-card-img" alt="" class="hidden"/>
-        <div id="big-card-title" class="card-title hidden"></div>
+      <div id="big-card" class="big-card will-change-transform">
+        <div class="card-back" aria-hidden="true"></div>
+        <img id="big-card-img" alt="" class="hidden" />
+        <div id="big-card-title" class="card-title hidden font-title"></div>
       </div>
 
       <div id="current-row" class="current-row"></div>
@@ -66,19 +66,38 @@
 
     <!-- AI reading -->
     <section class="glass p-4 sm:p-6 rounded-2xl mb-8">
-      <h2 class="section-title">Đọc Bài Bằng AI</h2>
+      <h2 class="section-title font-title">Đọc Bài Bằng AI</h2>
 
-      <div class="flex flex-wrap items-center gap-4 mb-3">
+      <div class="flex flex-wrap items-center gap-3 mb-3">
         <label class="chip"><input type="radio" name="q-type" value="manual" checked> Tự nhập câu hỏi</label>
         <label class="chip"><input type="radio" name="q-type" value="guided"> Chọn theo hướng dẫn</label>
       </div>
 
+      <!-- Manual -->
       <div id="manual-box" class="w-full">
-        <textarea id="question" class="textarea" placeholder="Nhập câu hỏi của bạn..."></textarea>
+        <textarea id="question" class="textarea font-ui" placeholder="Nhập câu hỏi của bạn..."></textarea>
+
+        <!-- Gợi ý đặt câu hỏi -->
+        <div class="mt-3 tips font-ui">
+          <div class="tips-title">Gợi ý cấu trúc câu hỏi tốt</div>
+          <ul class="list-disc ml-5 text-slate-300 text-sm leading-6">
+            <li><b>Bối cảnh</b> + <b>Chủ đề</b> + <b>Khung thời gian</b> + <b>Mong muốn/KPI</b> (+ <b>ràng buộc</b> nếu có).</li>
+            <li>Ví dụ: “<i>Bối cảnh:</i> Tôi đang tìm việc mới. <i>Chủ đề:</i> Cơ hội phù hợp. <i>Thời gian:</i> 3 tháng tới. <i>Mong muốn:</i> ngành sáng tạo.”</li>
+          </ul>
+          <div class="chips">
+            <button class="tip-chip" data-insert="Tổng quan tình cảm trong 3 tháng tới, điều gì nổi bật và cần tránh?">Tình cảm • 3 tháng</button>
+            <button class="tip-chip" data-insert="Sự nghiệp 6 tháng tới, rủi ro và cơ hội chính là gì?">Sự nghiệp • 6 tháng</button>
+            <button class="tip-chip" data-insert="Tài chính trong 1 năm tới, xu hướng thu nhập và lời khuyên quản lý?">Tài chính • 1 năm</button>
+            <button class="tip-chip" data-insert="Sức khỏe tinh thần hiện tại, điều nên tập trung và thói quen cần xây?">Sức khỏe • hiện tại</button>
+            <button class="tip-chip" data-insert="Tôi đang đứng trước một quyết định quan trọng, đâu là hướng đi phù hợp trong tháng tới?">Quyết định • 1 tháng</button>
+            <button class="tip-chip" data-insert="Những cơ hội đáng chú ý trong 3 tháng tới và bước tiếp theo nên làm?">Cơ hội • 3 tháng</button>
+          </div>
+        </div>
       </div>
 
+      <!-- Guided -->
       <div id="guided-box" class="hidden grid gap-3 sm:grid-cols-3">
-        <select id="topic" class="select">
+        <select id="topic" class="select font-ui">
           <option value="">-- Chủ đề --</option>
           <option>Tình yêu và mối quan hệ</option>
           <option>Sự nghiệp và công việc</option>
@@ -88,9 +107,8 @@
           <option>Gia đình và bạn bè</option>
           <option>Học tập và kiến thức</option>
           <option>Quyết định quan trọng</option>
-          <option>Khác</option>
         </select>
-        <select id="timeframe" class="select">
+        <select id="timeframe" class="select font-ui">
           <option value="">-- Thời gian --</option>
           <option>hiện tại</option>
           <option>trong 3 tháng tới</option>
@@ -98,51 +116,52 @@
           <option>trong 1 năm tới</option>
           <option>trong tương lai xa</option>
         </select>
-        <input id="extra" class="select" placeholder="Câu hỏi bổ sung (nếu có)"/>
+        <input id="extra" class="select font-ui" placeholder="Câu hỏi bổ sung (nếu có)"/>
       </div>
 
       <div class="text-center mt-4">
-        <button id="ask-ai-btn" class="btn btn-gold" disabled>Nhận Giải Thích Từ AI</button>
+        <button id="ask-ai-btn" class="btn btn-gold" disabled>
+          <span class="btn-label">Nhận Giải Thích Từ AI</span>
+          <span class="btn-loading hidden"><span class="spinner"></span> Đang gọi AI...</span>
+        </button>
       </div>
 
-      <!-- AI Responses -->
-      <div id="ai-loading" class="ai-loading hidden">Đang phân tích...</div>
+      <div id="ai-loading" class="ai-loading hidden font-ui">Đang phân tích...</div>
 
       <div id="ai-cards" class="ai-cards hidden">
-        <h3 class="sub-title">Giải thích từng lá</h3>
+        <h3 class="sub-title font-title">Giải thích từng lá</h3>
         <div id="ai-cards-row" class="ai-cards-row"></div>
       </div>
 
       <div id="ai-overall" class="ai-panel hidden">
-        <h3 class="sub-title">Tổng Quan</h3>
-        <p id="overall-text"></p>
+        <h3 class="sub-title font-title">Tổng Quan</h3>
+        <p id="overall-text" class="font-ui"></p>
       </div>
 
       <div id="ai-next" class="ai-panel hidden">
-        <h3 class="sub-title">Gợi ý & Bước tiếp theo</h3>
-        <p id="next-text"></p>
+        <h3 class="sub-title font-title">Gợi ý & Bước tiếp theo</h3>
+        <p id="next-text" class="font-ui"></p>
       </div>
     </section>
 
     <!-- History -->
     <section class="glass p-4 sm:p-6 rounded-2xl">
-      <h2 class="section-title">Lịch Sử Các Lượt Bóc</h2>
+      <h2 class="section-title font-title">Lịch Sử Các Lượt Bóc</h2>
       <div id="history" class="history"></div>
     </section>
   </main>
 
-  <!-- History Modal -->
+  <!-- Modal -->
   <dialog id="history-modal" class="modal">
     <div class="modal-box">
       <div class="flex items-start justify-between gap-4">
-        <h3 class="text-xl font-semibold font-[Cinzel]">Chi tiết lượt bóc</h3>
+        <h3 class="text-xl font-semibold font-title">Chi tiết lượt bóc</h3>
         <button id="close-modal" class="btn btn-danger px-3">Đóng</button>
       </div>
       <div id="modal-content" class="mt-4 space-y-6"></div>
     </div>
   </dialog>
 
-  <!-- App script -->
   <script src="./script.js"></script>
 </body>
 </html>
