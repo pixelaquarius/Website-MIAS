@@ -5,14 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Ứng Dụng Bói Bài Tarot</title>
 
-  <!-- TỰ NHẬN API BASE = domain hiện tại -->
+  <!-- Đặt API BASE = domain hiện tại -->
   <script>window.__API_BASE = location.origin + "/api";</script>
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Be+Vietnam+Pro:wght@400;600;700&display=swap" rel="stylesheet">
-
   <style>
     :root { --glass: rgba(255,255,255,.06); --bd: rgba(255,255,255,.12); }
     body{font-family:"Be Vietnam Pro",system-ui,Segoe UI,Roboto; background: radial-gradient(1200px 600px at 10% -10%, #1c2750 0, transparent 60%), radial-gradient(1000px 500px at 100% 10%, #13203e 0, transparent 60%), #0b0f1a;}
@@ -32,6 +31,7 @@
     .hint{font-size:.9rem;color:#94a3b8}
     .msg{margin-top:.5rem;padding:.6rem .8rem;border-radius:.6rem}
     .msg.ok{background:#0f5132;color:#d1fae5} .msg.err{background:#5c1414;color:#fecaca}
+
     /* Big card */
     .big-card{width:220px; height:360px; border-radius:1rem; margin-top:8px; position:relative; overflow:hidden;
       box-shadow: 0 20px 50px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.06);}
@@ -41,10 +41,12 @@
     .big-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
     .card-title{position:absolute;left:0;right:0;bottom:0;padding:.6rem 1rem;background:linear-gradient(180deg,transparent,rgba(0,0,0,.65));
       color:#fff;font-weight:700;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+
     /* Current row (lá nhỏ) */
     .current-row{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:14px}
     .mini{width:90px;height:140px;border-radius:.6rem;overflow:hidden;border:1px solid rgba(255,255,255,.08);box-shadow:0 10px 18px rgba(0,0,0,.32)}
     .mini img{width:100%;height:100%;object-fit:cover}
+
     /* AI sections */
     .textarea{width:100%;min-height:96px;padding:12px;border-radius:.8rem;background:#0f172a;border:1px solid #1f2a44;color:#e2e8f0}
     .select{width:100%;padding:.75rem;border-radius:.8rem;background:#0f172a;border:1px solid #1f2a44;color:#e2e8f0}
@@ -61,11 +63,14 @@
     #ask-ai-btn.loading .btn-loading{display:inline-flex;align-items:center;gap:.45rem}
     .spinner{width:16px;height:16px;border-radius:50%;border:2px solid #fbbf24;border-top-color:transparent;animation:sp .8s linear infinite}
     @keyframes sp{to{transform:rotate(360deg)}}
+
     /* History */
     .history{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.9rem}
     .history-card{padding:.6rem;border-radius:.9rem;background:#0f172a;border:1px solid #1f2a44;cursor:pointer}
     .history-strip{display:flex;gap:.35rem}
     .history-strip .mini{width:48px;height:75px;box-shadow:none}
+    .history-strip .mini img{width:100%;height:100%;object-fit:cover}
+
     /* Modal */
     .modal{border:none;background:transparent}
     .modal::backdrop{background:rgba(0,0,0,.55)}
@@ -79,28 +84,19 @@
       <p class="mt-2 text-slate-300">Giao diện ma thuật, ảnh lá bài thật, mượt trên máy tính & điện thoại.</p>
     </header>
 
-    <!-- Thanh chọn + nút chính -->
+    <!-- 1) Chọn số lá -->
     <section class="glass p-4 rounded-2xl mb-6">
-      <div class="flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-6 justify-center">
-        <div class="flex items-center gap-3 flex-wrap justify-center">
-          <span class="label">Số lá/lượt:</span>
-          <label class="chip"><input type="radio" name="spread-type" value="1" checked> 1 Lá</label>
-          <label class="chip"><input type="radio" name="spread-type" value="3"> 3 Lá</label>
-          <label class="chip"><input type="radio" name="spread-type" value="5"> 5 Lá</label>
-        </div>
-        <div class="flex items-center gap-3 flex-wrap justify-center">
-          <button id="draw-btn" class="btn">Bóc Bài</button>
-          <button id="complete-btn" class="btn btn-muted" disabled>Hoàn Tất</button>
-          <button id="deepen-btn" class="btn btn-accent" disabled>Coi Sâu Thêm</button>
-          <button id="merge-btn" class="btn btn-merge" disabled>Kết hợp & Tổng quan</button>
-          <button id="new-spread-btn" class="btn btn-danger" disabled>Bóc Bài Mới</button>
-        </div>
+      <div class="flex flex-wrap items-center gap-3 justify-center">
+        <span class="label">Số lá/lượt:</span>
+        <label class="chip"><input type="radio" name="spread-type" value="1" checked> 1 Lá</label>
+        <label class="chip"><input type="radio" name="spread-type" value="3"> 3 Lá</label>
+        <label class="chip"><input type="radio" name="spread-type" value="5"> 5 Lá</label>
       </div>
       <p class="hint mt-3 text-center">Bạn có thể “Coi sâu thêm” nhiều lần cho cùng bộ. Nếu đổi chủ đề, chỉ cần hỏi mới — không cần bóc lại.</p>
       <div id="msg" class="msg hidden"></div>
     </section>
 
-    <!-- Khu hiển thị lá -->
+    <!-- 2) Khu hiển thị bài + CÁC NÚT HÀNH ĐỘNG ĐÃ DỊCH XUỐNG ĐÂY -->
     <section class="glass p-4 rounded-2xl mb-6">
       <div class="big-card mx-auto" id="big-card">
         <div class="card-back"></div>
@@ -108,9 +104,17 @@
         <div id="big-card-title" class="card-title hidden"></div>
       </div>
       <div id="current-row" class="current-row"></div>
+
+      <div class="mt-4 flex flex-wrap items-center gap-3 justify-center">
+        <button id="draw-btn" class="btn">Bóc Bài</button>
+        <button id="complete-btn" class="btn btn-muted" disabled>Hoàn Tất</button>
+        <button id="deepen-btn" class="btn btn-accent" disabled>Coi Sâu Thêm</button>
+        <button id="merge-btn" class="btn btn-merge" disabled>Kết hợp & Tổng quan</button>
+        <button id="new-spread-btn" class="btn btn-danger" disabled>Bóc Bài Mới</button>
+      </div>
     </section>
 
-    <!-- AI -->
+    <!-- 3) AI -->
     <section class="glass p-4 rounded-2xl mb-8">
       <h2 class="section-title font-title">Đọc Bài Bằng AI</h2>
 
@@ -176,7 +180,7 @@
       </div>
     </section>
 
-    <!-- Lịch sử -->
+    <!-- 4) Lịch sử -->
     <section class="glass p-4 rounded-2xl">
       <h2 class="section-title font-title">Lịch Sử Các Lượt Bóc</h2>
       <div id="history" class="history"></div>
