@@ -3,45 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ứng Dụng Bóc Bài Tarot – Vercel (Deep Mode)</title>
+  <title>Ứng Dụng Bóc Bài Tarot – Deep Mode nhiều lần</title>
+  <script>
+    /* Nếu trang KHÔNG chạy trên Vercel cùng project (vd: https://miastream.click/tarot/),
+       hãy bật dòng dưới và điền domain Vercel của bạn:
+       window.__API_BASE = 'https://<your-project>.vercel.app/api';
+    */
+    // window.__API_BASE = 'https://your-project.vercel.app/api';
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial; background:#f0f4f8; margin:0; padding:20px; display:flex; min-height:100vh; align-items:center; justify-content:center; }
-    .app-container { background:#fff; border-radius:1.5rem; box-shadow:0 10px 25px rgba(0,0,0,.1); padding:2rem; width:100%; max-width:840px; display:flex; flex-direction:column; gap:1.25rem; }
-    .card { width:160px; height:260px; background:#2c3e50; border-radius:.75rem; box-shadow:0 4px 10px rgba(0,0,0,.2); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; border:3px solid #f39c12; position:relative; overflow:hidden; transition:.3s; }
-    .card.drawn { background:#ecf0f1; color:#2c3e50; border-color:#3498db; }
-    .card-image { width:100%; height:100%; object-fit:cover; border-radius:.75rem; }
-    .card-text-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:10px; text-align:center; color:#1f2937; font-weight:800; }
-    .current-spread-display { display:flex; gap:.8rem; justify-content:center; flex-wrap:wrap; min-height:180px; width:100%; }
-    .current-spread-card { width:110px; height:160px; background:#ecf0f1; border-radius:.6rem; border:2px solid #3498db; display:flex; align-items:center; justify-content:center; text-align:center; font-size:.75rem; padding:6px; line-height:1.2; }
-    .button-area { display:flex; gap:.7rem; flex-wrap:wrap; justify-content:center; }
-    .button-area button { background:#3498db; color:#fff; padding:.7rem 1.4rem; border:none; border-radius:9999px; font-weight:800; box-shadow:0 5px 15px rgba(52,152,219,.4); cursor:pointer; }
-    .button-area button.bg-amber { background:#f59e0b; }
-    .button-area button.bg-blue { background:#3b82f6; }
-    .button-area button.bg-red { background:#ef4444; }
-    .button-area button:disabled { background:#c8ccd1; cursor:not-allowed; box-shadow:none; }
-    .ai-reading-area { width:100%; background:#f5f5f5; border-radius:.75rem; padding:1.1rem; box-shadow:0 5px 15px rgba(0,0,0,.05); }
-    .ai-reading-actions { display:flex; flex-wrap:wrap; gap:.6rem; justify-content:center; margin-top:.6rem; }
-    .ai-reading-actions button { background:#f39c12; color:#fff; padding:.55rem 1.1rem; border:none; border-radius:9999px; font-weight:700; }
-    .ai-reading-actions button.bg-blue { background:#3b82f6; }
-    .ai-reading-actions button.bg-red { background:#ef4444; }
-    .ai-response-sections { display:flex; flex-direction:column; gap:.8rem; margin-top:.8rem; }
-    .ai-card-interpretation, .ai-overall-interpretation, .ai-suggestions { background:#e8f0fe; border:1px solid #a7c5ed; border-radius:.5rem; padding:.75rem; font-size:.95rem; }
-    .history-container { width:100%; max-height:380px; overflow:auto; background:#f9fafb; border:1px solid #e0e0e0; border-radius:.75rem; padding:.9rem; }
-    .history-spread-group { background:#fff; border:1px solid #dcdcdc; border-radius:.75rem; padding:.75rem; margin-bottom:.9rem; box-shadow:0 2px 8px rgba(0,0,0,.05); }
-    .history-badge { font-size:.7rem; padding:.15rem .45rem; border-radius:.4rem; background:#eef2ff; color:#3730a3; border:1px solid #c7d2fe; }
-    .history-row { display:flex; gap:.5rem; flex-wrap:wrap; justify-content:center; margin-top:.4rem; }
-    .history-card-item { width:86px; height:120px; background:#ecf0f1; border-radius:.5rem; border:2px solid #3498db; display:flex; align-items:center; justify-content:center; font-size:.65rem; text-align:center; padding:5px; line-height:1.2; }
-    .message-box { background:#e74c3c; color:#fff; padding:.85rem; border-radius:.6rem; opacity:0; transform:translateY(-8px); transition:.25s; text-align:center; }
-    .message-box.show { opacity:1; transform:translateY(0); }
-    .muted { color:#6b7280; font-size:.85rem; }
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#f0f4f8;margin:0;padding:20px;display:flex;min-height:100vh;align-items:center;justify-content:center}
+    .app-container{background:#fff;border-radius:1.5rem;box-shadow:0 10px 25px rgba(0,0,0,.1);padding:2rem;width:100%;max-width:900px;display:flex;flex-direction:column;gap:1.1rem}
+    .card{width:160px;height:260px;background:#2c3e50;border-radius:.75rem;box-shadow:0 4px 10px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;border:3px solid #f39c12;position:relative;overflow:hidden;transition:.3s}
+    .card.drawn{background:#ecf0f1;color:#2c3e50;border-color:#3498db}
+    .card-image{width:100%;height:100%;object-fit:cover;border-radius:.75rem}
+    .card-text-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:10px;text-align:center;color:#1f2937;font-weight:800}
+    .current-spread-display{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;min-height:180px;width:100%}
+    .current-spread-card{width:110px;height:160px;background:#ecf0f1;border-radius:.6rem;border:2px solid #3498db;display:flex;align-items:center;justify-content:center;text-align:center;font-size:.75rem;padding:6px;line-height:1.2}
+    .button-area{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center}
+    .btn{background:#3498db;color:#fff;padding:.65rem 1.2rem;border:none;border-radius:9999px;font-weight:800;box-shadow:0 5px 15px rgba(52,152,219,.4);cursor:pointer}
+    .btn.amber{background:#f59e0b}.btn.blue{background:#3b82f6}.btn.red{background:#ef4444}.btn.gray{background:#6b7280}
+    .btn:disabled{background:#c8ccd1;cursor:not-allowed;box-shadow:none}
+    .ai-reading-area{width:100%;background:#f5f5f5;border-radius:.75rem;padding:1.1rem;box-shadow:0 5px 15px rgba(0,0,0,.05)}
+    .ai-reading-actions{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-top:.6rem}
+    .ai-response-sections{display:flex;flex-direction:column;gap:.8rem;margin-top:.8rem}
+    .ai-card-interpretation,.ai-overall-interpretation,.ai-suggestions{background:#e8f0fe;border:1px solid #a7c5ed;border-radius:.5rem;padding:.75rem;font-size:.95rem}
+    .history-container{width:100%;max-height:420px;overflow:auto;background:#f9fafb;border:1px solid #e0e0e0;border-radius:.75rem;padding:.9rem}
+    .history-spread-group{background:#fff;border:1px solid #dcdcdc;border-radius:.75rem;padding:.75rem;margin-bottom:.9rem;box-shadow:0 2px 8px rgba(0,0,0,.05);cursor:pointer}
+    .history-badge{font-size:.7rem;padding:.15rem .45rem;border-radius:.4rem;background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe}
+    .history-row{display:flex;gap:.4rem;flex-wrap:nowrap;overflow:auto;padding-bottom:.25rem}
+    .round-chip{flex:0 0 auto;display:flex;gap:.25rem;align-items:center;padding:.25rem .45rem;border-radius:.5rem;background:#f1f5f9;border:1px solid #e2e8f0;font-size:.72rem}
+    .chip-card{padding:.1rem .3rem;border-radius:.3rem;border:1px solid #94a3b8;background:#e2e8f0}
+    .message-box{background:#e74c3c;color:#fff;padding:.85rem;border-radius:.6rem;opacity:0;transform:translateY(-8px);transition:.25s;text-align:center}
+    .message-box.show{opacity:1;transform:translateY(0)}
+    .muted{color:#6b7280;font-size:.85rem}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:50}
+    .modal{background:#fff;width:min(900px,92vw);max-height:88vh;overflow:auto;border-radius:1rem;padding:1rem 1.1rem;box-shadow:0 20px 40px rgba(0,0,0,.25)}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+    .modal-title{font-weight:800;font-size:1.05rem}
+    .close-btn{background:#ef4444;color:#fff;border:none;border-radius:.5rem;padding:.4rem .7rem;cursor:pointer}
+    .round-block{border:1px solid #e5e7eb;border-radius:.6rem;padding:.6rem;margin:.4rem 0;background:#fafafa}
+    .log-block{border:1px dashed #cbd5e1;border-radius:.6rem;padding:.6rem;background:#f8fafc}
   </style>
 </head>
 <body>
   <div class="app-container">
     <h1 class="text-2xl md:text-3xl font-extrabold text-gray-800 text-center">🔮 Ứng Dụng Bóc Bài Tarot</h1>
 
-    <!-- Chọn số lá -->
     <div class="w-full bg-gray-50 p-4 rounded-lg shadow-sm">
       <h3 class="font-bold text-gray-700 mb-1">Chọn số lá bài:</h3>
       <div class="flex flex-wrap gap-x-6 gap-y-2 justify-center">
@@ -51,27 +60,24 @@
       </div>
     </div>
 
-    <!-- Lá lớn -->
     <div class="flex justify-center">
       <div id="current-card" class="card">
         <img id="card-back-img" class="card-image" src="https://placehold.co/160x260/111111/FFFFFF?text=B%C3%93C+B%C3%80I" alt="Mặt sau lá bài">
       </div>
     </div>
 
-    <!-- Lá đang bóc -->
     <div id="current-spread-display" class="current-spread-display"></div>
 
-    <!-- Nút hành động chính -->
     <div class="button-area">
-      <button id="draw-button">Bóc Bài</button>
-      <button id="complete-spread-button" disabled>Hoàn Tất</button>
-      <button id="coi-sau-them-btn" class="bg-amber" disabled>Coi Sâu Thêm</button>
-      <button id="boc-bai-moi-btn" class="bg-red" disabled>Bóc Bài Mới</button>
+      <button id="draw-button" class="btn">Bóc Bài</button>
+      <button id="complete-spread-button" class="btn gray" disabled>Hoàn Tất</button>
+      <button id="coi-sau-them-btn" class="btn amber" disabled>Coi Sâu Thêm</button>
+      <button id="combine-summary-btn" class="btn blue" disabled>Kết hợp & Tổng quan</button>
+      <button id="boc-bai-moi-btn" class="btn red" disabled>Bóc Bài Mới</button>
     </div>
 
     <div class="message-box" id="message-box"></div>
 
-    <!-- Đọc bài AI -->
     <div class="ai-reading-area">
       <h3 class="text-lg font-bold text-gray-700">Đọc Bài Bằng AI</h3>
 
@@ -103,10 +109,10 @@
         <input id="additional-question" class="w-full p-2 border rounded-lg" placeholder="Câu hỏi bổ sung (nếu có)"/>
       </div>
 
-      <p class="muted text-center">Bạn có thể đổi chủ đề hoặc nhập câu hỏi mới bất kỳ lúc nào (kể cả sau khi bấm “Coi sâu thêm”).</p>
+      <p class="muted text-center">Bạn có thể đổi chủ đề hoặc nhập câu hỏi mới bất kỳ lúc nào, kể cả đang “Coi sâu thêm”.</p>
 
       <div class="ai-reading-actions">
-        <button id="get-ai-reading-button" disabled>Nhận Giải Thích Từ AI</button>
+        <button id="get-ai-reading-button" class="btn amber" disabled>Nhận Giải Thích Từ AI</button>
       </div>
 
       <div id="ai-response-display" class="ai-response-sections">
@@ -133,8 +139,21 @@
     <div id="history-container" class="history-container"></div>
   </div>
 
+  <div id="history-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Chi tiết lịch sử</div>
+        <button id="modal-close-btn" class="close-btn">Đóng</button>
+      </div>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
   <script>
-    // ====== Bộ bài 78 lá ======
+    /* ==================== Cấu hình API ==================== */
+    const API_BASE = (window.__API_BASE && window.__API_BASE.replace(/\/+$/,'')) || '/api';
+
+    /* ==================== Bộ bài ==================== */
     const allTarotCards = [
       "0 - The Fool","I - The Magician","II - The High Priestess","III - The Empress",
       "IV - The Emperor","V - The Hierophant","VI - The Lovers","VII - The Chariot",
@@ -157,129 +176,79 @@
       "Queen of Pentacles","King of Pentacles"
     ];
 
-    // ====== State & DOM ======
-    let currentDeck = [];
-    let currentDrawnCards = [];
-    let historySpreads = [];
-    let numCardsToDraw = 1;
+    /* ==================== State & DOM ==================== */
+    let currentDeck=[], currentDrawnCards=[], historySpreads=[], numCardsToDraw=1;
 
-    // Deep mode
-    let firstRoundCards = []; // giữ bộ lần 1
-    let deepMode = false;     // true khi đang coi sâu
-    let roundIndex = 1;       // 1 = lần 1, 2 = lần 2
+    // Deep nhiều lần
+    let deepMode=false, roundsCards=[], currentRoundIndex=1, sessionAiLogs=[], sessionCombinedSummary=null;
 
-    const currentCardElement = document.getElementById('current-card');
-    const cardBackImg = document.getElementById('card-back-img');
-    const drawButton = document.getElementById('draw-button');
-    const completeSpreadButton = document.getElementById('complete-spread-button');
-    const coiSauThemBtn = document.getElementById('coi-sau-them-btn');
-    const bocBaiMoiBtn = document.getElementById('boc-bai-moi-btn');
-    const messageBox = document.getElementById('message-box');
-    const currentSpreadDisplay = document.getElementById('current-spread-display');
-    const historyContainer = document.getElementById('history-container');
+    const $ = id => document.getElementById(id);
+    const currentCardElement = $('current-card');
+    const cardBackImg = $('card-back-img');
+    const drawButton = $('draw-button');
+    const completeSpreadButton = $('complete-spread-button');
+    const coiSauThemBtn = $('coi-sau-them-btn');
+    const combineSummaryBtn = $('combine-summary-btn');
+    const bocBaiMoiBtn = $('boc-bai-moi-btn');
+    const messageBox = $('message-box');
+    const currentSpreadDisplay = $('current-spread-display');
+    const historyContainer = $('history-container');
 
     const spreadTypeRadios = document.querySelectorAll('input[name="spread-type"]');
     const questionTypeRadios = document.querySelectorAll('input[name="question-type"]');
-    const questionInput = document.getElementById('question-input');
-    const guidedQuestionOptions = document.getElementById('guided-question-options');
-    const topicSelect = document.getElementById('topic-select');
-    const timeframeSelect = document.getElementById('timeframe-select');
-    const additionalQuestionInput = document.getElementById('additional-question');
+    const questionInput = $('question-input');
+    const guidedQuestionOptions = $('guided-question-options');
+    const topicSelect = $('topic-select');
+    const timeframeSelect = $('timeframe-select');
+    const additionalQuestionInput = $('additional-question');
 
-    const getAiReadingButton = document.getElementById('get-ai-reading-button');
+    const getAiReadingButton = $('get-ai-reading-button');
 
-    const aiCardInterpretationsContainer = document.getElementById('ai-card-interpretations-container');
-    const aiCardInterpretationsRow = document.getElementById('ai-card-interpretations-row');
-    const aiOverallInterpretation = document.getElementById('ai-overall-interpretation');
-    const overallText = document.getElementById('overall-text');
-    const aiSuggestions = documentElementByIdSafe('ai-suggestions');
-    const suggestionsText = document.getElementById('suggestions-text');
-    const loadingAiResponse = document.getElementById('loading-ai-response');
+    const aiCardInterpretationsContainer = $('ai-card-interpretations-container');
+    const aiCardInterpretationsRow = $('ai-card-interpretations-row');
+    const aiOverallInterpretation = $('ai-overall-interpretation');
+    const overallText = $('overall-text');
+    const aiSuggestions = $('ai-suggestions');
+    const suggestionsText = $('suggestions-text');
+    const loadingAiResponse = $('loading-ai-response');
 
-    function documentElementByIdSafe(id){ return document.getElementById(id); }
+    const historyModal = $('history-modal');
+    const modalCloseBtn = $('modal-close-btn');
+    const modalContent = $('modal-content');
 
-    // ====== Helpers ======
+    /* ==================== Helpers ==================== */
+    const nowTS = ()=> new Date().toLocaleString('vi-VN',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
     function getCardColorHSL(name){
-      const seed = [...name].reduce((a,c)=>a+c.charCodeAt(0),0);
-      const hue = (seed*137.508)%360, sat=70+(seed%30), light=60+(seed%20);
+      const seed=[...name].reduce((a,c)=>a+c.charCodeAt(0),0);
+      const hue=(seed*137.508)%360, sat=70+(seed%30), light=60+(seed%20);
       return `hsl(${hue}, ${sat}%, ${light}%)`;
     }
     function showMessage(msg,type='info'){
-      messageBox.textContent = msg;
-      messageBox.className = 'message-box show';
+      messageBox.textContent=msg;
+      messageBox.className='message-box show';
       messageBox.style.backgroundColor = type==='error' ? '#ef4444' : (type==='success' ? '#10b981' : '#3b82f6');
-      setTimeout(()=>messageBox.classList.remove('show'), 2200);
+      setTimeout(()=>messageBox.classList.remove('show'), 2600);
     }
     function shuffleDeck(){
-      currentDeck = [...allTarotCards];
-      for (let i=currentDeck.length-1;i>0;i--){
-        const j = Math.floor(Math.random()*(i+1));
-        [currentDeck[i],currentDeck[j]] = [currentDeck[j],currentDeck[i]];
-      }
+      currentDeck=[...allTarotCards];
+      for(let i=currentDeck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [currentDeck[i],currentDeck[j]]=[currentDeck[j],currentDeck[i]]; }
       showMessage('Bộ bài đã được xáo!', 'success');
     }
     function updateCurrentCardDisplay(cardName){
       currentCardElement.classList.add('drawn');
-      currentCardElement.style.backgroundColor = getCardColorHSL(cardName);
-      if (cardBackImg) cardBackImg.style.display='none';
-      let overlay = currentCardElement.querySelector('.card-text-overlay');
-      if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.className = 'card-text-overlay';
-        currentCardElement.appendChild(overlay);
-      }
-      overlay.textContent = cardName;
+      currentCardElement.style.backgroundColor=getCardColorHSL(cardName);
+      if(cardBackImg) cardBackImg.style.display='none';
+      let overlay=currentCardElement.querySelector('.card-text-overlay');
+      if(!overlay){ overlay=document.createElement('div'); overlay.className='card-text-overlay'; currentCardElement.appendChild(overlay); }
+      overlay.textContent=cardName;
     }
     function updateCurrentSpreadDisplay(){
       currentSpreadDisplay.innerHTML='';
       currentDrawnCards.forEach(name=>{
-        const d=document.createElement('div');
-        d.className='current-spread-card';
-        d.style.backgroundColor=getCardColorHSL(name);
-        d.innerHTML=`<span class="card-name-text">${name}</span>`;
+        const d=document.createElement('div'); d.className='current-spread-card';
+        d.style.backgroundColor=getCardColorHSL(name); d.innerHTML=`<span class="card-name-text">${name}</span>`;
         currentSpreadDisplay.appendChild(d);
       });
-    }
-    function renderHistoryRow(cards, label){
-      const rowWrap = document.createElement('div');
-      if (label){
-        const cap = document.createElement('div');
-        cap.className='text-xs font-semibold text-gray-600 text-center mt-1';
-        cap.textContent = label;
-        rowWrap.appendChild(cap);
-      }
-      const row = document.createElement('div');
-      row.className='history-row';
-      cards.forEach(n=>{
-        const c=document.createElement('div'); c.className='history-card-item';
-        c.style.backgroundColor=getCardColorHSL(n);
-        c.innerHTML=`<span class="card-name-text">${n}</span>`;
-        row.appendChild(c);
-      });
-      rowWrap.appendChild(row);
-      return rowWrap;
-    }
-    function updateHistoryDisplay(){
-      historyContainer.innerHTML='';
-      historySpreads.slice().reverse().forEach((entry, idx)=>{
-        const wrap=document.createElement('div'); wrap.className='history-spread-group';
-        const head=document.createElement('div');
-        head.className='flex items-center justify-between text-sm font-bold text-gray-700';
-        const badge = entry.mode==='deep'
-          ? `<span class="history-badge">Deep</span>`
-          : `<span class="history-badge">Single</span>`;
-        head.innerHTML=`<span>Bộ ${historySpreads.length-idx}</span><span class="flex items-center gap-2">${badge}<span>${entry.timestamp}</span></span>`;
-        wrap.appendChild(head);
-
-        if (entry.mode==='deep' && entry.rounds){
-          wrap.appendChild(renderHistoryRow(entry.rounds.r1, 'Lần 1'));
-          wrap.appendChild(renderHistoryRow(entry.rounds.r2, 'Lần 2'));
-        } else {
-          wrap.appendChild(renderHistoryRow(entry.cards, null));
-        }
-        historyContainer.appendChild(wrap);
-      });
-      historyContainer.scrollTop=0;
     }
     function clearAiResponseDisplay(){
       aiCardInterpretationsRow.innerHTML='';
@@ -288,238 +257,273 @@
       aiSuggestions.classList.add('hidden'); suggestionsText.textContent='';
       loadingAiResponse.classList.add('hidden');
     }
+    function resetQAInputs(){ questionInput.value=''; topicSelect.value=''; timeframeSelect.value=''; additionalQuestionInput.value=''; }
     function resetGameVisuals(){
-      currentCardElement.classList.remove('drawn');
-      currentCardElement.style.backgroundColor='';
-      if (cardBackImg) cardBackImg.style.display='block';
-      const ov=currentCardElement.querySelector('.card-text-overlay'); if (ov) ov.remove();
-
+      currentCardElement.classList.remove('drawn'); currentCardElement.style.backgroundColor='';
+      if(cardBackImg) cardBackImg.style.display='block';
+      const ov=currentCardElement.querySelector('.card-text-overlay'); if(ov) ov.remove();
       drawButton.textContent='Bóc Bài';
-      drawButton.disabled=false;
-      completeSpreadButton.disabled=true;
-      getAiReadingButton.disabled=true;
-      coiSauThemBtn.disabled=true;
-      bocBaiMoiBtn.disabled=true;
-
-      clearAiResponseDisplay();
-      questionInput.value='';
-      topicSelect.value=''; timeframeSelect.value=''; additionalQuestionInput.value='';
+      drawButton.disabled=false; completeSpreadButton.disabled=true; getAiReadingButton.disabled=true;
+      coiSauThemBtn.disabled=true; combineSummaryBtn.disabled=true; bocBaiMoiBtn.disabled=true;
+      clearAiResponseDisplay(); resetQAInputs(); currentSpreadDisplay.innerHTML='';
     }
 
-    // ====== Game actions ======
-    function drawCard(){
-      // Trong deep mode, lần 2 cũng cần đủ numCardsToDraw lá
-      if (currentDrawnCards.length >= numCardsToDraw){
-        showMessage(`Bạn đã bóc đủ ${numCardsToDraw} lá.`, 'info'); return;
+    /* ==================== History render ==================== */
+    function renderDeepChips(rounds){
+      const row=document.createElement('div'); row.className='history-row';
+      rounds.forEach((cards, idx)=>{
+        const chip=document.createElement('div'); chip.className='round-chip';
+        const label=document.createElement('span'); label.className='font-semibold'; label.textContent=`L${idx+1}:`;
+        chip.appendChild(label);
+        cards.forEach(c=>{
+          const cc=document.createElement('span'); cc.className='chip-card';
+          cc.style.backgroundColor=getCardColorHSL(c); cc.textContent=c.split(' ')[0];
+          chip.appendChild(cc);
+        });
+        row.appendChild(chip);
+      });
+      return row;
+    }
+    function updateHistoryDisplay(){
+      historyContainer.innerHTML='';
+      historySpreads.slice().map((e,i)=>({e,i})).reverse().forEach(({e,i}, displayIdx)=>{
+        const wrap=document.createElement('div'); wrap.className='history-spread-group'; wrap.dataset.realIndex=i.toString();
+        const head=document.createElement('div'); head.className='flex items-center justify-between text-sm font-bold text-gray-700';
+        const badge=e.mode?.startsWith('deep')?`<span class="history-badge">Deep x${e.rounds?.length||2}</span>`:`<span class="history-badge">Single</span>`;
+        head.innerHTML=`<span>Bộ ${historySpreads.length-displayIdx}</span><span class="flex items-center gap-2">${badge}<span>${e.timestamp}</span></span>`;
+        wrap.appendChild(head);
+        if(e.mode?.startsWith('deep') && Array.isArray(e.rounds)){ wrap.appendChild(renderDeepChips(e.rounds)); }
+        else { wrap.appendChild(renderDeepChips([e.cards||[]])); }
+        historyContainer.appendChild(wrap);
+      });
+    }
+
+    /* ==================== Modal ==================== */
+    function openHistoryModal(index){
+      const item=historySpreads[index]; if(!item) return; modalContent.innerHTML='';
+      const title=document.createElement('div'); title.className='mb-2 text-sm text-gray-700';
+      title.textContent=`${item.timestamp} • ${item.mode?.startsWith('deep')?'Deep':''} ${item.rounds?('x'+item.rounds.length):''}`;
+      modalContent.appendChild(title);
+
+      const addLogBlock=(l,wrap)=>{
+        const log=document.createElement('div'); log.className='log-block mt-2 text-sm';
+        log.innerHTML=`<div class="font-semibold">Q: ${l.question||'(không nhập)'}</div>
+                       <div><span class="font-semibold">Tổng quan:</span> ${l.overall||''}</div>
+                       <div><span class="font-semibold">Lời khuyên:</span> ${l.suggestion||''}</div>
+                       <div class="text-xs text-gray-500 mt-1">${l.ts}</div>`;
+        wrap.appendChild(log);
+      };
+
+      if(item.mode?.startsWith('deep') && Array.isArray(item.rounds)){
+        item.rounds.forEach((cards, idx)=>{
+          const rb=document.createElement('div'); rb.className='round-block';
+          const h=document.createElement('div'); h.className='font-bold mb-1'; h.textContent=`Lần ${idx+1}`; rb.appendChild(h);
+          rb.appendChild(renderDeepChips([cards]));
+          (item.aiLogs||[]).filter(l=>Array.isArray(l.roundsIncluded)&&l.roundsIncluded.includes(idx+1)).forEach(l=>addLogBlock(l, rb));
+          modalContent.appendChild(rb);
+        });
+        if(item.combinedSummary){
+          const cb=document.createElement('div'); cb.className='round-block';
+          const h=document.createElement('div'); h.className='font-bold mb-1'; h.textContent='Tổng hợp (Kết hợp & Tổng quan)'; cb.appendChild(h);
+          addLogBlock(item.combinedSummary, cb); modalContent.appendChild(cb);
+        }
+      } else {
+        modalContent.appendChild(renderDeepChips([item.cards||[]]));
+        (item.aiLogs||[]).forEach(l=>addLogBlock(l, modalContent));
       }
-      if (!currentDeck.length) shuffleDeck();
-      const idx = Math.floor(Math.random()*currentDeck.length);
-      const card = currentDeck.splice(idx,1)[0];
+      $('history-modal').style.display='flex';
+    }
+    const closeHistoryModal=()=> $('history-modal').style.display='none';
+
+    /* ==================== Game actions ==================== */
+    function drawCard(){
+      if(currentDrawnCards.length>=numCardsToDraw){ showMessage(`Bạn đã bóc đủ ${numCardsToDraw} lá.`, 'info'); return; }
+      if(!currentDeck.length) shuffleDeck();
+      const idx=Math.floor(Math.random()*currentDeck.length);
+      const card=currentDeck.splice(idx,1)[0];
       currentDrawnCards.push(card);
       updateCurrentCardDisplay(card);
       updateCurrentSpreadDisplay();
 
-      // Kích hoạt nút khi đủ lá cho vòng hiện tại
-      if (currentDrawnCards.length === numCardsToDraw){
-        drawButton.disabled=true;
-        completeSpreadButton.disabled=false;
-        getAiReadingButton.disabled=false;
-        coiSauThemBtn.disabled = !deepMode && roundIndex===1; // chỉ hiện sau khi xong lần 1
-        bocBaiMoiBtn.disabled=false;
-        if (!deepMode) showMessage(`Đủ ${numCardsToDraw} lá. Bạn có thể 'AI' / 'Hoàn tất' / 'Coi sâu thêm'.`, 'success');
-        else showMessage(`Lần 2 đã đủ ${numCardsToDraw} lá. Có thể 'AI' hoặc 'Hoàn tất'.`, 'success');
+      if(currentDrawnCards.length===numCardsToDraw){
+        drawButton.disabled=true; completeSpreadButton.disabled=false; getAiReadingButton.disabled=false; bocBaiMoiBtn.disabled=false;
+        coiSauThemBtn.disabled=false;
+        const completedRoundsCount = roundsCards.length + 1;
+        combineSummaryBtn.disabled = !(deepMode && completedRoundsCount>=2);
+        showMessage(`Đủ ${numCardsToDraw} lá. Bạn có thể 'AI' / 'Hoàn tất' / 'Coi sâu thêm' / 'Kết hợp'.`, 'success');
       } else {
         drawButton.textContent = `Bóc Bài (Lá ${currentDrawnCards.length+1}/${numCardsToDraw})`;
       }
     }
-
+    function finalizeCurrentRoundIntoRounds(){
+      if(currentDrawnCards.length===numCardsToDraw){ roundsCards.push([...currentDrawnCards]); currentDrawnCards=[]; currentSpreadDisplay.innerHTML=''; }
+    }
     function completeSpread(){
-      const timestamp = new Date().toLocaleString('vi-VN',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+      if(deepMode && currentDrawnCards.length===numCardsToDraw){ finalizeCurrentRoundIntoRounds(); }
+      const timestamp=nowTS();
 
-      // Nếu deep mode
-      if (deepMode && roundIndex===2){
-        if (currentDrawnCards.length === numCardsToDraw){
-          // Lưu deep: r1 + r2
-          const secondRoundCards = [...currentDrawnCards];
-          historySpreads.push({
-            timestamp, spreadType: numCardsToDraw, mode:'deep',
-            rounds:{ r1:firstRoundCards, r2:secondRoundCards }, cards:[...firstRoundCards, ...secondRoundCards]
-          });
-          firstRoundCards=[]; deepMode=false; roundIndex=1;
-          currentDrawnCards=[]; currentSpreadDisplay.innerHTML='';
-          updateHistoryDisplay(); resetGameVisuals(); shuffleDeck();
-          showMessage('Đã lưu (Lần 1 + Lần 2) vào lịch sử.', 'success');
-          return;
+      if(deepMode){
+        if(roundsCards.length===0){ showMessage('Chưa có lượt nào hoàn tất trong deep mode.', 'error'); return; }
+        historySpreads.push({ timestamp, mode:'deep-multi', spreadType:numCardsToDraw, rounds: roundsCards.map(r=>[...r]), cards: roundsCards.flat(), aiLogs:[...sessionAiLogs], combinedSummary: sessionCombinedSummary?{...sessionCombinedSummary}:null });
+      } else {
+        if(currentDrawnCards.length!==numCardsToDraw){
+          if(currentDrawnCards.length===0 && historySpreads.length>0){ resetAllSession(); showMessage('Bắt đầu lượt mới.', 'info'); return; }
+          showMessage(`Chưa đủ ${numCardsToDraw} lá.`, 'error'); return;
         }
-        if (currentDrawnCards.length === 0){
-          // Người dùng đổi ý, chỉ lưu Lần 1
-          historySpreads.push({
-            timestamp, spreadType: numCardsToDraw, mode:'single', cards:[...firstRoundCards]
-          });
-          firstRoundCards=[]; deepMode=false; roundIndex=1;
-          updateHistoryDisplay(); resetGameVisuals(); shuffleDeck();
-          showMessage('Đã lưu Lần 1 (bỏ coi sâu).', 'success');
-          return;
-        }
-        // Đang dở Lần 2
-        showMessage(`Chưa đủ ${numCardsToDraw} lá ở Lần 2.`, 'error');
-        return;
+        historySpreads.push({ timestamp, mode:'single', spreadType:numCardsToDraw, cards:[...currentDrawnCards], aiLogs:[...sessionAiLogs] });
       }
-
-      // Không deep mode (lần 1 bình thường)
-      if (currentDrawnCards.length !== numCardsToDraw){
-        if (currentDrawnCards.length===0 && historySpreads.length>0){
-          resetGameVisuals(); shuffleDeck(); showMessage('Bắt đầu lượt mới.', 'info'); return;
-        }
-        showMessage(`Chưa đủ ${numCardsToDraw} lá.`, 'error'); 
-        return;
-      }
-
-      historySpreads.push({
-        timestamp, spreadType:numCardsToDraw, mode:'single', cards:[...currentDrawnCards]
-      });
-
-      currentDrawnCards=[]; currentSpreadDisplay.innerHTML='';
-      updateHistoryDisplay(); resetGameVisuals(); shuffleDeck();
-      showMessage('Đã lưu vào lịch sử.', 'success');
+      updateHistoryDisplay(); resetAllSession(); showMessage('Đã lưu vào lịch sử.', 'success');
+    }
+    function resetAllSession(){
+      deepMode=false; roundsCards=[]; currentRoundIndex=1; sessionAiLogs=[]; sessionCombinedSummary=null;
+      currentDrawnCards=[]; currentSpreadDisplay.innerHTML=''; resetGameVisuals(); shuffleDeck();
     }
 
-    // ====== Question builder ======
+    /* ==================== Question ==================== */
     function getUserQuestion(){
-      const type = document.querySelector('input[name="question-type"]:checked').value;
-      if (type==='manual') return (questionInput.value||'').trim();
+      const type=document.querySelector('input[name="question-type"]:checked').value;
+      if(type==='manual') return (questionInput.value||'').trim();
       const parts=[];
-      if (topicSelect.value) parts.push(`Chủ đề: ${topicSelect.value}.`);
-      if (timeframeSelect.value) parts.push(`Thời gian muốn biết: ${timeframeSelect.value}.`);
-      if (additionalQuestionInput.value.trim()) parts.push(`Câu hỏi cụ thể: ${additionalQuestionInput.value.trim()}.`);
+      if(topicSelect.value) parts.push(`Chủ đề: ${topicSelect.value}.`);
+      if(timeframeSelect.value) parts.push(`Thời gian muốn biết: ${timeframeSelect.value}.`);
+      if(additionalQuestionInput.value.trim()) parts.push(`Câu hỏi cụ thể: ${additionalQuestionInput.value.trim()}.`);
       return parts.join(' ');
     }
 
-    // ====== AI call via Vercel route ======
+    /* ==================== Call AI ==================== */
+    async function safeFetchJSON(url, options){
+      const res = await fetch(url, options);
+      const ct = res.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) {
+        const text = await res.text();
+        // Cắt gọn để dễ đọc lỗi
+        const snippet = text.slice(0,120).replace(/\s+/g,' ');
+        throw new Error((res.status===404?'API không tồn tại. ':'') + `Phản hồi không phải JSON (status ${res.status}). Snippet: ${snippet}`);
+      }
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || `API error ${res.status}`);
+      return data;
+    }
+
     async function getAiReading(){
-      const userQuestion = getUserQuestion();
-      if (!userQuestion){ showMessage('Vui lòng nhập/chọn câu hỏi.', 'error'); return; }
+      const userQuestion=getUserQuestion();
+      if(!userQuestion){ showMessage('Vui lòng nhập/chọn câu hỏi.', 'error'); return; }
 
-      // Xác định cards gửi cho AI
-      let cardsForAi = [];
-      let meta = { mode: 'single' };
-
-      if (deepMode && roundIndex===2){
-        if (currentDrawnCards.length === numCardsToDraw){
-          // dùng r1 + r2 đầy đủ
-          cardsForAi = [...firstRoundCards, ...currentDrawnCards];
-          meta = { mode:'deep', round1:firstRoundCards, round2:currentDrawnCards };
-        } else if (currentDrawnCards.length === 0){
-          // người dùng đổi ý: chỉ dùng Lần 1
-          cardsForAi = [...firstRoundCards];
-          meta = { mode:'deep', round1:firstRoundCards, round2:[] };
-          showMessage('Đang dùng Lần 1 (chưa rút Lần 2).', 'info');
-        } else {
-          // Đang dở Lần 2 → vẫn cho phân tích tạm thời r1 + phần đã rút
-          cardsForAi = [...firstRoundCards, ...currentDrawnCards];
-          meta = { mode:'deep', round1:firstRoundCards, round2:currentDrawnCards };
-          showMessage('Phân tích tạm thời với Lần 2 chưa đủ lá.', 'info');
-        }
+      let meta={mode:'single'}, cardsForAi=[];
+      if(deepMode){
+        const roundsComplete=[...roundsCards];
+        if(currentDrawnCards.length===numCardsToDraw) roundsComplete.push([...currentDrawnCards]);
+        if(roundsComplete.length===0){ showMessage('Chưa có lượt nào hoàn tất trong deep mode.', 'error'); return; }
+        meta={mode:'deep', rounds: roundsComplete}; cardsForAi = roundsComplete.flat();
       } else {
-        // bình thường
-        if (currentDrawnCards.length !== numCardsToDraw){
-          showMessage(`Hãy bóc đủ ${numCardsToDraw} lá trước hoặc bấm “Hoàn tất”.`, 'error'); return;
-        }
-        cardsForAi = [...currentDrawnCards];
+        if(currentDrawnCards.length!==numCardsToDraw){ showMessage(`Hãy bóc đủ ${numCardsToDraw} lá trước hoặc bấm “Hoàn tất”.`, 'error'); return; }
+        cardsForAi=[...currentDrawnCards];
       }
 
-      clearAiResponseDisplay();
-      loadingAiResponse.classList.remove('hidden');
-      getAiReadingButton.disabled = true;
+      clearAiResponseDisplay(); loadingAiResponse.classList.remove('hidden'); getAiReadingButton.disabled=true;
 
       try{
-        const res = await fetch('/api/ai-reading', {
-          method:'POST',
-          headers:{ 'Content-Type':'application/json' },
+        const data = await safeFetchJSON(`${API_BASE}/ai-reading`, {
+          method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify({ cards: cardsForAi, question: userQuestion, meta })
         });
-        const data = await res.json();
-        if (!res.ok){ throw new Error(data?.error || 'AI error'); }
 
         // Render
         aiCardInterpretationsRow.innerHTML='';
-        if (Array.isArray(data.cardInterpretations)){
+        if(Array.isArray(data.cardInterpretations) && data.cardInterpretations.length){
           data.cardInterpretations.forEach(item=>{
-            const div=document.createElement('div');
-            div.className='ai-card-interpretation';
+            const div=document.createElement('div'); div.className='ai-card-interpretation';
             div.innerHTML = `<strong>${item.cardName}:</strong> <div>${item.interpretation}</div>`;
             aiCardInterpretationsRow.appendChild(div);
           });
           aiCardInterpretationsContainer.classList.remove('hidden');
         }
-        overallText.textContent = data.overallInterpretation || '';
-        aiOverallInterpretation.classList.remove('hidden');
-        suggestionsText.textContent = data.nextStepsSuggestion || '';
-        document.getElementById('ai-suggestions').classList.remove('hidden');
+        overallText.textContent=data.overallInterpretation||''; aiOverallInterpretation.classList.remove('hidden');
+        suggestionsText.textContent=data.nextStepsSuggestion||''; aiSuggestions.classList.remove('hidden');
 
-        // Sau khi AI trả lời: user vẫn có thể “Coi sâu thêm” nếu chưa vào deep
-        if (!deepMode && roundIndex===1 && currentDrawnCards.length===numCardsToDraw){
-          coiSauThemBtn.disabled = false;
-        }
-        bocBaiMoiBtn.disabled = false;
-        completeSpreadButton.disabled = false;
+        const ts=nowTS();
+        let roundsIncluded=[];
+        if(deepMode){ roundsIncluded=[...roundsCards.map((_,i)=>i+1)]; if(currentDrawnCards.length===numCardsToDraw) roundsIncluded.push(roundsCards.length+1); }
+        else { roundsIncluded=[1]; }
+        sessionAiLogs.push({ ts, type: deepMode?'deep':'single', roundsIncluded, question:userQuestion, overall:data.overallInterpretation||'', suggestion:data.nextStepsSuggestion||'' });
+
+        bocBaiMoiBtn.disabled=false; completeSpreadButton.disabled=false; coiSauThemBtn.disabled=false;
+        if(deepMode && roundsCards.length + (currentDrawnCards.length===numCardsToDraw?1:0) >= 2) combineSummaryBtn.disabled=false;
         showMessage('AI đã phản hồi.', 'success');
       } catch(err){
-        showMessage(`Lỗi AI: ${err.message}`, 'error');
+        console.error(err); showMessage('Lỗi AI: ' + err.message, 'error');
       } finally{
-        loadingAiResponse.classList.add('hidden');
-        // Cho phép hỏi tiếp câu khác ngay
-        getAiReadingButton.disabled = false;
+        loadingAiResponse.classList.add('hidden'); getAiReadingButton.disabled=false;
       }
     }
 
-    // ====== Events ======
+    async function combineAndSummarize(){
+      const roundsComplete=[...roundsCards]; if(currentDrawnCards.length===numCardsToDraw) roundsComplete.push([...currentDrawnCards]);
+      if(roundsComplete.length<2){ showMessage('Cần ít nhất 2 lượt để kết hợp.', 'error'); return; }
+      const userQuestion=getUserQuestion() || 'Tổng hợp chung cho các lượt đã bóc';
+      clearAiResponseDisplay(); loadingAiResponse.classList.remove('hidden');
+      try{
+        const data = await safeFetchJSON(`${API_BASE}/ai-reading`, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ cards: roundsComplete.flat(), question: userQuestion, meta: { mode:'combine', rounds: roundsComplete } })
+        });
+        overallText.textContent=data.overallInterpretation||''; aiOverallInterpretation.classList.remove('hidden');
+        suggestionsText.textContent=data.nextStepsSuggestion||''; aiSuggestions.classList.remove('hidden');
+        sessionCombinedSummary={ ts:nowTS(), question:userQuestion, overall:data.overallInterpretation||'', suggestion:data.nextStepsSuggestion||'' };
+        bocBaiMoiBtn.disabled=false; completeSpreadButton.disabled=false;
+        showMessage('Đã tạo tổng quan kết hợp 4–5 dòng.', 'success');
+      } catch(err){
+        console.error(err); showMessage('Lỗi AI: ' + err.message, 'error');
+      } finally{
+        loadingAiResponse.classList.add('hidden');
+      }
+    }
+
+    /* ==================== Events ==================== */
     document.addEventListener('DOMContentLoaded', ()=>{
-      // Nút chính
       drawButton.addEventListener('click', drawCard);
       completeSpreadButton.addEventListener('click', completeSpread);
       bocBaiMoiBtn.addEventListener('click', completeSpread);
       getAiReadingButton.addEventListener('click', getAiReading);
-
       coiSauThemBtn.addEventListener('click', ()=>{
-        // Chỉ cho vào deep khi lần 1 đã đủ
-        if (currentDrawnCards.length !== numCardsToDraw){
-          showMessage(`Hãy bóc đủ ${numCardsToDraw} lá trước khi coi sâu thêm.`, 'error');
-          return;
-        }
-        firstRoundCards = [...currentDrawnCards];
-        deepMode = true;
-        roundIndex = 2;
-
-        currentDrawnCards = [];
-        currentSpreadDisplay.innerHTML = '';
-        drawButton.disabled = false;
-        completeSpreadButton.disabled = false; // cho phép lưu Lần 1 nếu đổi ý
-        getAiReadingButton.disabled = false;   // cho phép hỏi AI chỉ với Lần 1
-        bocBaiMoiBtn.disabled = false;
-
-        showMessage('Đang ở chế độ coi sâu: hãy bóc LẦN 2 hoặc hỏi AI với Lần 1.', 'info');
+        if(currentDrawnCards.length!==numCardsToDraw){ showMessage(`Hãy bóc đủ ${numCardsToDraw} lá trước khi coi sâu.`, 'error'); return; }
+        deepMode=true; finalizeCurrentRoundIntoRounds(); currentRoundIndex=roundsCards.length+1;
+        drawButton.disabled=false; getAiReadingButton.disabled=false; completeSpreadButton.disabled=false; bocBaiMoiBtn.disabled=false;
+        combineSummaryBtn.disabled=!(roundsCards.length>=2);
+        showMessage('Deep mode: rút Lần tiếp theo, hỏi AI, hoặc “Kết hợp & Tổng quan”.', 'info');
       });
+      combineSummaryBtn.addEventListener('click', combineAndSummarize);
 
-      // Spread size change
       spreadTypeRadios.forEach(r=>r.addEventListener('change', e=>{
-        numCardsToDraw = parseInt(e.target.value,10);
-        // reset toàn bộ trạng thái
-        firstRoundCards=[]; deepMode=false; roundIndex=1;
+        numCardsToDraw=parseInt(e.target.value,10);
+        deepMode=false; roundsCards=[]; currentRoundIndex=1; sessionAiLogs=[]; sessionCombinedSummary=null;
         currentDrawnCards=[]; currentSpreadDisplay.innerHTML='';
         resetGameVisuals(); shuffleDeck();
         showMessage(`Bạn đã chọn bóc ${numCardsToDraw} lá.`, 'info');
       }));
 
-      // Question type toggle
       questionTypeRadios.forEach(r=>r.addEventListener('change', e=>{
-        const guided = e.target.value==='guided';
+        const guided=e.target.value==='guided';
         guidedQuestionOptions.classList.toggle('hidden', !guided);
         questionInput.classList.toggle('hidden', guided);
       }));
 
-      // Khởi tạo
+      historyContainer.addEventListener('click', e=>{
+        const group=e.target.closest('.history-spread-group'); if(!group) return;
+        const idx=parseInt(group.dataset.realIndex,10); openHistoryModal(idx);
+      });
+      modalCloseBtn.addEventListener('click', closeHistoryModal);
+      $('history-modal').addEventListener('click', e=>{ if(e.target===$('history-modal')) closeHistoryModal(); });
+
       shuffleDeck(); resetGameVisuals();
+    });
+
+    document.addEventListener('keydown', (e)=>{
+      const tag=(e.target.tagName||'').toLowerCase(); if(tag==='input'||tag==='textarea') return;
+      const k=e.key.toLowerCase();
+      if(k==='b') drawCard();
+      if(k==='h') completeSpread();
+      if(k==='x'){ shuffleDeck(); showMessage('Đã xáo bài.', 'success'); }
     });
   </script>
 </body>
