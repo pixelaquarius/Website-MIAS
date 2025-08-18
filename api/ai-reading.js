@@ -1,23 +1,30 @@
-// /api/ai-reading.js — Vercel Serverless (Node.js). Gọi Gemini 2.0 qua v1beta, trả JSON chuẩn + retry.
-
+// /api/ai-reading.js
 export default async function handler(req, res) {
+  // CORS cho trường hợp frontend khác origin (GitHub Pages):
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") return res.status(200).end();
+
   try {
-    if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
 
     const { cards, question, meta } = req.body || {};
     if (!Array.isArray(cards) || cards.length === 0 || !question) {
-      return res.status(400).json({ error: "Invalid payload: require cards[] and question" });
+      return res.status(400).json({ error: 'Invalid payload: require non-empty cards[] and question' });
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) return res.status(500).json({ error: "Missing GEMINI_API_KEY" });
+    if (!apiKey) return res.status(500).json({ error: 'Missing GEMINI_API_KEY' });
 
     const prompt = buildPrompt(cards, question, meta);
 
     const payload = {
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       generationConfig: {
-        response_mime_type: "application/json",
+        responseMimeType: "application/json",
         responseSchema: {
           type: "OBJECT",
           properties: {
@@ -34,89 +41,54 @@ export default async function handler(req, res) {
             overallInterpretation: { type: "STRING" },
             nextStepsSuggestion: { type: "STRING" }
           }
-        }
+        },
+        temperature: 0.8,
+        topP: 0.9
       }
     };
 
-    const MODEL = "gemini-2.0-flash";
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
-
-    const data = await callWithRetry(url, payload, 5);
-
-    const raw =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ??
-      data?.candidates?.[0]?.content?.parts?.[0]?.functionCall?.args ??
-      "";
-
-    let parsed;
-    try { parsed = typeof raw === "string" ? JSON.parse(raw) : raw; }
-    catch {
-      const m = (raw || "").match(/\{[\s\S]*\}$/);
-      if (m) parsed = JSON.parse(m[0]);
-      else throw new Error("Bad AI JSON");
-    }
-
-    return res.status(200).json(parsed);
-  } catch (err) {
-    const msg = err?.message || "Unknown error";
-    const code = /timeout|fetch|aborted/i.test(msg) ? 504 : 500;
-    return res.status(code).json({ error: msg });
-  }
-}
-
-function buildPrompt(cards, question, meta = {}) {
-  const list = cards.join(", ");
-  const n = meta.spreadCount || cards.length;
-  return `
-Bạn là Tarot reader chuyên nghiệp. Tôi đã bóc ${n} lá: "${list}". Câu hỏi của tôi: "${question}".
-Trả lời CHỈ BẰNG MỘT ĐỐI TƯỢNG JSON hợp lệ theo schema:
-{
-  "cardInterpretations":[
-    {"cardName":"<tên lá>","interpretation":"Giải thích ngắn gọn, súc tích, bám sát câu hỏi."}
-  ],
-  "overallInterpretation":"Tổng quan khi kết hợp tất cả lá, trả lời trực tiếp câu hỏi.",
-  "nextStepsSuggestion":"1-2 gợi ý hành động thiết thực."
-}
-Không chèn thêm văn bản ngoài JSON.
-  `.trim();
-}
-
-async function callWithRetry(url, body, maxTry = 5) {
-  let attempt = 0;
-  while (true) {
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 30000);
-
-      const resp = await fetch(url, {
+    const resp = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+encodeURIComponent(apiKey),
+      {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-        signal: controller.signal
-      });
-
-      clearTimeout(timeout);
-
-      const text = await resp.text();
-      let json;
-      try { json = JSON.parse(text); }
-      catch {
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}: ${text.slice(0, 120)}`);
-        throw new Error("Non-JSON response from Gemini");
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify(payload),
       }
+    );
 
-      if (!resp.ok) {
-        const msg = json?.error?.message || json?.error || `HTTP ${resp.status}`;
-        throw new Error(msg);
-      }
-      return json;
-    } catch (e) {
-      attempt++;
-      const msg = String(e?.message || e);
-      const retriable = /429|5\d\d|timeout|fetch failed|aborted/i.test(msg);
-      if (!retriable || attempt >= maxTry) throw e;
-      const delay = 800 * Math.pow(2, attempt - 1) + Math.floor(Math.random() * 300);
-      await new Promise(r => setTimeout(r, delay));
+    if (!resp.ok) {
+      const t = await resp.text();
+      return res.status(resp.status).json({ error: `Gemini error ${resp.status}`, snippet: t.slice(0,160) });
     }
+
+    const data = await resp.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    let json;
+    try {
+      json = JSON.parse(text);
+    } catch (e) {
+      return res.status(502).json({ error: "AI trả về định dạng không phải JSON", snippet: text.slice(0,160) });
+    }
+
+    return res.status(200).json(json);
+
+  } catch (err) {
+    return res.status(500).json({ error: err.message || 'Internal error' });
   }
+}
+
+function buildPrompt(cards, question, meta) {
+  const n = cards.length;
+  const items = cards.map((c,i)=>`{ "cardName": "${c}", "interpretation": "Giải thích chi tiết, 3–5 câu, liên hệ trực tiếp với câu hỏi." }`).join(", ");
+  return `
+Bạn là tarot reader chuyên nghiệp. Đây là ${n} lá bài: ${cards.join(", ")}.
+Câu hỏi của khách: "${question}".
+
+Trả lời CHỈ BẰNG MỘT JSON hợp lệ với schema:
+{
+  "cardInterpretations": [ ${items} ],
+  "overallInterpretation": "Tổng quan 4–6 câu, tổng hợp ý nghĩa khi các lá kết hợp.",
+  "nextStepsSuggestion": "2–3 gợi ý hành động cụ thể, thực tế."
+}
+Không thêm chú thích hay văn bản ngoài JSON.`;
 }
