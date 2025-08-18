@@ -1,359 +1,463 @@
-// ===== Config =====
-const API_BASE = (window.__API_BASE && window.__API_BASE.replace(/\/+$/, "")) || "/api";
+/* ====== CẤU HÌNH  ====== */
+// Nếu frontend ở GitHub Pages (miasteam.click) còn API ở Vercel,
+// gọi sang domain Vercel. Nếu sau này trỏ domain về Vercel, API_BASE="" là được.
+const API_BASE = ""; // để trống nếu cùng origin. Ví dụ: "https://website-mias.vercel.app"
 
-// Map ảnh lá bài (nếu có CDN riêng thì điền ở đây). Để trống vẫn chạy (hiện tên).
-const CARD_IMAGES = {}; // ví dụ: { "Page of Pentacles": "https://.../page_of_pentacles.jpg", ... }
-
-// ===== Data =====
+// 78 lá bài
 const ALL_CARDS = [
-  "0 - The Fool","I - The Magician","II - The High Priestess","III - The Empress",
-  "IV - The Emperor","V - The Hierophant","VI - The Lovers","VII - The Chariot",
-  "VIII - Strength","IX - The Hermit","X - Wheel of Fortune","XI - Justice",
-  "XII - The Hanged Man","XIII - Death","XIV - Temperance","XV - The Devil",
-  "XVI - The Tower","XVII - The Star","XVIII - The Moon","XIX - The Sun",
-  "XX - Judgement","XXI - The World",
-  "Ace of Wands","Two of Wands","Three of Wands","Four of Wands","Five of Wands",
-  "Six of Wands","Seven of Wands","Eight of Wands","Nine of Wands","Ten of Wands",
-  "Page of Wands","Knight of Wands","Queen of Wands","King of Wands",
-  "Ace of Cups","Two of Cups","Three of Cups","Four of Cups","Five of Cups",
-  "Six of Cups","Seven of Cups","Eight of Cups","Nine of Cups","Ten of Cups",
-  "Page of Cups","Knight of Cups","Queen of Cups","King of Cups",
-  "Ace of Swords","Two of Swords","Three of Swords","Four of Swords","Five of Swords",
-  "Six of Swords","Seven of Swords","Eight of Swords","Nine of Swords","Ten of Swords",
-  "Page of Swords","Knight of Swords","Queen of Swords","King of Swords",
-  "Ace of Pentacles","Two of Pentacles","Three of Pentacles","Four of Pentacles",
-  "Five of Pentacles","Six of Pentacles","Seven of Pentacles","Eight of Pentacles",
-  "Nine of Pentacles","Ten of Pentacles","Page of Pentacles","Knight of Pentacles",
-  "Queen of Pentacles","King of Pentacles"
+  "0 - The Fool","I - The Magician","II - The High Priestess","III - The Empress","IV - The Emperor","V - The Hierophant","VI - The Lovers","VII - The Chariot","VIII - Strength","IX - The Hermit","X - Wheel of Fortune","XI - Justice","XII - The Hanged Man","XIII - Death","XIV - Temperance","XV - The Devil","XVI - The Tower","XVII - The Star","XVIII - The Moon","XIX - The Sun","XX - Judgement","XXI - The World",
+  "Ace of Wands","Two of Wands","Three of Wands","Four of Wands","Five of Wands","Six of Wands","Seven of Wands","Eight of Wands","Nine of Wands","Ten of Wands","Page of Wands","Knight of Wands","Queen of Wands","King of Wands",
+  "Ace of Cups","Two of Cups","Three of Cups","Four of Cups","Five of Cups","Six of Cups","Seven of Cups","Eight of Cups","Nine of Cups","Ten of Cups","Page of Cups","Knight of Cups","Queen of Cups","King of Cups",
+  "Ace of Swords","Two of Swords","Three of Swords","Four of Swords","Five of Swords","Six of Swords","Seven of Swords","Eight of Swords","Nine of Swords","Ten of Swords","Page of Swords","Knight of Swords","Queen of Swords","King of Swords",
+  "Ace of Pentacles","Two of Pentacles","Three of Pentacles","Four of Pentacles","Five of Pentacles","Six of Pentacles","Seven of Pentacles","Eight of Pentacles","Nine of Pentacles","Ten of Pentacles","Page of Pentacles","Knight of Pentacles","Queen of Pentacles","King of Pentacles"
 ];
 
+/* Ảnh lá bài:
+   - Ưu tiên: /images/rws/{slug}.jpg  (bạn nên upload pack ảnh vào đây)
+   - Fallback: GitHub raw (công khai).
+*/
+function slugFromCard(name) {
+  // normalize name to rider-waite file naming
+  // Examples:
+  //  "0 - The Fool" => "the-fool"
+  //  "X - Wheel of Fortune" => "wheel-of-fortune"
+  //  "Ace of Cups" => "ace-of-cups"
+  const major = name.match(/^[IVXLCM]+ - /) || name.startsWith("0 -");
+  let s = name
+    .replace(/^\d+\s*-\s*/, "")   // "0 - " -> ""
+    .replace(/^[IVXLCM]+\s*-\s*/, "")
+    .trim()
+    .toLowerCase();
+
+  s = s
+    .replace(/\s*&\s*/g, " and ")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-");
+
+  // common fixes
+  s = s.replace(/^xii?i?-?/, ""); // remove roman left from some patterns
+  return s;
+}
+
+function getCardImageUrl(name) {
+  const slug = slugFromCard(name);
+  const local = `/images/rws/${slug}.jpg`;
+  const fallback = `https://raw.githubusercontent.com/fffaraz/ULL-Tarot-Images/master/rider-waite/${slug}.jpg`;
+  return { local, fallback, slug };
+}
+
+/* ====== STATE ====== */
 let deck = [];
-let current = [];
-let numCardsToDraw = 1;
-let history = []; // [{timestamp, cards, spreadType, ai?}]
-let aiLast = null;
+let drawn = [];            // các lá trong lượt hiện tại
+let numToDraw = 1;
+let history = [];          // [{timestamp, spreads:[["card1"...]], ai: {...}}, ...]
+let deepeningStacks = [];  // các lượt coi sâu thêm (stack card sets)
 
-// ===== DOM =====
-const drawBtn = $("#draw-btn");
-const completeBtn = $("#complete-btn");
-const deepenBtn = $("#deepen-btn");
-const mergeBtn = $("#merge-btn");
-const newBtn = $("#new-spread-btn");
-const msgBox = $("#msg");
+/* ====== DOM ====== */
+const rSpreads = document.querySelectorAll('input[name="spread"]');
+const btnDraw = document.getElementById('btnDraw');
+const btnComplete = document.getElementById('btnComplete');
+const btnDeepen = document.getElementById('btnDeepen');
+const btnCombine = document.getElementById('btnCombine');
+const btnNew = document.getElementById('btnNew');
 
-const bigCard = $("#big-card");
-const bigImg = $("#big-card-img");
-const bigTitle = $("#big-card-title");
-const row = $("#current-row");
-const historyBox = $("#history");
+const banner = document.getElementById('banner');
+const currentCard = document.getElementById('currentCard');
+const cardImg = document.getElementById('cardImage');
+const cardTitle = document.getElementById('cardTitle');
+const currentRow = document.getElementById('currentRow');
 
-const askBtn = $("#ask-ai-btn");
-const aiLoading = $("#ai-loading");
-const aiCardsWrap = $("#ai-cards");
-const aiCardsRow = $("#ai-cards-row");
-const overallPanel = $("#ai-overall");
-const overallText = $("#overall-text");
-const nextPanel = $("#ai-next");
-const nextText = $("#next-text");
+const qModes = document.querySelectorAll('input[name="qmode"]');
+const manualBox = document.getElementById('manualBox');
+const guidedBox = document.getElementById('guidedBox');
+const txtQuestion = document.getElementById('txtQuestion');
+const selTopic = document.getElementById('selTopic');
+const selTime = document.getElementById('selTime');
+const txtExtra = document.getElementById('txtExtra');
+const btnAskAI = document.getElementById('btnAskAI');
+const aiSpinner = document.getElementById('aiSpinner');
+const aiErr = document.getElementById('aiErr');
+const aiBlocks = document.getElementById('aiBlocks');
+const aiCards = document.getElementById('aiCards');
+const aiOverall = document.getElementById('aiOverall');
+const aiNext = document.getElementById('aiNext');
 
-const manualRadio = $$('input[name="q-type"][value="manual"]');
-const guidedRadio = $$('input[name="q-type"][value="guided"]');
-const manualBox = $("#manual-box");
-const guidedBox = $("#guided-box");
-const qInput = $("#question");
-const topicSel = $("#topic");
-const timeSel = $("#timeframe");
-const extraInp = $("#extra");
+const historyWrap = document.getElementById('historyWrap');
+const modal = document.getElementById('modal');
+const modalClose = document.getElementById('modalClose');
+const modalTitle = document.getElementById('modalTitle');
+const modalContent = document.getElementById('modalContent');
 
-const spreadRadios = $$all('input[name="spread-type"]');
-
-function $(s){return document.querySelector(s);}
-function $$all(s){return Array.from(document.querySelectorAll(s));}
-function $$(s){return document.querySelector(s);}
-function showMsg(t, type="ok"){
-  msgBox.textContent = t;
-  msgBox.classList.remove("hidden","ok","err");
-  msgBox.classList.add(type==="ok"?"ok":"err");
-}
-function hideMsg(){ msgBox.classList.add("hidden"); }
-function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a;}
-function nowVN(){ return new Date().toLocaleString("vi-VN",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}); }
-
-// ===== Deck & Render =====
-function resetDeck(){ deck = shuffle([...ALL_CARDS]); }
-function resetBoard(){
-  current = [];
-  bigImg.classList.add("hidden");
-  bigTitle.classList.add("hidden");
-  $("#big-card .card-back").classList.remove("hidden");
-  row.innerHTML = "";
-  drawBtn.disabled = false;
-  completeBtn.disabled = true;
-  deepenBtn.disabled = true;
-  mergeBtn.disabled = true;
-  newBtn.disabled = true;
-  clearAI();
+/* ====== UI HELPERS ====== */
+function showBanner(msg, type="info") {
+  banner.className = `banner ${type}`;
+  banner.textContent = msg;
+  banner.classList.remove('hidden');
+  setTimeout(()=>banner.classList.add('hidden'), 3500);
 }
 
-function drawOne(){
-  if(current.length >= numCardsToDraw){ showMsg(`Bạn đã bóc đủ ${numCardsToDraw} lá.`, "ok"); return; }
-  if(deck.length===0) resetDeck();
-  const idx = Math.floor(Math.random()*deck.length);
-  const card = deck.splice(idx,1)[0];
-  current.push(card);
-  renderCard(card);
-  renderRow();
-  if(current.length===numCardsToDraw){
-    drawBtn.disabled = true;
-    completeBtn.disabled = false;
-    deepenBtn.disabled = false;
-    mergeBtn.disabled = false;
-    newBtn.disabled = false;
-    showMsg(`Đã đủ ${numCardsToDraw} lá. Bạn có thể “Nhận Giải Thích Từ AI”.`,"ok");
-  }else{
-    hideMsg();
+function enableAIButtons() {
+  btnAskAI.disabled = drawn.length === 0;
+}
+
+function setLoadingAI(on) {
+  if (on) {
+    aiSpinner.classList.remove('hidden');
+    btnAskAI.disabled = true;
+  } else {
+    aiSpinner.classList.add('hidden');
+    btnAskAI.disabled = drawn.length === 0;
   }
 }
 
-function renderCard(name){
-  const img = CARD_IMAGES[name];
-  $("#big-card .card-back").classList.add("hidden");
-  if(img){
-    bigImg.src = img; bigImg.alt = name; bigImg.classList.remove("hidden");
-    bigTitle.textContent = name; bigTitle.classList.remove("hidden");
-  }else{
-    bigImg.classList.add("hidden");
-    bigTitle.textContent = name; bigTitle.classList.remove("hidden");
-  }
+function clearAI() {
+  aiErr.classList.add('hidden');
+  aiBlocks.classList.add('hidden');
+  aiCards.innerHTML = '';
+  aiOverall.textContent = '';
+  aiNext.textContent = '';
 }
-function renderRow(){
-  row.innerHTML = "";
-  current.forEach(c=>{
-    const d=document.createElement("div");
-    d.className="mini";
-    const img=CARD_IMAGES[c];
-    if(img){ d.innerHTML=`<img src="${img}" alt="${c}" />`; }
-    else{ d.innerHTML=`<div style="width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;background:#1f2937;color:#e5e7eb;font-weight:700;padding:.4rem;text-align:center">${c}</div>`; }
-    row.appendChild(d);
+
+/* ====== CARDS RENDER ====== */
+function renderMainCard(name) {
+  if (!name) {
+    currentCard.classList.remove('flipped');
+    cardImg.classList.add('hidden');
+    cardTitle.classList.add('hidden');
+    return;
+  }
+
+  const {local, fallback} = getCardImageUrl(name);
+
+  // try local first, then fallback
+  const temp = new Image();
+  temp.onload = () => {
+    cardImg.src = temp.src;
+    cardImg.classList.remove('hidden');
+    cardTitle.textContent = name;
+    cardTitle.classList.remove('hidden');
+    currentCard.classList.add('flipped');
+  };
+  temp.onerror = () => {
+    const temp2 = new Image();
+    temp2.onload = () => {
+      cardImg.src = temp2.src;
+      cardImg.classList.remove('hidden');
+      cardTitle.textContent = name;
+      cardTitle.classList.remove('hidden');
+      currentCard.classList.add('flipped');
+    };
+    temp2.onerror = () => {
+      // nếu cả 2 hỏng thì vẫn show title
+      cardImg.classList.add('hidden');
+      cardTitle.textContent = name;
+      cardTitle.classList.remove('hidden');
+      currentCard.classList.add('flipped');
+    };
+    temp2.src = fallback;
+  };
+  temp.src = local;
+}
+
+function renderRow() {
+  currentRow.innerHTML = '';
+  drawn.forEach(name => {
+    const {local, fallback, slug} = getCardImageUrl(name);
+    const wrap = document.createElement('div');
+    wrap.className = 'mini';
+
+    const img = new Image();
+    img.alt = name;
+    img.onload = ()=> wrap.appendChild(img);
+    img.onerror = ()=>{
+      const img2 = new Image();
+      img2.alt = name;
+      img2.onload = ()=> wrap.appendChild(img2);
+      img2.onerror = ()=>{ wrap.textContent = name; };
+      img2.src = fallback;
+    };
+    img.src = local;
+
+    const cap = document.createElement('div');
+    cap.className = 'mini-cap';
+    cap.textContent = name;
+
+    wrap.appendChild(cap);
+    currentRow.appendChild(wrap);
   });
 }
 
-// ===== History =====
-function pushHistory(){
-  if(current.length===0) return;
+/* ====== GAME LOGIC ====== */
+function shuffleDeck() {
+  deck = [...ALL_CARDS];
+  for (let i=deck.length-1; i>0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+}
+
+function newTurnUI() {
+  currentCard.classList.remove('flipped');
+  cardImg.classList.add('hidden');
+  cardTitle.classList.add('hidden');
+  currentRow.innerHTML = '';
+  btnDraw.disabled = false;
+  btnComplete.disabled = true;
+  btnDeepen.disabled = true;
+  btnCombine.disabled = deepeningStacks.length>0;
+  btnNew.disabled = history.length===0 && deepeningStacks.length===0;
+  clearAI();
+  enableAIButtons();
+}
+
+function startNewSpread() {
+  drawn = [];
+  shuffleDeck();
+  newTurnUI();
+  showBanner("Bộ bài đã xáo trộn!", "success");
+}
+
+function drawOne() {
+  if (drawn.length >= numToDraw) {
+    showBanner(`Bạn đã bóc đủ ${numToDraw} lá.`, "info");
+    return;
+  }
+  if (deck.length === 0) shuffleDeck();
+
+  const idx = Math.floor(Math.random() * deck.length);
+  const card = deck.splice(idx,1)[0];
+  drawn.push(card);
+
+  renderMainCard(card);
+  renderRow();
+
+  if (drawn.length === numToDraw) {
+    btnDraw.disabled = true;
+    btnComplete.disabled = true;     // chờ người dùng hỏi AI hoặc "Coi sâu thêm"
+    btnDeepen.disabled = false;
+    btnCombine.disabled = deepeningStacks.length>0;
+    btnNew.disabled = false;
+    enableAIButtons();
+    showBanner(`Đã đủ ${numToDraw} lá. Bạn có thể hỏi AI hoặc bấm “Coi Sâu Thêm”.`, "success");
+  } else {
+    btnDraw.textContent = `Bóc Bài (${drawn.length}/${numToDraw})`;
+  }
+}
+
+function completeSpread(saveOnly=false) {
+  if (drawn.length === 0) {
+    showBanner("Chưa có lá bài để hoàn tất.", "error");
+    return;
+  }
+  const now = new Date();
   history.push({
-    timestamp: nowVN(),
-    cards: [...current],
-    spreadType: numCardsToDraw,
-    ai: aiLast ? {...aiLast} : null
+    timestamp: now.toLocaleString('vi-VN', {hour12:false}),
+    spreads: [ [...drawn] ],
+    ai: null
   });
   renderHistory();
+  if (!saveOnly) {
+    startNewSpread();
+  }
 }
-function renderHistory(){
-  historyBox.innerHTML = "";
-  history.slice().reverse().forEach((h, i)=>{
-    const wrap = document.createElement("div");
-    wrap.className = "history-card";
-    wrap.innerHTML = `
-      <div class="text-sm text-slate-300 mb-2">Bộ ${history.length - i} • ${h.timestamp}</div>
-      <div class="history-strip">
-        ${h.cards.map(c=>{
-          const src=CARD_IMAGES[c];
-          return `<div class="mini">${src?`<img src="${src}" alt="${c}" />`:`<div style="width:100%;height:100%;background:#1f2937"></div>`}</div>`;
-        }).join("")}
-      </div>`;
-    wrap.addEventListener("click", ()=>openHistoryModal(history.length - i - 1));
-    historyBox.appendChild(wrap);
-  });
-}
-function openHistoryModal(index){
-  const h = history[index];
-  if(!h) return;
-  modalContent.innerHTML = `
-    <div class="text-slate-300">Thời gian: <b>${h.timestamp}</b> — Bộ ${index+1}</div>
-    <div class="history-strip">
-      ${h.cards.map(c=>{
-        const src=CARD_IMAGES[c];
-        return `<div class="mini">${src?`<img src="${src}" alt="${c}" />`:`<div style="width:100%;height:100%;background:#1f2937"></div>`}</div>`;
-      }).join("")}
-    </div>
-    ${h.ai ? (`
-      <div class="ai-panel">
-        <div class="font-title sub-title">Tổng Quan</div>
-        <div>${escapeHTML(h.ai.overall || "")}</div>
-      </div>
-      <div class="ai-panel">
-        <div class="font-title sub-title">Gợi ý & Bước tiếp theo</div>
-        <div>${escapeHTML(h.ai.next || "")}</div>
-      </div>
-      <div class="grid gap-3" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
-        ${h.ai.cards.map(it=>`
-          <div class="ai-item">
-            <div class="font-semibold mb-1">${escapeHTML(it.cardName)}</div>
-            <div class="text-slate-300 text-sm">${escapeHTML(it.interpretation)}</div>
-          </div>`).join("")}
-      </div>
-    `): `<div class="text-slate-400">Chưa có phần giải thích AI lưu kèm.</div>`}
-  `;
-  modal.showModal();
-}
-function escapeHTML(s){ return (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
-// ===== AI =====
-function clearAI(){
-  aiLast = null;
-  aiCardsWrap.classList.add("hidden");
-  overallPanel.classList.add("hidden");
-  nextPanel.classList.add("hidden");
-  aiCardsRow.innerHTML = "";
-  overallText.textContent = "";
-  nextText.textContent = "";
-  aiLoading.classList.add("hidden");
-  askBtn.classList.remove("loading");
-  askBtn.disabled = false;
+function deepenSpread() {
+  if (drawn.length === 0) return;
+  deepeningStacks.push([...drawn]);  // lưu lượt 1
+  // cho rút tiếp y như lượt 1 (không xoá card cũ)
+  numToDraw = drawn.length;          // rút đúng số lá của lượt đầu
+  drawn = [];
+  btnDraw.disabled = false;
+  btnComplete.disabled = true;
+  btnDeepen.disabled = true;
+  btnCombine.disabled = deepeningStacks.length<1; // chưa đủ để kết hợp
+  clearAI();
+  renderMainCard(null);
+  renderRow();
+  showBanner("Đang coi sâu thêm: bóc thêm bộ lá mới.", "info");
 }
-function buildUserQuestion(){
-  const mode = document.querySelector('input[name="q-type"]:checked').value;
-  if(mode === "manual"){
-    return qInput.value.trim();
-  }else{
-    const t = (topicSel.value||"").trim();
-    const tf = (timeSel.value||"").trim();
-    const ex = (extraInp.value||"").trim();
-    const parts=[];
-    if(t) parts.push(`Chủ đề: ${t}.`);
-    if(tf) parts.push(`Thời gian: ${tf}.`);
-    if(ex) parts.push(`Câu hỏi cụ thể: ${ex}.`);
+
+function combineAndSave() {
+  if (deepeningStacks.length === 0 || drawn.length === 0) return;
+
+  const now = new Date();
+  const group = {
+    timestamp: now.toLocaleString('vi-VN', {hour12:false}),
+    spreads: [...deepeningStacks, [...drawn]],
+    ai: null
+  };
+  history.push(group);
+  deepeningStacks = [];
+  renderHistory();
+  startNewSpread();
+  showBanner("Đã lưu bộ coi sâu & tổng quan!", "success");
+}
+
+/* ====== AI ====== */
+function buildQuestion() {
+  const mode = [...qModes].find(r=>r.checked).value;
+  if (mode === "manual") {
+    return txtQuestion.value.trim();
+  } else {
+    const parts = [];
+    if (selTopic.value) parts.push(`Chủ đề: ${selTopic.value}.`);
+    if (selTime.value)  parts.push(`Thời gian: ${selTime.value}.`);
+    if (txtExtra.value.trim()) parts.push(`Bổ sung: ${txtExtra.value.trim()}.`);
     return parts.join(" ");
   }
 }
 
-async function askAI(){
-  if(current.length !== numCardsToDraw){
-    showMsg(`Vui lòng bóc đủ ${numCardsToDraw} lá trước khi hỏi AI.`, "err"); return;
+async function askAI() {
+  if (drawn.length === 0) {
+    showBanner("Bạn cần bóc ít nhất 1 lá.", "error");
+    return;
   }
-  const question = buildUserQuestion();
-  if(!question){ showMsg("Vui lòng nhập/chọn câu hỏi.", "err"); return; }
+  const q = buildQuestion();
+  if (!q) {
+    showBanner("Vui lòng nhập/chọn câu hỏi.", "error");
+    return;
+  }
 
-  // UI loading
-  askBtn.classList.add("loading");
-  askBtn.disabled = true;
-  aiLoading.classList.remove("hidden");
-  showMsg("Đang gọi AI…","ok");
+  clearAI();
+  setLoadingAI(true);
+  aiErr.classList.add('hidden');
 
-  try{
-    const payload = { cards: current, question, meta: { spreadCount: numCardsToDraw } };
+  const payload = {
+    cards: drawn,
+    question: q,
+    meta: { spreadCount: drawn.length }
+  };
 
-    // client timeout 35s để không treo
-    const controller = new AbortController();
-    const t = setTimeout(()=>controller.abort(), 35000);
-
-    const resp = await fetch(`${API_BASE}/ai-reading`, {
-      method:"POST", headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify(payload), signal: controller.signal
+  try {
+    const res = await fetch(`${API_BASE}/api/ai-reading`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     });
-    clearTimeout(t);
 
-    const text = await resp.text();
-    let data;
-    try{ data = JSON.parse(text); }
-    catch{ throw new Error(`Phản hồi không phải JSON (status ${resp.status}). Snippet: ${text.slice(0,110)}...`); }
+    // Nếu host khác origin, API đã bật CORS trong serverless
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`AI lỗi ${res.status}. Snippet: ${text.slice(0,120)}`);
+    }
 
-    if(!resp.ok) throw new Error(data?.error || `HTTP ${resp.status}`);
+    const data = await res.json();
+    if (!data || !data.cardInterpretations) throw new Error("Phản hồi AI không hợp lệ.");
 
-    // render từ 1 lần trả lời
-    const list = data.cardInterpretations || [];
-    aiCardsRow.innerHTML = "";
-    list.forEach(it=>{
-      const div = document.createElement("div");
-      div.className = "ai-item";
-      div.innerHTML = `<div class="font-semibold mb-1">${escapeHTML(it.cardName||"")}</div>
-      <div class="text-slate-300 text-sm">${escapeHTML(it.interpretation||"")}</div>`;
-      aiCardsRow.appendChild(div);
+    // render
+    aiCards.innerHTML = '';
+    data.cardInterpretations.forEach(ci=>{
+      const blk = document.createElement('div');
+      blk.className = 'ai-card';
+      blk.innerHTML = `<h4>${ci.cardName}</h4><p>${ci.interpretation}</p>`;
+      aiCards.appendChild(blk);
     });
-    if(list.length) aiCardsWrap.classList.remove("hidden");
+    aiOverall.textContent = data.overallInterpretation || "";
+    aiNext.textContent = data.nextStepsSuggestion || "";
+    aiBlocks.classList.remove('hidden');
 
-    overallText.textContent = data.overallInterpretation || "";
-    nextText.textContent = data.nextStepsSuggestion || "";
-    if(overallText.textContent) overallPanel.classList.remove("hidden");
-    if(nextText.textContent) nextPanel.classList.remove("hidden");
+    // lưu vào lịch sử cho bộ mới nhất (nếu có)
+    if (history.length>0) {
+      history[history.length-1].ai = data;
+    }
 
-    aiLast = { cards: list, overall: overallText.textContent, next: nextText.textContent };
-    showMsg("Đã nhận giải thích từ AI.","ok");
-  }catch(err){
-    showMsg(`Lỗi AI: ${err.message}`,"err");
-  }finally{
-    aiLoading.classList.add("hidden");
-    askBtn.classList.remove("loading");
-    askBtn.disabled = false;
-    deepenBtn.disabled = false;
+  } catch (err) {
+    aiErr.textContent = err.message;
+    aiErr.classList.remove('hidden');
+  } finally {
+    setLoadingAI(false);
   }
 }
 
-// ===== Events =====
-drawBtn.addEventListener("click", drawOne);
+/* ====== HISTORY ====== */
+function renderHistory() {
+  historyWrap.innerHTML = '';
+  history.slice().reverse().forEach((item, idxRev)=>{
+    const idx = history.length - idxRev;
+    const row = document.createElement('div');
+    row.className = 'history-row';
 
-completeBtn.addEventListener("click", ()=>{
-  if(current.length !== numCardsToDraw){ showMsg("Chưa đủ lá để hoàn tất.","err"); return; }
-  pushHistory();
-  resetBoard();
-  resetDeck();
-  showMsg("Đã lưu vào lịch sử.","ok");
-});
+    const head = document.createElement('div');
+    head.className = 'history-head';
+    head.innerHTML = `<strong>Bộ ${idx}</strong> <span>${item.timestamp}</span>`;
 
-newBtn.addEventListener("click", ()=>{
-  if(current.length>0) pushHistory();
-  resetBoard(); resetDeck();
-  showMsg("Bắt đầu bộ mới.","ok");
-});
+    const bar = document.createElement('div');
+    bar.className = 'history-bar';
 
-deepenBtn.addEventListener("click", ()=>{
-  askBtn.disabled = false;
-  showMsg("Bạn có thể hỏi tiếp cho bộ hiện tại.","ok");
-});
+    item.spreads.forEach(sp=>{
+      const slot = document.createElement('div');
+      slot.className = 'history-slot';
+      sp.forEach(c=>{
+        const {local, fallback} = getCardImageUrl(c);
+        const img = new Image();
+        img.onerror = ()=>{img.src=fallback;};
+        img.src = local;
+        img.alt = c;
+        img.title = c;
+        slot.appendChild(img);
+      });
+      bar.appendChild(slot);
+    });
 
-mergeBtn.addEventListener("click", ()=>{
-  if(!aiLast){ showMsg("Hãy nhận giải thích AI trước.","err"); return; }
-  const merged = `${aiLast.overall}\n— ${aiLast.next}`;
-  alert(`Tổng quan ngắn:\n\n${merged}`);
-});
+    row.appendChild(head);
+    row.appendChild(bar);
+    row.addEventListener('click', ()=>{
+      modal.classList.remove('hidden');
+      modalTitle.textContent = `Bộ ${idx} – ${item.timestamp}`;
+      const html = item.spreads.map((sp,i)=>(
+        `<div class="modal-spread">
+           <div class="modal-spread-title">Lượt ${i+1}</div>
+           <div class="modal-cards">${sp.map(c=>`<span>${c}</span>`).join('')}</div>
+         </div>`
+      )).join('') + 
+      (item.ai ? `
+        <div class="modal-ai">
+          <h4>Tổng quan</h4><p>${item.ai.overallInterpretation||""}</p>
+          <h4>Gợi ý</h4><p>${item.ai.nextStepsSuggestion||""}</p>
+        </div>` : `<div class="modal-ai"><em>Chưa có kết quả AI lưu lại.</em></div>`);
+      modalContent.innerHTML = html;
+    });
 
-askBtn.addEventListener("click", askAI);
+    historyWrap.appendChild(row);
+  });
+}
 
-// Switch manual/guided
-manualRadio.addEventListener("change", ()=>{
-  manualBox.classList.remove("hidden");
-  guidedBox.classList.add("hidden");
-});
-guidedRadio.addEventListener("change", ()=>{
-  manualBox.classList.add("hidden");
-  guidedBox.classList.remove("hidden");
-});
-
-// Spread change
-spreadRadios.forEach(r=>{
-  r.addEventListener("change", ()=>{
-    numCardsToDraw = parseInt(r.value,10);
-    resetBoard(); resetDeck();
-    showMsg(`Đã chọn bóc ${numCardsToDraw} lá.`,"ok");
+/* ====== EVENTS ====== */
+rSpreads.forEach(r=>{
+  r.addEventListener('change', ()=>{
+    numToDraw = parseInt(r.value,10);
+    startNewSpread();
   });
 });
 
-// Tip chips
-document.addEventListener("click",(e)=>{
-  const btn = e.target.closest(".tip-chip");
-  if(!btn) return;
-  const text = btn.getAttribute("data-insert")||"";
-  qInput.value = text;
+btnDraw.addEventListener('click', drawOne);
+btnComplete.addEventListener('click', ()=>completeSpread());
+btnDeepen.addEventListener('click', deepenSpread);
+btnCombine.addEventListener('click', combineAndSave);
+btnNew.addEventListener('click', ()=>startNewSpread());
+
+qModes.forEach(r=>{
+  r.addEventListener('change', ()=>{
+    const mode = [...qModes].find(x=>x.checked).value;
+    if (mode==="manual") {
+      manualBox.classList.remove('hidden');
+      guidedBox.classList.add('hidden');
+    } else {
+      manualBox.classList.add('hidden');
+      guidedBox.classList.remove('hidden');
+    }
+  });
 });
 
-// Modal
-const modal = $("#history-modal");
-const modalContent = $("#modal-content");
-const modalClose = $("#close-modal");
-modalClose.addEventListener("click", ()=>modal.close());
+btnAskAI.addEventListener('click', askAI);
+modalClose.addEventListener('click', ()=>modal.classList.add('hidden'));
+modal.addEventListener('click', e=>{
+  if (e.target===modal) modal.classList.add('hidden');
+});
 
-// Init
-resetDeck();
-resetBoard();
-renderHistory();
+/* ====== INIT ====== */
+(function init(){
+  numToDraw = 1;
+  shuffleDeck();
+  newTurnUI();
+})();
