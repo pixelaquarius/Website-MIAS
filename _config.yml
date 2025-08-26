@@ -1,0 +1,10 @@
+title: "Miasteam Portfolio"
+email: "lyanthinh03@gmail.com"
+description: "Portfolio & blog của Lý An Thịnh"
+baseurl: "" 
+url: "https://miasteam.click"
+
+theme: minima
+
+plugins:
+  - jekyll-feed
