@@ -1,8 +1,8 @@
-name: Build & Deploy Jekyll to GitHub Pages
+name: Deploy Jekyll to GitHub Pages
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -21,26 +21,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # Dùng Jekyll phiên bản chuẩn của GitHub Pages (ổn định, whitelisted)
+      - name: Build with Jekyll (GitHub Pages)
+        uses: actions/jekyll-build-pages@v1
         with:
-          ruby-version: "3.3"
-
-      - name: Install Jekyll & Bundler
-        run: |
-          gem install bundler jekyll
-
-      # Nếu bạn KHÔNG có Gemfile thì build trực tiếp như bên dưới
-      - name: Build site with Jekyll
-        run: |
-          jekyll build --trace
-        env:
-          JEKYLL_ENV: production
+          source: ./
+          destination: ./_site
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: ./_site
 
   deploy:
     needs: build
