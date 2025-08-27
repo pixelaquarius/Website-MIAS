@@ -1,0 +1,62 @@
+---
+layout: null
+---
+
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Miasteam – Sonic Landing</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="/assets/uploads/favicon.png">
+</head>
+<body class="bg-white text-slate-900">
+  <!-- NAV -->
+  <header class="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+    <a href="/" class="font-semibold text-xl">Miasteam</a>
+    <nav class="flex items-center gap-6">
+      <a href="/agency/" class="hover:text-blue-600">Agency</a>
+      <a href="/blog/" class="hover:text-blue-600">Blog</a>
+      <a href="/about/" class="hover:text-blue-600">About</a>
+    </nav>
+  </header>
+
+  <!-- HERO (Sonic-style) -->
+  <section class="max-w-6xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-10 items-center">
+    <div>
+      <h1 class="text-4xl md:text-6xl font-extrabold leading-tight">Tăng trưởng nhanh gọn, tối ưu hiệu suất.</h1>
+      <p class="mt-5 text-lg text-slate-600">Chúng tôi xây dựng chiến dịch Marketing hiệu quả cho e-commerce & SMB, tập trung vào doanh thu thực.</p>
+      <div class="mt-8 flex gap-3">
+        <a href="/agency/" class="px-5 py-3 rounded-lg bg-blue-600 text-white font-medium">Khám phá dịch vụ</a>
+        <a href="/about/" class="px-5 py-3 rounded-lg border border-slate-300">About me</a>
+      </div>
+      <div class="mt-8 text-sm text-slate-500">Meta Ads • TikTok Ads • Google Ads • GA4 • CRO</div>
+    </div>
+    <div class="relative">
+      <div class="aspect-[4/3] rounded-2xl bg-gradient-to-tr from-blue-600/10 to-purple-600/10 border border-slate-200"></div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="max-w-6xl mx-auto px-6 py-12 grid md:grid-cols-3 gap-8">
+    <div class="p-6 rounded-2xl border">
+      <h3 class="font-semibold text-lg">Hiệu suất trước</h3>
+      <p class="mt-2 text-slate-600">Tập trung KPI doanh thu, CPA, ROAS thay vì vanity metrics.</p>
+    </div>
+    <div class="p-6 rounded-2xl border">
+      <h3 class="font-semibold text-lg">Triển khai nhanh</h3>
+      <p class="mt-2 text-slate-600">Khởi chạy chiến dịch trong 72 giờ với bộ playbook có sẵn.</p>
+    </div>
+    <div class="p-6 rounded-2xl border">
+      <h3 class="font-semibold text-lg">Báo cáo rõ ràng</h3>
+      <p class="mt-2 text-slate-600">Dashboard GA4/Looker Studio theo dõi theo ngày.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="max-w-6xl mx-auto px-6 py-12 text-sm text-slate-500">
+    © {{ site.time | date: "%Y" }} Miasteam · <a class="underline" href="mailto:lyanthinh03@gmail.com">lyanthinh03@gmail.com</a>
+  </footer>
+</body>
+</html>
