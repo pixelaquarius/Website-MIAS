@@ -4,7 +4,9 @@ description: "Portfolio & blog của Lý An Thịnh"
 baseurl: "" 
 url: "https://miasteam.click"
 
-theme: minima
+theme: null
+remote_theme: pages-themes/cayman 
 
 plugins:
   - jekyll-feed
+  - jekyll-remote-theme
