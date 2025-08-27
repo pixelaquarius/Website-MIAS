@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: pixelaquarius/Website-MIAS   # repo chứa website
+  repo: pixelaquarius/Website-MIAS
   branch: main
   base_url: https://decap-cms-oauth-rouge.vercel.app
   auth_endpoint: /api/auth
@@ -9,6 +9,29 @@ media_folder: "assets/uploads"
 public_folder: "/assets/uploads"
 
 collections:
+  - name: "pages"
+    label: "Pages"
+    files:
+      - label: "Home"
+        name: "home"
+        file: "index.html"
+        fields:
+          - { label: "Tiêu đề", name: "h1", widget: "string", hint: "H1 lớn" }
+          - { label: "Mô tả", name: "sub", widget: "text" }
+          - { label: "Nội dung HTML", name: "body", widget: "markdown", hint: "Khối nội dung tùy chọn" }
+      - label: "About"
+        name: "about"
+        file: "about.html"
+        fields:
+          - { label: "Tiêu đề", name: "title_text", widget: "string" }
+          - { label: "Giới thiệu", name: "intro", widget: "markdown" }
+      - label: "Agency"
+        name: "agency"
+        file: "agency/index.html"
+        fields:
+          - { label: "Hero title", name: "hero_title", widget: "string" }
+          - { label: "Hero subtitle", name: "hero_sub", widget: "text" }
+
   - name: "posts"
     label: "Blog"
     folder: "_posts"
@@ -16,5 +39,5 @@ collections:
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
       - { name: "title", label: "Title" }
-      - { name: "date", label: "Date", widget: "datetime" }
-      - { name: "body", label: "Body", widget: "markdown" }
+      - { name: "date",  label: "Date", widget: "datetime" }
+      - { name: "body",  label: "Body", widget: "markdown" }
