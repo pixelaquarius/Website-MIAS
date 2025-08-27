@@ -2,28 +2,17 @@ backend:
   name: github
   repo: pixelaquarius/Website-MIAS
   branch: main
-  auth_scope: repo
 
 media_folder: "assets/uploads"
 public_folder: "/assets/uploads"
 
 collections:
   - name: "posts"
-    label: "Bài viết"
+    label: "Blog"
     folder: "_posts"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
-      - { name: "title", label: "Tiêu đề" }
-      - { name: "date", label: "Ngày", widget: "datetime" }
-      - { name: "body", label: "Nội dung", widget: "markdown" }
-
-  - name: "pages"
-    label: "Trang"
-    files:
-      - file: "about.md"
-        label: "About"
-        name: "about"
-        fields:
-          - { name: "title", label: "Tiêu đề" }
-          - { name: "body", label: "Nội dung", widget: "markdown" }
+      - { name: "title", label: "Title" }
+      - { name: "date", label: "Date", widget: "datetime" }
+      - { name: "body", label: "Body", widget: "markdown" }
