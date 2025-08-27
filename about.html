@@ -1,0 +1,57 @@
+---
+layout: null
+permalink: /about/
+title: About
+---
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>About — Miasteam</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/assets/css/typography.css">
+</head>
+<body>
+  <header class="container flex items-center justify-between py-6">
+    <a href="/" class="font-semibold text-xl">Miasteam</a>
+    <nav class="flex gap-6">
+      <a href="/agency/">Agency</a>
+      <a href="/blog/">Blog</a>
+      <a href="/about/" class="text-blue-600 font-medium">About</a>
+    </nav>
+  </header>
+
+  <main class="container grid md:grid-cols-3 gap-10 py-16">
+    <section class="md:col-span-2">
+      <h1 class="text-4xl font-extrabold">Xin chào, mình là An Thịnh</h1>
+      <p class="mt-4 text-slate-600">
+        Performance marketer tập trung vào tăng trưởng doanh thu bền vững cho e-commerce & SMB.
+        Kinh nghiệm triển khai đa kênh: Meta, TikTok, Google; kết hợp CRO và Analytics để tối ưu toàn phễu.
+      </p>
+      <ul class="mt-6 grid sm:grid-cols-2 gap-4">
+        <li class="card">• Meta & TikTok Ads: cấu trúc scale, CBO/ABO</li>
+        <li class="card">• Google: Search/Performance Max/Shopping</li>
+        <li class="card">• GA4, tracking, attribution, dashboard</li>
+        <li class="card">• A/B testing landing page, forms, checkout</li>
+      </ul>
+    </section>
+    <aside>
+      <div class="card">
+        <h3 class="font-semibold">Thông tin</h3>
+        <p class="mt-2 text-slate-600">TP.HCM · Freelancer/Agency</p>
+        <a class="btn btn-primary mt-4 w-full text-center" href="mailto:lyanthinh03@gmail.com">Liên hệ</a>
+      </div>
+      <div class="card mt-4">
+        <h3 class="font-semibold">Liên kết</h3>
+        <ul class="mt-2 space-y-2 text-slate-600">
+          <li><a href="https://github.com/pixelaquarius">GitHub</a></li>
+          <li><a href="#">LinkedIn</a></li>
+        </ul>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="container py-10 text-sm text-slate-500">© {{ site.time | date: "%Y" }} Miasteam</footer>
+</body>
+</html>
