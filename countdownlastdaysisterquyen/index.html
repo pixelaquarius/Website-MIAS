@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đếm ngược ngày chia tay chị Quyên</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Ngăn cuộn trang */
+        }
+
+        /* Container cho hiệu ứng */
+        #animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Cho phép click xuyên qua */
+            z-index: 100;
+        }
+
+        /* Trái tim bay lên */
+        .heart {
+            position: absolute;
+            bottom: -50px; /* Bắt đầu từ bên dưới */
+            font-size: 2rem;
+            opacity: 0;
+            animation: float-up 5s ease-in forwards;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1.5); /* Bay lên trên cùng */
+                opacity: 0;
+            }
+        }
+
+        /* Tiêu đề "pháo bông" lấp lánh */
+        .firework-title {
+            font-family: 'Playfair Display', serif;
+            animation: color-cycle 3s infinite linear;
+        }
+        
+        @keyframes color-cycle {
+            0% { color: #ff8a00; text-shadow: 0 0 10px #ff8a00; }
+            25% { color: #e52e71; text-shadow: 0 0 10px #e52e71; }
+            50% { color: #9a00ff; text-shadow: 0 0 10px #9a00ff; }
+            75% { color: #00f2ff; text-shadow: 0 0 10px #00f2ff; }
+            100% { color: #ff8a00; text-shadow: 0 0 10px #ff8a00; }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+
+    <!-- Container cho hiệu ứng (pháo bông, tim) -->
+    <div id="animation-container"></div>
+
+    <!-- 1. MÀN HÌNH ĐẾM NGƯỢC (HIỂN THỊ BAN ĐẦU) -->
+    <div id="countdown-section" class="text-center p-8">
+        <h1 id="main-title" class="text-3xl md:text-5xl font-bold text-gray-300 mb-12">
+            Đếm ngược ngày chị Quyên "tự do"...
+        </h1>
+        <div id="timer" class="flex flex-wrap justify-center gap-4 md:gap-8">
+            <!-- Ngày -->
+            <div class="bg-gray-800 p-6 md:p-10 rounded-2xl shadow-xl min-w-[100px]">
+                <div id="days" class="text-5xl md:text-7xl font-extrabold text-pink-400">00</div>
+                <div class="text-sm text-gray-400 uppercase tracking-widest mt-2">Ngày</div>
+            </div>
+            <!-- Giờ -->
+            <div class="bg-gray-800 p-6 md:p-10 rounded-2xl shadow-xl min-w-[100px]">
+                <div id="hours" class="text-5xl md:text-7xl font-extrabold text-cyan-400">00</div>
+                <div class="text-sm text-gray-400 uppercase tracking-widest mt-2">Giờ</div>
+            </div>
+            <!-- Phút -->
+            <div class="bg-gray-800 p-6 md:p-10 rounded-2xl shadow-xl min-w-[100px]">
+                <div id="minutes" class="text-5xl md:text-7xl font-extrabold text-green-400">00</div>
+                <div class="text-sm text-gray-400 uppercase tracking-widest mt-2">Phút</div>
+            </div>
+            <!-- Giây -->
+            <div class="bg-gray-800 p-6 md:p-10 rounded-2xl shadow-xl min-w-[100px]">
+                <div id="seconds" class="text-5xl md:text-7xl font-extrabold text-purple-400">00</div>
+                <div class="text-sm text-gray-400 uppercase tracking-widest mt-2">Giây</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. MÀN HÌNH CHÚC MỪNG (BỊ ẨN BAN ĐẦU) -->
+    <div id="celebration-section" class="hidden text-center p-8">
+        <div class="bg-white text-gray-800 p-8 md:p-12 rounded-2xl shadow-2xl max-w-2xl mx-auto transform transition-all duration-500 scale-100 relative z-10">
+            <h2 class="firework-title text-5xl md:text-7xl font-bold mb-6">
+                Chúc Mừng Chị!
+            </h2>
+            <p class="text-lg text-gray-700 mb-4">
+                Cuối cùng ngày này cũng tới! Chúc mừng chị Quyên đã chính thức "thoát ly" khỏi chốn này để bắt đầu một hành trình mới rực rỡ hơn!
+            </p>
+            <p class="text-lg text-gray-700 mb-8">
+                Cảm ơn chị vì tất cả những cống hiến, sự hỗ trợ và những lần... "flex" siêu ngầu với team. Chị mãi là "Huyền thoại HR" trong lòng chúng em.
+            </p>
+            <p class="text-xl font-bold text-gray-900">
+                Mong chị luôn thành công và hạnh phúc!
+            </p>
+            <p class="text-md text-gray-600 mt-6 italic">
+                - Thân ái, (Những người ở lại) -
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // *** THAY ĐỔI NGÀY GIỜ TẠI ĐÂY ***
+        // Định dạng: 'YYYY-MM-DDTHH:mm:ss' (Ví dụ: 30 tháng 11 năm 2025 lúc 17:00)
+        const ngayChịQuyenDi = '2025-11-20T17:00:00';
+        
+        const targetDate = new Date(ngayChịQuyenDi).getTime();
+
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+        
+        const countdownSection = document.getElementById('countdown-section');
+        const celebrationSection = document.getElementById('celebration-section');
+        const animationContainer = document.getElementById('animation-container');
+
+        // Hàm cập nhật đồng hồ
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                // Đã tới ngày
+                clearInterval(interval);
+                showCelebration();
+            } else {
+                // Vẫn đang đếm
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                daysEl.innerText = formatTime(days);
+                hoursEl.innerText = formatTime(hours);
+                minutesEl.innerText = formatTime(minutes);
+                secondsEl.innerText = formatTime(seconds);
+            }
+        }
+
+        // Hàm hiển thị chúc mừng
+        function showCelebration() {
+            countdownSection.style.display = 'none';
+            celebrationSection.classList.remove('hidden');
+            
+            // Bắt đầu tạo trái tim
+            setInterval(createHeart, 300);
+            
+            // Bắt đầu tạo hiệu ứng "pháo bông" (dùng emoji)
+            // Đơn giản hơn và cũng rất vui
+            setInterval(createSparkle, 100);
+        }
+        
+        // Tạo trái tim
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️'; // Bạn có thể dùng '💖', '💗', '💓'
+            heart.style.left = Math.random() * 100 + 'vw'; // Vị trí ngẫu nhiên
+            heart.style.animationDuration = (Math.random() * 2 + 3) + 's'; // Tốc độ ngẫu nhiên
+            animationContainer.appendChild(heart);
+
+            // Xóa trái tim sau khi bay xong
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        // Tạo pháo bông lấp lánh (sparkle)
+        function createSparkle() {
+            const sparkle = document.createElement('div');
+            sparkle.classList.add('heart'); // Tái sử dụng anim 'float-up'
+            sparkle.innerHTML = '✨'; // Emoji lấp lánh
+            sparkle.style.left = Math.random() * 100 + 'vw';
+            sparkle.style.fontSize = (Math.random() * 1 + 1) + 'rem'; // Kích thước ngẫu nhiên
+            sparkle.style.animationDuration = (Math.random() * 1 + 2) + 's'; // Tốc độ nhanh hơn tim
+            animationContainer.appendChild(sparkle);
+            
+            setTimeout(() => {
+                sparkle.remove();
+            }, 3000);
+        }
+
+        // Thêm số 0 nếu số < 10
+        function formatTime(time) {
+            return time < 10 ? `0${time}` : time;
+        }
+
+        // Bắt đầu chạy
+        const interval = setInterval(updateCountdown, 1000);
+        updateCountdown(); // Chạy lần đầu ngay lập tức
+    </script>
+</body>
+</html>
