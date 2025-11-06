@@ -1,0 +1,29 @@
+---
+layout: default
+title: Blog — Miasteam
+permalink: /blog/
+---
+
+<header class="container py-16 text-center">
+  <h1 class="text-5xl font-extrabold">Miasteam Blog</h1>
+  <p class="mt-4 text-lg text-slate-600">Chiến lược quảng cáo, phân tích dữ liệu, và case study e-commerce.</p>
+</header>
+
+<section class="container pb-16">
+  <div class="max-w-3xl mx-auto grid gap-8">
+    
+    {% for post in site.posts %}
+    <article class="card">
+      <h2 class="text-2xl font-bold">
+        <a href="{{ post.url | relative_url }}" class="hover:text-blue-600">{{ post.title }}</a>
+      </h2>
+      <p class="mt-2 text-sm text-slate-500">{{ post.date | date: "%d/%m/%Y" }}</p>
+      <div class="mt-4 typography">
+        {{ post.excerpt }}
+      </div>
+      <a href="{{ post.url | relative_url }}" class="btn btn-outline mt-4">Đọc tiếp</a>
+    </article>
+    {% endfor %}
+    
+  </div>
+</section>
