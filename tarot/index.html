@@ -10,26 +10,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Spectral:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- [MỚI] Định nghĩa font tùy chỉnh của bạn --- */
+        /* --- Định nghĩa font tùy chỉnh của bạn --- */
         @font-face {
           font-family: 'KD Hidayatullah v2';
-          /* * Đường dẫn trỏ đến file font bạn đã upload. */
           src: url('/assets/fonts/KD-Hidayatullah-v2.ttf') format('truetype');
           font-weight: 400; /* 400 = normal */
           font-style: normal;
           font-display: swap; 
         }
 
-        /* --- [CẬP NHẬT] Áp dụng font mới cho tiêu đề/nút --- */
+        /* --- Áp dụng font mới cho tiêu đề/nút --- */
         h1, h2, h3, h4, h5, h6, .button-area button, .ai-reading-actions button {
             font-family: 'KD Hidayatullah v2', 'Cinzel', serif;
             font-weight: 700; 
         }
 
-        /* --- [KHÔNG ĐỔI] Giữ nguyên font văn bản (Spectral) --- */
+        /* --- Giữ nguyên font văn bản (Spectral) --- */
         body {
             font-family: 'Spectral', serif; 
-            /* [THAY ĐỔI MÀU] - Nền vũ trụ xanh đậm */
+            /* Nền vũ trụ xanh đậm */
             background: linear-gradient(135deg, #000000 0%, #030629 35%, #001f3a 100%);
             color: #e0e0e0; 
             display: flex;
@@ -41,7 +40,7 @@
         }
         
         .app-container {
-            /* [THAY ĐỔI MÀU] - Nền xanh đen mờ */
+            /* Nền xanh đen mờ */
             background-color: rgba(10, 15, 30, 0.85); 
             border-radius: 1.5rem; 
             box-shadow: 0 10px 35px rgba(0, 191, 255, 0.1); /* Shadow màu Cyan */
@@ -70,7 +69,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 3px solid #00bfff; /* [THAY ĐỔI MÀU] - Viền Cyan */
+            border: 3px solid #00bfff; /* Viền Cyan */
             overflow: hidden; 
             position: relative;
         }
@@ -100,7 +99,7 @@
             height: 180px;
             border-radius: 0.5rem;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            border: 2px solid #007b9e; /* [THAY ĐỔI MÀU] - Viền Cyan đậm */
+            border: 2px solid #007b9e; /* Viền Cyan đậm */
             overflow: hidden;
             position: relative;
         }
@@ -116,7 +115,7 @@
             left: 0;
             width: 100%;
             background: rgba(0, 0, 0, 0.7);
-            color: #00bfff; /* [THAY ĐỔI MÀU] - Chữ Cyan */
+            color: #00bfff; /* Chữ Cyan */
             padding: 4px 2px;
             font-size: 0.65rem;
             line-height: 1.2;
@@ -137,7 +136,7 @@
             margin-top: 1rem;
         }
         .button-area button {
-            background-color: #007b9e; /* [THAY ĐỔI MÀU] - Cyan đậm */
+            background-color: #007b9e; /* Cyan đậm */
             color: white;
             padding: 0.75rem 2rem;
             border-radius: 9999px; 
@@ -148,7 +147,7 @@
             box-shadow: 0 5px 15px rgba(0, 191, 255, 0.2); 
         }
         .button-area button:hover:not(:disabled) {
-            background-color: #00bfff; /* [THAY ĐỔI MÀU] - Cyan sáng (hover) */
+            background-color: #00bfff; /* Cyan sáng (hover) */
             color: #030629;
             border-color: #00bfff;
             transform: translateY(-2px); 
@@ -198,7 +197,7 @@
             border: 1px solid;
         }
         .ai-reading-actions .primary-btn {
-            background-color: #00bfff; /* [THAY ĐỔI MÀU] - Cyan */
+            background-color: #00bfff; /* Cyan */
             color: #030629;
             border-color: #00bfff;
         }
@@ -207,7 +206,7 @@
             transform: scale(1.05);
         }
         .ai-reading-actions .secondary-btn {
-            background-color: #007b9e; /* [THAY ĐỔI MÀU] - Cyan đậm */
+            background-color: #007b9e; /* Cyan đậm */
             color: white;
             border-color: #00bfff;
         }
@@ -234,7 +233,7 @@
         .ai-response.loading {
             text-align: center;
             font-style: italic;
-            color: #00bfff; /* [THAY ĐỔI MÀU] - Cyan */
+            color: #00bfff; /* Cyan */
             padding: 1rem;
         }
         .ai-response.loading svg {
@@ -316,7 +315,7 @@
             cursor: pointer;
         }
         .radio-group input[type="radio"] {
-            accent-color: #00bfff; /* [THAY ĐỔI MÀU] - Cyan */
+            accent-color: #00bfff; /* Cyan */
         }
         .ai-card-interpretations-container {
             background-color: #0a0f1e;
@@ -514,6 +513,7 @@
          */
         function getCardImageUrl(cardName) {
             let filename = '';
+            // Tách tên lá bài, VÍ DỤ: "Three of Swords"
             const parts = cardName.toLowerCase().split(' ');
 
             if (cardName.includes(' - ')) {
@@ -555,17 +555,17 @@
                 // Tên trong mảng: "Ace of Wands", "Two of Cups", "Page of Swords", "King of Pentacles"
                 // Tên file: "minor_wands_01.jpg", "minor_cups_02.jpg", "minor_swords_11.jpg", "minor_pentacles_14.jpg"
                 
-                // 1. Lấy chất (suit)
-                let suit = parts[parts.length - 1]; // wands, cups, swords, pentacles
+                // 1. Lấy chất (suit). parts = ["three", "of", "swords"]
+                let suit = parts[parts.length - 1]; // "swords"
 
-                // 2. Lấy số (number/rank)
-                let rank = parts[0]; // ace, two, three, ..., page, knight, queen, king
+                // 2. Lấy số (number/rank).
+                let rank = parts[0]; // "three"
                 let numStr = '';
 
                 switch (rank) {
                     case 'ace': numStr = '01'; break;
                     case 'two': numStr = '02'; break;
-                    case 'three': numStr = '03'; break;
+                    case 'three': numStr = '03'; break; // Đây
                     case 'four': numStr = '04'; break;
                     case 'five': numStr = '05'; break;
                     case 'six': numStr = '06'; break;
@@ -580,6 +580,7 @@
                     default: numStr = '01'; // Mặc định về Ace nếu lỗi
                 }
                 
+                // filename = "minor_" + "swords" + "_" + "03" + ".jpg"
                 filename = `minor_${suit}_${numStr}.jpg`;
             }
 
@@ -625,6 +626,7 @@
         function updateCurrentCardDisplay(cardName) {
             currentCardElement.classList.add('drawn');
             
+            // Dòng này sẽ gọi hàm getCardImageUrl đã sửa
             cardImageFront.src = getCardImageUrl(cardName);
             cardImageFront.alt = `Lá bài: ${cardName}`;
         }
@@ -639,6 +641,7 @@
                 cardDiv.classList.add('current-spread-card');
                 
                 const img = document.createElement('img');
+                // Dòng này sẽ gọi hàm getCardImageUrl đã sửa
                 img.src = getCardImageUrl(cardName);
                 img.alt = cardName;
 
@@ -839,13 +842,16 @@
                                 }
                             },
                             "overallInterpretation": { "type": "STRING" },
+                            /* --- [ĐÃ SỬA LỖI] ---
+                               Xóa chữ "S" bị lạc ở dòng dưới đây 
+                            */
                             "nextStepsSuggestion": { "type": "STRING" }
                         },
                         "propertyOrdering": ["cardInterpretations", "overallInterpretation", "nextStepsSuggestion"]
                     }
                 }
             };
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            const apiUrl = `https://generativela-nguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
             try {
                 const response = await fetch(apiUrl, {
@@ -902,7 +908,17 @@
                 responseData.cardInterpretations.forEach(card => {
                     const cardInterpretationDiv = document.createElement('div');
                     cardInterpretationDiv.classList.add('p-3', 'bg-white', 'rounded-lg', 'shadow-md');
-                    cardInterpretationDiv.innerHTML = `<h5 class="font-bold text-gray-800 mb-1">${card.cardName}:</h5><p class="text-sm text-gray-600">${card.interpretation}</p>`;
+                    
+                    /* [SỬA LỖI HIỂN THỊ] 
+                       Phần giải thích AI cũng cần đổi màu chữ 
+                       cho phù hợp với nền tối 
+                    */
+                    cardInterpretationDiv.style.backgroundColor = '#030629';
+                    cardInterpretationDiv.style.border = '1px solid #005f7c';
+                    cardInterpretationDiv.innerHTML = `
+                        <h5 class="font-bold text-cyan-300 mb-1">${card.cardName}:</h5>
+                        <p class="text-sm text-gray-300">${card.interpretation}</p>
+                    `;
                     aiCardInterpretationsRow.appendChild(cardInterpretationDiv);
                 });
                 aiCardInterpretationsContainer.classList.remove('hidden');
