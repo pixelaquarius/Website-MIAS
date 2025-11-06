@@ -1,12 +1,14 @@
-title: "Miasteam Portfolio"
-email: "lyanthinh03@gmail.com"
-description: "Portfolio & blog của Lý An Thịnh"
-baseurl: "" 
-url: "https://miasteam.click"
+# ... (giữ nguyên các cài đặt khác) ...
 
-theme: null
-remote_theme: pages-themes/cayman 
+# Cập nhật menu điều hướng
+navigation:
+  - name: Dịch vụ
+    link: /agency/
+  - name: Case Studies
+    link: /case-studies/
+  - name: Insights (Blog)
+    link: /blog/
+  - name: Về chúng tôi
+    link: /about/
 
-plugins:
-  - jekyll-feed
-  - jekyll-remote-theme
+# ... (giữ nguyên các cài đặt khác) ...
