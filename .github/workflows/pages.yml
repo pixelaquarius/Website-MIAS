@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       
-      # SỬA Ở ĐÂY: Dùng action build chuẩn
+      # Action này tự động cài đặt theme (như 'cayman')
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v3
@@ -30,7 +30,7 @@ jobs:
         with:
           source: ./
           destination: ./_site
-      # KẾT THÚC SỬA
+      # Kết thúc
           
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
