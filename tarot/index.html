@@ -13,9 +13,7 @@
         /* --- [MỚI] Định nghĩa font tùy chỉnh của bạn --- */
         @font-face {
           font-family: 'KD Hidayatullah v2';
-          /* * Đường dẫn trỏ đến file font bạn đã upload.
-           * (Thêm .woff2 nếu bạn có convert để tối ưu)
-           */
+          /* * Đường dẫn trỏ đến file font bạn đã upload. */
           src: url('/assets/fonts/KD-Hidayatullah-v2.ttf') format('truetype');
           font-weight: 400; /* 400 = normal */
           font-style: normal;
@@ -24,21 +22,16 @@
 
         /* --- [CẬP NHẬT] Áp dụng font mới cho tiêu đề/nút --- */
         h1, h2, h3, h4, h5, h6, .button-area button, .ai-reading-actions button {
-            /* * [THAY ĐỔI] Dùng font của bạn làm ưu tiên, 
-             * 'Cinzel' làm dự phòng nếu font mới lỗi.
-             */
             font-family: 'KD Hidayatullah v2', 'Cinzel', serif;
-            font-weight: 700; /* Giữ nguyên font-weight 700 */
+            font-weight: 700; 
         }
 
         /* --- [KHÔNG ĐỔI] Giữ nguyên font văn bản (Spectral) --- */
         body {
             font-family: 'Spectral', serif; 
-            /* (Các thuộc tính khác giữ nguyên...) */
-        body {
-            font-family: 'Spectral', serif; /* Font chữ tâm linh hơn cho nội dung */
-            background: linear-gradient(135deg, #110c1c 0%, #2a203f 100%); /* Nền tối, tím than */
-            color: #e0e0e0; /* Màu chữ chính (trắng ngà) */
+            /* [THAY ĐỔI MÀU] - Nền vũ trụ xanh đậm */
+            background: linear-gradient(135deg, #000000 0%, #030629 35%, #001f3a 100%);
+            color: #e0e0e0; 
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -46,15 +39,13 @@
             margin: 0;
             padding: 20px;
         }
-        h1, h2, h3, h4, h5, h6, .button-area button, .ai-reading-actions button {
-            font-family: 'Cinzel', serif; /* Font chữ huyền bí cho tiêu đề & nút */
-            font-weight: 700;
-        }
+        
         .app-container {
-            background-color: rgba(26, 20, 44, 0.85); /* Nền container mờ, màu tím đậm */
+            /* [THAY ĐỔI MÀU] - Nền xanh đen mờ */
+            background-color: rgba(10, 15, 30, 0.85); 
             border-radius: 1.5rem; 
-            box-shadow: 0 10px 35px rgba(243, 196, 15, 0.1); /* Shadow màu vàng gold */
-            border: 1px solid rgba(241, 196, 15, 0.3); /* Viền vàng mờ */
+            box-shadow: 0 10px 35px rgba(0, 191, 255, 0.1); /* Shadow màu Cyan */
+            border: 1px solid rgba(0, 191, 255, 0.3); /* Viền Cyan mờ */
             padding: 2rem;
             width: 100%;
             max-width: 850px;
@@ -62,7 +53,7 @@
             flex-direction: column;
             align-items: center;
             gap: 1.5rem;
-            backdrop-filter: blur(5px); /* Hiệu ứng mờ kính */
+            backdrop-filter: blur(5px);
         }
         .card-display-area {
             width: 100%;
@@ -73,13 +64,13 @@
         .card {
             width: 180px;
             height: 300px;
-            background-color: #1a142c;
+            background-color: #030629;
             border-radius: 0.75rem; 
-            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 191, 255, 0.2);
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 3px solid #f1c40f; /* Viền vàng gold */
+            border: 3px solid #00bfff; /* [THAY ĐỔI MÀU] - Viền Cyan */
             overflow: hidden; 
             position: relative;
         }
@@ -90,14 +81,8 @@
             border-radius: 0.75rem;
             transition: opacity 0.5s ease-in-out;
         }
-        .card.drawn .card-image-back {
-            opacity: 0;
-            display: none;
-        }
-        .card:not(.drawn) .card-image-front {
-            opacity: 0;
-            display: none;
-        }
+        .card.drawn .card-image-back { opacity: 0; display: none; }
+        .card:not(.drawn) .card-image-front { opacity: 0; display: none; }
 
         .current-spread-display {
             display: flex;
@@ -115,7 +100,7 @@
             height: 180px;
             border-radius: 0.5rem;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            border: 2px solid #8e44ad; /* Viền tím */
+            border: 2px solid #007b9e; /* [THAY ĐỔI MÀU] - Viền Cyan đậm */
             overflow: hidden;
             position: relative;
         }
@@ -131,7 +116,7 @@
             left: 0;
             width: 100%;
             background: rgba(0, 0, 0, 0.7);
-            color: #f1c40f; /* Chữ vàng */
+            color: #00bfff; /* [THAY ĐỔI MÀU] - Chữ Cyan */
             padding: 4px 2px;
             font-size: 0.65rem;
             line-height: 1.2;
@@ -152,20 +137,20 @@
             margin-top: 1rem;
         }
         .button-area button {
-            background-color: #8e44ad; /* Màu tím chính */
+            background-color: #007b9e; /* [THAY ĐỔI MÀU] - Cyan đậm */
             color: white;
             padding: 0.75rem 2rem;
             border-radius: 9999px; 
             font-size: 1.125rem;
             cursor: pointer;
             transition: all 0.3s;
-            border: 1px solid #c39bd3;
-            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.4); 
+            border: 1px solid #00bfff;
+            box-shadow: 0 5px 15px rgba(0, 191, 255, 0.2); 
         }
         .button-area button:hover:not(:disabled) {
-            background-color: #f1c40f; /* Vàng gold khi hover */
-            color: #1a142c;
-            border-color: #f1c40f;
+            background-color: #00bfff; /* [THAY ĐỔI MÀU] - Cyan sáng (hover) */
+            color: #030629;
+            border-color: #00bfff;
             transform: translateY(-2px); 
         }
         .button-area button:disabled {
@@ -179,22 +164,22 @@
 
         /* AI Reading Area Styles */
         .ai-reading-area {
-            background-color: rgba(17, 12, 28, 0.9); /* Nền tối hơn */
+            background-color: rgba(3, 6, 41, 0.9); /* Nền tối hơn */
             border-radius: 0.75rem;
             padding: 1.5rem;
             margin-top: 0.5rem;
             width: 100%;
-            border: 1px solid #8e44ad;
+            border: 1px solid #007b9e;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         textarea#question-input {
-            background-color: #2a203f;
+            background-color: #030629;
             color: #e0e0e0;
-            border: 1px solid #8e44ad;
+            border: 1px solid #007b9e;
             font-family: 'Spectral', serif;
         }
         textarea#question-input::placeholder {
-            color: #9b7bbc;
+            color: #007b9e;
             font-style: italic;
         }
         .ai-reading-actions {
@@ -213,21 +198,21 @@
             border: 1px solid;
         }
         .ai-reading-actions .primary-btn {
-            background-color: #f1c40f; /* Vàng Gold */
-            color: #1a142c;
-            border-color: #f1c40f;
+            background-color: #00bfff; /* [THAY ĐỔI MÀU] - Cyan */
+            color: #030629;
+            border-color: #00bfff;
         }
         .ai-reading-actions .primary-btn:hover:not(:disabled) {
-            background-color: #f39c12;
+            background-color: #009acd;
             transform: scale(1.05);
         }
         .ai-reading-actions .secondary-btn {
-            background-color: #8e44ad; /* Tím */
+            background-color: #007b9e; /* [THAY ĐỔI MÀU] - Cyan đậm */
             color: white;
-            border-color: #c39bd3;
+            border-color: #00bfff;
         }
         .ai-reading-actions .secondary-btn:hover:not(:disabled) {
-            background-color: #9b59b6;
+            background-color: #005f7c;
             transform: scale(1.05);
         }
         .ai-reading-actions .reset-btn {
@@ -249,16 +234,16 @@
         .ai-response.loading {
             text-align: center;
             font-style: italic;
-            color: #f1c40f; /* Vàng */
+            color: #00bfff; /* [THAY ĐỔI MÀU] - Cyan */
             padding: 1rem;
         }
         .ai-response.loading svg {
-            color: #f1c40f;
+            color: #00bfff;
         }
 
         /* Message Box */
         .message-box {
-            background-color: #8e44ad; 
+            background-color: #007b9e; 
             color: white;
             padding: 1rem;
             border-radius: 0.5rem;
@@ -274,24 +259,24 @@
         .message-box.show { opacity: 1; transform: translateY(0); }
         .message-box.bg-red-500 { background-color: #c0392b; }
         .message-box.bg-green-500 { background-color: #27ae60; }
-        .message-box.bg-blue-500 { background-color: #8e44ad; }
+        .message-box.bg-blue-500 { background-color: #007b9e; }
 
         /* History */
         .history-container {
             width: 100%;
             max-height: 350px; 
             overflow-y: auto; 
-            border: 1px solid #8e44ad;
+            border: 1px solid #007b9e;
             border-radius: 0.75rem;
             padding: 1rem;
-            background-color: #1a142c;
+            background-color: #030629;
         }
         .history-spread-group {
-            border: 1px solid #5d3d7e;
+            border: 1px solid #005f7c;
             border-radius: 0.75rem;
             padding: 0.75rem;
             margin-bottom: 1.5rem;
-            background-color: #2a203f;
+            background-color: #0a0f1e;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
         .history-spread-cards {
@@ -305,7 +290,7 @@
             max-width: 70px;
             height: 110px;
             border-radius: 0.5rem;
-            border: 1px solid #8e44ad;
+            border: 1px solid #007b9e;
             overflow: hidden;
             position: relative;
         }
@@ -317,52 +302,52 @@
         }
         .history-card-item .card-name-overlay {
             font-size: 0.55rem;
-            color: #f1c40f;
+            color: #00bfff;
         }
         .selection-area {
-            background-color: rgba(17, 12, 28, 0.9);
-            border: 1px solid #8e44ad;
+            background-color: rgba(3, 6, 41, 0.9);
+            border: 1px solid #007b9e;
         }
         .selection-area h3 {
-            color: #e6c8ff;
+            color: #cceeff;
         }
         .radio-group label {
-            color: #d5b8ff;
+            color: #b3e6ff;
             cursor: pointer;
         }
         .radio-group input[type="radio"] {
-            accent-color: #f1c40f; /* Màu vàng cho radio button */
+            accent-color: #00bfff; /* [THAY ĐỔI MÀU] - Cyan */
         }
         .ai-card-interpretations-container {
-            background-color: #2a203f;
-            border-color: #8e44ad;
+            background-color: #0a0f1e;
+            border-color: #007b9e;
         }
         .ai-card-interpretations-container h4 {
-            color: #f1c40f;
+            color: #00bfff;
         }
         .ai-card-interpretations-container .bg-white { /* Override */
-            background-color: #1a142c !important;
-            border: 1px solid #5d3d7e;
+            background-color: #030629 !important;
+            border: 1px solid #005f7c;
         }
         .ai-card-interpretations-container h5 {
-            color: #e6c8ff;
+            color: #cceeff;
         }
         .ai-card-interpretations-container p {
-            color: #d5b8ff;
+            color: #b3e6ff;
         }
 
         .ai-overall-interpretation {
-            background-color: #2a203f;
-            border-color: #f1c40f;
+            background-color: #0a0f1e;
+            border-color: #00bfff;
         }
         .ai-overall-interpretation h4 {
-            color: #f1c40f;
+            color: #00bfff;
         }
         .ai-overall-interpretation p {
             color: #e0e0e0;
         }
         .ai-suggestions {
-            background-color: #2a203f;
+            background-color: #0a0f1e;
             border-color: #27ae60; /* Green for suggestions */
         }
         .ai-suggestions h4 {
@@ -420,7 +405,7 @@
             
             <textarea id="question-input" 
                       placeholder="Nhập điều bạn đang trăn trở... (ví dụ: Năng lượng nào đang cản trở dòng chảy tài chính của tôi?)" 
-                      class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                      class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400"
                       rows="3"></textarea>
 
             <div class="ai-reading-actions">
@@ -462,10 +447,6 @@
 
     <script>
         // API Key for Gemini API.
-        // CẢNH BÁO BẢO MẬT: Storing API keys trực tiếp trong client-side code (như file HTML này)
-        // và công khai nó (trên GitHub/Server Public) là RỦI RO LỚN.
-        // Trong môi trường Canvas này, key được tự động cung cấp (const apiKey = "";). 
-        // Khi triển khai bên ngoài, BẠN PHẢI sử dụng một BACKEND SERVER để giấu key.
         const apiKey = ""; 
 
         // Danh sách đầy đủ 78 lá bài Tarot 
@@ -619,7 +600,7 @@
             } else if (type === 'success') {
                 messageBox.classList.add('bg-green-500');
             } else {
-                messageBox.classList.add('bg-blue-500'); // Màu tím mặc định
+                messageBox.classList.add('bg-blue-500'); // Màu Xanh/Cyan mặc định
             }
             setTimeout(() => {
                 messageBox.classList.remove('show');
@@ -683,7 +664,7 @@
                 const headerDiv = document.createElement('div');
                 headerDiv.classList.add('history-spread-header', 'mb-2', 'flex', 'justify-between', 'items-center', 'text-sm');
                 headerDiv.innerHTML = `
-                    <span class="font-bold text-purple-300">Hành trình ${historySpreads.length - index}: ${spread.spreadType} lá</span>
+                    <span class="font-bold text-cyan-300">Hành trình ${historySpreads.length - index}: ${spread.spreadType} lá</span>
                     <span class="text-gray-400">${spread.timestamp}</span>
                 `;
                 spreadGroupDiv.appendChild(headerDiv);
@@ -858,7 +839,7 @@
                                 }
                             },
                             "overallInterpretation": { "type": "STRING" },
-S                            "nextStepsSuggestion": { "type": "STRING" }
+                            "nextStepsSuggestion": { "type": "STRING" }
                         },
                         "propertyOrdering": ["cardInterpretations", "overallInterpretation", "nextStepsSuggestion"]
                     }
@@ -971,5 +952,6 @@ S                            "nextStepsSuggestion": { "type": "STRING" }
             resetGameVisuals(); 
         });
     </script>
+
 </body>
 </html>
