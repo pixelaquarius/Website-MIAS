@@ -202,6 +202,25 @@
         </div>
     </div>
 
+    <!-- [THÊM MỚI] Modal Thông Báo Bất Ngờ (Troll Popup) -->
+    <div id="trollModal" class="modal">
+        <div class="modal-content text-center">
+            <span class="close-btn" id="closeTrollModalBtn">&times;</span>
+            <div class="flex justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <h3 id="trollTitle" class="text-3xl font-bold text-red-600 mb-4">THÔNG BÁO KHẨN!</h3>
+            
+            <p id="trollMessage" class="text-lg text-gray-700 leading-relaxed"></p>
+
+            <button id="closeTrollModalBtn2" class="mt-6 bg-blue-600 text-white py-2 px-5 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
+                Tôi... đã hiểu...
+            </button>
+        </div>
+    </div>
+
 
     <script>
         const STORAGE_KEY = 'companyVacationFinder';
@@ -374,23 +393,44 @@
         }
 
         /**
-         * Tính ngày nghỉ dựa trên số chủ đạo.
-         * Logic: Lấy ngày (của tháng sau) bằng số chủ đạo.
+         * [CẬP NHẬT] Tính ngày nghỉ dựa trên số chủ đạo HOẶC TROLL.
          * @param {string} dob - Ngày sinh "YYYY-MM-DD".
-         * @returns {Date} - Đối tượng Date của ngày nghỉ.
+         * @returns {object} - { date: Date, fate: string }
          */
         function calculateVacationDate(dob) {
             const lifePath = calculateLifePath(dob); // Sẽ là 1-9, 11, hoặc 22
-            
-            // Ngày nghỉ trong tháng sẽ là số chủ đạo (ví dụ: lifePath 8 -> ngày 8)
-            // lifePath 11 -> ngày 11, lifePath 22 -> ngày 22
-            const vacationDayOfMonth = lifePath;
-
             const today = new Date();
-            // Đặt ngày nghỉ vào tháng sau
-            const vacationDate = new Date(today.getFullYear(), today.getMonth() + 1, vacationDayOfMonth);
+            let vacationDate;
+            let fate;
+
+            const rand = Math.random(); // Số ngẫu nhiên từ 0 đến 1
+
+            if (rand < 0.8) {
+                // 80% cơ hội: Bình thường (Thần số học + Random năm)
+                fate = 'normal';
+                const vacationDayOfMonth = lifePath;
+                
+                // [CẬP NHẬT THEO YÊU CẦU] Thêm random năm nghỉ
+                // Thêm ngẫu nhiên từ 0 đến 10 năm
+                const randomYearOffset = Math.floor(Math.random() * 11); // 0-10
+                const targetYear = today.getFullYear() + randomYearOffset;
+                
+                // Vẫn đặt vào tháng sau
+                const targetMonth = today.getMonth() + 1;
+                
+                vacationDate = new Date(targetYear, targetMonth, vacationDayOfMonth);
+
+            } else if (rand < 0.9) {
+                // 10% cơ hội: Nghỉ ngày mai
+                fate = 'tomorrow';
+                vacationDate = new Date(today.getTime() + (24 * 60 * 60 * 1000)); // Thêm 1 ngày
+            } else {
+                // 10% cơ hội: Troll 999 năm
+                fate = 'troll_999';
+                vacationDate = new Date(today.getFullYear() + 999, today.getMonth(), today.getDate());
+            }
             
-            return vacationDate;
+            return { date: vacationDate, fate: fate, lifePath: lifePath };
         }
 
         // --- Logic Điều Hướng Trang (View Logic) ---
@@ -429,9 +469,10 @@
             
             showView(countdownView);
 
-            // Xử lý Modal (Thêm mới)
+            // Xử lý Modal
             const urlParams = new URLSearchParams(window.location.search);
             const lifePath = parseInt(urlParams.get('lp')); // Lấy số chủ đạo từ URL
+            const fate = urlParams.get('fate'); // [THÊM MỚI] Lấy fate từ URL
             
             if (lifePath) {
                 const analysis = getNumerologyAnalysis(lifePath);
@@ -440,8 +481,37 @@
                 document.getElementById('dateReasoning').textContent = analysis.reasoning;
             }
 
+            // [THÊM MỚI] Kích hoạt popup troll nếu cần
+            if (fate === 'tomorrow' || fate === 'troll_999') {
+                showTrollPopup(fate, name, displayDate);
+            }
+
             // Bắt đầu đếm ngược
             startCountdown(dateString);
+        }
+
+        /**
+         * [THÊM MỚI] Hiển thị popup troll.
+         * @param {string} fate - 'tomorrow' hoặc 'troll_999'.
+         * @param {string} name - Tên người dùng.
+         * @param {string} displayDate - Ngày nghỉ đã định dạng.
+         */
+        function showTrollPopup(fate, name, displayDate) {
+            const modal = document.getElementById('trollModal');
+            const title = document.getElementById('trollTitle');
+            const message = document.getElementById('trollMessage');
+
+            if (fate === 'tomorrow') {
+                title.textContent = "BẤT NGỜ CHƯA!";
+                message.innerHTML = `Xin chào <strong class="text-blue-600">${name}</strong>,<br><br>Sếp vừa xem xét trường hợp của bạn và quyết định... cho bạn <strong class="text-red-600">NGHỈ LUÔN NGÀY MAI</strong>!<br><br>Hãy nhanh chóng chuẩn bị hồ sơ bàn giao công việc. Chúc may mắn!`;
+            } else if (fate === 'troll_999') {
+                title.textContent = "TIN CỰC VUI!";
+                message.innerHTML = `Xin chào <strong class="text-blue-600">${name}</strong>,<br><br>Với những cống hiến của bạn, công ty quyết định <strong class="text-red-600">gia hạn hợp đồng</strong> cho bạn thêm 999 năm.<br><br>Ngày nghỉ lý tưởng tiếp theo của bạn được chốt là: <strong class="text-blue-600">${displayDate}</strong>. Hãy tiếp tục làm việc chăm chỉ nhé!`;
+            }
+
+            setTimeout(() => {
+                modal.style.display = 'block';
+            }, 1000); // Hiển thị sau 1 giây để tạo bất ngờ
         }
 
         /**
@@ -455,8 +525,8 @@
             document.getElementById('viewCountdownBtn').onclick = () => {
                 // Điều hướng đến trang "subhtml" (trang countdown)
                 // SỬA LỖI: Cần cung cấp đường dẫn đầy đủ (pathname), không chỉ query string
-                // THÊM MỚI: Truyền cả lifePath (lp) qua URL
-                window.location.href = window.location.pathname + `?date=${storedData.date}&name=${encodeURIComponent(storedData.name)}&lp=${storedData.lifePath}`;
+                // THÊM MỚI: Truyền cả lifePath (lp) và fate
+                window.location.href = window.location.pathname + `?date=${storedData.date}&name=${encodeURIComponent(storedData.name)}&lp=${storedData.lifePath}&fate=${storedData.fate}`;
             };
         }
 
@@ -509,8 +579,8 @@
             const dob = document.getElementById('dob').value;
             const position = document.getElementById('position').value;
 
-            // Tính toán
-            const vacationDate = calculateVacationDate(dob);
+            // [CẬP NHẬT] Tính toán
+            const { date: vacationDate, fate, lifePath } = calculateVacationDate(dob);
             
             // SỬA LỖI: Chuyển ngày cục bộ thành chuỗi YYYY-MM-DD mà không bị ảnh hưởng bởi múi giờ
             // const vacationDateISO = vacationDate.toISOString().split('T')[0]; // Lỗi: Bị ảnh hưởng bởi UTC
@@ -519,22 +589,22 @@
             const day = vacationDate.getDate().toString().padStart(2, '0');
             const vacationDateISO = `${year}-${month}-${day}`;
             
-            // Tính toán số chủ đạo (Thêm mới)
-            const lifePath = calculateLifePath(dob);
+            // Tính toán số chủ đạo (Thêm mới) -> Đã chuyển vào calculateVacationDate
 
             // Lưu trữ (giả lập "ID máy")
             const storedData = {
                 date: vacationDateISO,
                 name: name,
                 position: position,
-                lifePath: lifePath // Thêm số chủ đạo vào bộ nhớ
+                lifePath: lifePath, // Thêm số chủ đạo vào bộ nhớ
+                fate: fate // [THÊM MỚI] Thêm fate vào bộ nhớ
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(storedData));
 
             // Chuyển hướng sang trang "subhtml" (countdown)
             // SỬA LỖI: Cần cung cấp đường dẫn đầy đủ (pathname), không chỉ query string
-            // THÊM MỚI: Truyền cả lifePath (lp) qua URL
-            window.location.href = window.location.pathname + `?date=${vacationDateISO}&name=${encodeURIComponent(name)}&lp=${lifePath}`;
+            // THÊM MỚI: Truyền cả lifePath (lp) và fate
+            window.location.href = window.location.pathname + `?date=${vacationDateISO}&name=${encodeURIComponent(name)}&lp=${lifePath}&fate=${fate}`;
         });
 
         // --- Logic Khởi Động (Initialization Logic) ---
@@ -558,20 +628,20 @@
                 showView(formView);
             }
             
-            // Xử lý sự kiện cho Modal (Thêm mới)
-            const modal = document.getElementById('analysisModal');
+            // Xử lý sự kiện cho Modal Phân Tích
+            const analysisModal = document.getElementById('analysisModal');
             const showBtn = document.getElementById('showAnalysisBtn');
-            const closeBtn = document.getElementById('closeModalBtn');
+            const closeAnalysisBtn = document.getElementById('closeModalBtn');
             const copyBtn = document.getElementById('copyLinkBtn'); // [THÊM MỚI]
 
             if (showBtn) {
                 showBtn.onclick = () => {
-                    modal.style.display = 'block';
+                    analysisModal.style.display = 'block';
                 }
             }
-            if (closeBtn) {
-                closeBtn.onclick = () => {
-                    modal.style.display = 'none';
+            if (closeAnalysisBtn) {
+                closeAnalysisBtn.onclick = () => {
+                    analysisModal.style.display = 'none';
                 }
             }
             // [THÊM MỚI] Gán sự kiện cho nút copy
@@ -579,9 +649,24 @@
                 copyBtn.onclick = copyLinkToClipboard;
             }
 
+            // [THÊM MỚI] Xử lý sự kiện cho Modal Troll
+            const trollModal = document.getElementById('trollModal');
+            const closeTrollBtn = document.getElementById('closeTrollModalBtn');
+            const closeTrollBtn2 = document.getElementById('closeTrollModalBtn2');
+
+            const closeTroll = () => {
+                trollModal.style.display = 'none';
+            };
+            if(closeTrollBtn) closeTrollBtn.onclick = closeTroll;
+            if(closeTrollBtn2) closeTrollBtn2.onclick = closeTroll;
+
+
             window.onclick = (event) => {
-                if (event.target == modal) {
-                    modal.style.display = 'none';
+                if (event.target == analysisModal) {
+                    analysisModal.style.display = 'none';
+                }
+                if (event.target == trollModal) { // [THÊM MỚI]
+                    trollModal.style.display = 'none';
                 }
             }
         });
