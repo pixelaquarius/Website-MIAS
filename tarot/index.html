@@ -424,9 +424,6 @@
             transform: scale(0.9);
             transition: transform 0.3s ease;
         }
-        #card-modal-backdrop.show #card-modal-content {
-            transform: scale(1);
-        }
         #modal-card-image {
             width: 250px; /* Kích thước lớn hơn */
             height: 417px;
@@ -623,21 +620,26 @@
         const INITIAL_BACKOFF_DELAY = 1000; 
 
         /**
-         * [*** PHIÊN BẢN CHÍNH XÁC ***]
-         * Hàm này ánh xạ tên lá bài trong mảng allTarotCards (ví dụ: "I - The Magician")
-         * sang tên file trong GitHub của bạn (ví dụ: "major_01.jpg").
+         * [*** VIẾT LẠI HOÀN TOÀN ĐỂ SỬA LỖI 404 ***]
+         * Hàm này ánh xạ tên lá bài (ví dụ: "0 - The Fool", "Three of Swords")
+         * sang tên file THỰC TẾ của bạn (ví dụ: "00-TheFool.png", "Swords03.png")
          * @param {string} cardName - Tên lá bài.
          * @returns {string} URL hình ảnh.
          */
         function getCardImageUrl(cardName) {
             let filename = '';
-            // Tách tên lá bài, VÍ DỤ: "Three of Swords"
-            const parts = cardName.toLowerCase().split(' ');
+            const path = '/assets/images/tarot/';
 
             if (cardName.includes(' - ')) {
                 // === Xử lý Ẩn Chính (Major Arcana) ===
-                const numberRoman = cardName.split(' - ')[0]; 
+                // Input: "0 - The Fool" -> Output: "00-TheFool.png"
+                // Input: "II - The High Priestess" -> Output: "02-TheHighPriestess.png"
+                
+                const parts = cardName.split(' - '); // ["II", "The High Priestess"]
+                const numberRoman = parts[0];
+                const name = parts[1].replace(/ /g, ''); // "TheHighPriestess"
                 let numStr = '';
+
                 switch (numberRoman) {
                     case '0': numStr = '00'; break; case 'I': numStr = '01'; break;
                     case 'II': numStr = '02'; break; case 'III': numStr = '03'; break;
@@ -652,17 +654,25 @@
                     case 'XX': numStr = '20'; break; case 'XXI': numStr = '21'; break;
                     default: numStr = '00'; 
                 }
-                filename = `major_${numStr}.jpg`;
+                filename = `${numStr}-${name}.png`; // "02-TheHighPriestess.png"
+            
             } else {
                 // === Xử lý Ẩn Phụ (Minor Arcana) ===
-                // Tên trong mảng: "Ace of Wands", "Two of Cups", "Page of Swords", "King of Pentacles"
-                // Tên file: "minor_wands_01.jpg", "minor_cups_02.jpg", "minor_swords_11.jpg", "minor_pentacles_14.jpg"
-                
-                // 1. Lấy chất (suit). parts = ["three", "of", "swords"]
-                let suit = parts[parts.length - 1]; // "swords"
+                // Input: "Ace of Cups" -> Output: "Cups01.png"
+                // Input: "Three of Swords" -> Output: "Swords03.png"
+                // Input: "King of Pentacles" -> Output: "Pentacles14.png"
 
-                // 2. Lấy số (number/rank).
+                const parts = cardName.toLowerCase().split(' '); // ["three", "of", "swords"]
+                let suit = parts[parts.length - 1]; // "swords"
                 let rank = parts[0]; // "three"
+                
+                // Viết hoa chữ cái đầu: "swords" -> "Swords"
+                let suitCapitalized = suit.charAt(0).toUpperCase() + suit.slice(1);
+                // Trường hợp đặc biệt: "pentacles" -> "Pentacles" (file của bạn là "Pentacles01.png")
+                if (suit === 'pentacles') {
+                    suitCapitalized = 'Pentacles';
+                }
+
                 let numStr = '';
                 switch (rank) {
                     case 'ace': numStr = '01'; break; case 'two': numStr = '02'; break;
@@ -675,15 +685,13 @@
                     default: numStr = '01';
                 }
                 
-                // filename = "minor_" + "swords" + "_" + "03" + ".jpg"
-                filename = `minor_${suit}_${numStr}.jpg`;
+                filename = `${suitCapitalized}${numStr}.png`; // "Swords03.png"
             }
 
-            // [MỚI] Thêm code Debug
-            // console.log('Mapping:', cardName, '->', filename);
-
-            // Đường dẫn tuyệt đối từ root, trỏ đến đúng thư mục 'images' (có 's')
-            return `/assets/images/tarot/${filename}`;
+            // [DEBUG] Ghi ra console để kiểm tra
+            // console.log(`Input: "${cardName}" -> Output: "${path}${filename}"`);
+            
+            return `${path}${filename}`;
         }
 
         /**
@@ -727,10 +735,8 @@
             const imageUrl = getCardImageUrl(cardName);
             cardImageFront.src = imageUrl;
             cardImageFront.alt = `Lá bài: ${cardName}`;
-            // [MỚI] Thêm code Debug
             cardImageFront.onerror = () => {
                 console.error(`Lỗi tải ảnh (lá chính): ${imageUrl}`);
-                cardImageFront.src = ''; // Ẩn biểu tượng lỗi
             };
         }
 
@@ -748,7 +754,6 @@
                 const imageUrl = getCardImageUrl(cardName);
                 img.src = imageUrl;
                 img.alt = cardName;
-                // [MỚI] Thêm code Debug
                 img.onerror = () => {
                     console.error(`Lỗi tải ảnh (lượt bóc): ${imageUrl}`);
                     cardDiv.innerHTML = `<div class="card-name-overlay">${cardName}<br>(Lỗi ảnh)</div>`;
@@ -793,7 +798,6 @@
                     const imageUrl = getCardImageUrl(cardName);
                     img.src = imageUrl;
                     img.alt = cardName;
-                    // [MỚI] Thêm code Debug
                     img.onerror = () => {
                         console.error(`Lỗi tải ảnh (lịch sử): ${imageUrl}`);
                         cardItemDiv.innerHTML = `<div class="card-name-overlay">${cardName}<br>(Lỗi)</div>`;
