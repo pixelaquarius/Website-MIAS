@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hành Trình Huyền Bí</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Spectral:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Định nghĩa font tùy chỉnh của bạn --- */
+        @font-face {
+          font-family: 'KD Hidayatullah v2';
+          src: url('/assets/fonts/KD-Hidayatullah-v2.ttf') format('truetype');
+          font-weight: 400; /* 400 = normal */
+          font-style: normal;
+          font-display: swap; 
+        }
+
+        /* --- Áp dụng font mới cho tiêu đề/nút --- */
+        h1, h2, h3, h4, h5, h6, .button-area button, .ai-reading-actions button {
+            font-family: 'KD Hidayatullah v2', 'Cinzel', serif;
+            font-weight: 700; 
+        }
+
+        /* --- Giữ nguyên font văn bản (Spectral) --- */
+        body {
+            font-family: 'Spectral', serif; 
+            /* Nền vũ trụ xanh đậm */
+            background: linear-gradient(135deg, #000000 0%, #030629 35%, #001f3a 100%);
+            color: #e0e0e0; 
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .app-container {
+            /* Nền xanh đen mờ */
+            background-color: rgba(10, 15, 30, 0.85); 
+            border-radius: 1.5rem; 
+            box-shadow: 0 10px 35px rgba(0, 191, 255, 0.1); /* Shadow màu Cyan */
+            border: 1px solid rgba(0, 191, 255, 0.3); /* Viền Cyan mờ */
+            padding: 2rem;
+            width: 100%;
+            max-width: 850px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            backdrop-filter: blur(5px);
+        }
+        .card-display-area {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .card {
+            width: 180px;
+            height: 300px;
+            background-color: #030629;
+            border-radius: 0.75rem; 
+            box-shadow: 0 4px 15px rgba(0, 191, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid #00bfff; /* Viền Cyan */
+            overflow: hidden; 
+            position: relative;
+        }
+        .card-image-back, .card-image-front {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.75rem;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .card.drawn .card-image-back { opacity: 0; display: none; }
+        .card:not(.drawn) .card-image-front { opacity: 0; display: none; }
+
+        .current-spread-display {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            align-items: flex-start; 
+            min-height: 180px; 
+            width: 100%;
+            margin-top: 0.5rem;
+            flex-wrap: wrap; 
+        }
+        .current-spread-card {
+            width: calc(33.33% - 0.5rem);
+            max-width: 110px; 
+            height: 180px;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            border: 2px solid #007b9e; /* Viền Cyan đậm */
+            overflow: hidden;
+            position: relative;
+            cursor: pointer; /* [MỚI] Thêm cursor để biết là có thể click */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .current-spread-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 191, 255, 0.3);
+        }
+        .current-spread-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+        .card-name-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            color: #00bfff; /* Chữ Cyan */
+            padding: 4px 2px;
+            font-size: 0.65rem;
+            line-height: 1.2;
+            font-family: 'Spectral', serif;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        @media (max-width: 640px) {
+            .app-container { padding: 1rem; }
+            .card { width: 150px; height: 250px; }
+            .current-spread-card { width: calc(50% - 0.375rem); max-width: 140px; height: 220px; }
+        }
+
+        .button-area {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .button-area button {
+            background-color: #007b9e; /* Cyan đậm */
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px; 
+            font-size: 1.125rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #00bfff;
+            box-shadow: 0 5px 15px rgba(0, 191, 255, 0.2); 
+        }
+        .button-area button:hover:not(:disabled) {
+            background-color: #00bfff; /* Cyan sáng (hover) */
+            color: #030629;
+            border-color: #00bfff;
+            transform: translateY(-2px); 
+        }
+        .button-area button:disabled {
+            background-color: #4a4a4a;
+            color: #888;
+            border-color: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* AI Reading Area Styles */
+        .ai-reading-area {
+            background-color: rgba(3, 6, 41, 0.9); /* Nền tối hơn */
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 0.5rem;
+            width: 100%;
+            border: 1px solid #007b9e;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        textarea#question-input {
+            background-color: #030629;
+            color: #e0e0e0;
+            border: 1px solid #007b9e;
+            font-family: 'Spectral', serif;
+        }
+        textarea#question-input::placeholder {
+            color: #007b9e;
+            font-style: italic;
+        }
+        .ai-reading-actions {
+            display: flex;
+            flex-wrap: wrap; 
+            gap: 0.75rem; 
+            margin-top: 1rem;
+            justify-content: center;
+        }
+        .ai-reading-actions button {
+            padding: 0.6rem 1.2rem;
+            border-radius: 9999px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid;
+        }
+        .ai-reading-actions .primary-btn {
+            background-color: #00bfff; /* Cyan */
+            color: #030629;
+            border-color: #00bfff;
+        }
+        .ai-reading-actions .primary-btn:hover:not(:disabled) {
+            background-color: #009acd;
+            transform: scale(1.05);
+        }
+        .ai-reading-actions .secondary-btn {
+            background-color: #007b9e; /* Cyan đậm */
+            color: white;
+            border-color: #00bfff;
+        }
+        .ai-reading-actions .secondary-btn:hover:not(:disabled) {
+            background-color: #005f7c;
+            transform: scale(1.05);
+        }
+        .ai-reading-actions .reset-btn {
+            background-color: #c0392b; /* Đỏ (cho reset) */
+            color: white;
+            border-color: #e74c3c;
+        }
+        .ai-reading-actions .reset-btn:hover:not(:disabled) {
+            background-color: #e74c3c;
+            transform: scale(1.05);
+        }
+        .ai-reading-actions button:disabled {
+            background-color: #4a4a4a;
+            color: #888;
+            border-color: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .ai-response.loading {
+            text-align: center;
+            font-style: italic;
+            color: #00bfff; /* Cyan */
+            padding: 1rem;
+        }
+        .ai-response.loading svg {
+            color: #00bfff;
+        }
+
+        /* Message Box */
+        .message-box {
+            background-color: #007b9e; 
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            font-size: 1rem;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s, transform 0.3s;
+            max-width: 80%;
+            font-family: 'Spectral', serif;
+        }
+        .message-box.show { opacity: 1; transform: translateY(0); }
+        .message-box.bg-red-500 { background-color: #c0392b; }
+        .message-box.bg-green-500 { background-color: #27ae60; }
+        .message-box.bg-blue-500 { background-color: #007b9e; }
+
+        /* History */
+        .history-container {
+            width: 100%;
+            max-height: 350px; 
+            overflow-y: auto; 
+            border: 1px solid #007b9e;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            background-color: #030629;
+        }
+        .history-spread-group {
+            border: 1px solid #005f7c;
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            margin-bottom: 1.5rem;
+            background-color: #0a0f1e;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .history-spread-cards {
+            display: flex;
+            flex-wrap: wrap; 
+            gap: 0.5rem; 
+            justify-content: center;
+        }
+        .history-card-item {
+            width: calc(25% - 0.4rem);
+            max-width: 70px;
+            height: 110px;
+            border-radius: 0.5rem;
+            border: 1px solid #007b9e;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer; /* [MỚI] Thêm cursor */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .history-card-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 10px rgba(0, 191, 255, 0.3);
+        }
+        .history-card-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+        .history-card-item .card-name-overlay {
+            font-size: 0.55rem;
+            color: #00bfff;
+        }
+        .selection-area {
+            background-color: rgba(3, 6, 41, 0.9);
+            border: 1px solid #007b9e;
+        }
+        .selection-area h3 {
+            color: #cceeff;
+        }
+        .radio-group label {
+            color: #b3e6ff;
+            cursor: pointer;
+        }
+        .radio-group input[type="radio"] {
+            accent-color: #00bfff; /* Cyan */
+        }
+        .ai-card-interpretations-container {
+            background-color: #0a0f1e;
+            border-color: #007b9e;
+        }
+        .ai-card-interpretations-container h4 {
+            color: #00bfff;
+        }
+        .ai-card-interpretations-container .bg-white { /* Override */
+            background-color: #030629 !important;
+            border: 1px solid #005f7c;
+        }
+        .ai-card-interpretations-container h5 {
+            color: #cceeff;
+        }
+        .ai-card-interpretations-container p {
+            color: #b3e6ff;
+        }
+
+        .ai-overall-interpretation {
+            background-color: #0a0f1e;
+            border-color: #00bfff;
+        }
+        .ai-overall-interpretation h4 {
+            color: #00bfff;
+        }
+        .ai-overall-interpretation p {
+            color: #e0e0e0;
+        }
+        .ai-suggestions {
+            background-color: #0a0f1e;
+            border-color: #27ae60; /* Green for suggestions */
+        }
+        .ai-suggestions h4 {
+            color: #27ae60;
+        }
+        .ai-suggestions p {
+            color: #e0e0e0;
+        }
+        
+        /* [MỚI] CSS Cho Nút Xóa Lịch Sử */
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-top: 1.5rem; /* (thay thế cho mt-6 trên h2) */
+        }
+        #clear-history-button {
+            background: #c0392b;
+            color: white;
+            border: 1px solid #e74c3c;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+            border-radius: 9999px;
+            font-family: 'Spectral', serif;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        #clear-history-button:hover {
+            background: #e74c3c;
+            transform: scale(1.05);
+        }
+
+        /* [MỚI] CSS Cho Modal Xem Lá Bài */
+        #card-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #card-modal-backdrop.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #card-modal-content {
+            background: #0a0f1e;
+            border: 2px solid #00bfff;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 191, 255, 0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        #card-modal-backdrop.show #card-modal-content {
+            transform: scale(1);
+        }
+        #modal-card-image {
+            width: 250px; /* Kích thước lớn hơn */
+            height: 417px;
+            object-fit: cover;
+            border-radius: 0.75rem;
+            border: 2px solid #007b9e;
+        }
+        #modal-card-name {
+            font-size: 1.5rem;
+            color: #00bfff;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        #modal-close-button {
+            background-color: #007b9e;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            border: 1px solid #00bfff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        #modal-close-button:hover {
+            background-color: #00bfff;
+            color: #030629;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h1 class="text-3xl font-extrabold text-gray-100 mb-4 text-center">Giải mã thông điệp vũ trụ</h1>
+        <p class="text-gray-300 text-center text-lg">Chọn một lá bài. Đặt một câu hỏi. Và lắng nghe lời thì thầm của định mệnh.</p>
+
+        <div class="selection-area w-full p-4 rounded-lg shadow-sm">
+            <h3 class="font-bold text-gray-200 mb-2 text-center text-xl">Chọn một hành trình</h3>
+            <div class="radio-group flex flex-wrap gap-x-4 gap-y-2 mb-4 justify-center text-base">
+                <label>
+                    <input type="radio" name="spread-type" value="1" checked> Một lá bài cho ngày mới
+                </label>
+                <label>
+                    <input type="radio" name="spread-type" value="3"> Ba lá bài (Quá khứ - Hiện tại - Tương lai)
+                </label>
+                <label>
+                    <input type="radio" name="spread-type" value="5"> Năm lá bài khai mở vấn đề
+                </label>
+            </div>
+        </div>
+
+        <div class="card-display-area">
+            <div id="current-card" class="card">
+                <img id="card-image-back" class="card-image-back" 
+                    src="/assets/images/tarot/cardback.jpg" 
+                    alt="Mặt sau lá bài Tarot"
+                >
+                <img id="card-image-front" class="card-image-front" 
+                    src="" 
+                    alt="Lá bài Tarot đã bóc"
+                >
+            </div>
+        </div>
+
+        <div id="current-spread-display" class="current-spread-display">
+            </div>
+
+        <div class="button-area">
+            <button id="draw-button">Rút một lá bài</button>
+            <button id="complete-spread-button" disabled>Hoàn tất trải bài</button>
+        </div>
+        <div class="message-box" id="message-box"></div>
+
+        <div class="ai-reading-area">
+            <h3 class="text-lg font-bold text-gray-200 mb-2 text-center">Bước 2: Kết nối với tiềm thức</h3>
+            
+            <textarea id="question-input" 
+                      placeholder="Nhập điều bạn đang trăn trở... (ví dụ: Năng lượng nào đang cản trở dòng chảy tài chính của tôi?)" 
+                      class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                      rows="3"></textarea>
+
+            <div class="ai-reading-actions">
+                <button id="get-ai-reading-button" disabled class="primary-btn">Lắng nghe lời giải</button>
+                <button id="coi-sau-them-btn" disabled class="secondary-btn">Hỏi sâu hơn</button>
+                <button id="boc-bai-moi-btn" disabled class="reset-btn">Bắt đầu vòng gieo mới</button>
+            </div>
+
+            <div id="ai-response-display" class="mt-4">
+                <div id="loading-ai-response" class="ai-response loading hidden">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Các đấng tối cao đang luận giải...
+                </div>
+
+                <div id="ai-card-interpretations-container" class="mt-4 hidden p-4 border rounded-lg">
+                    <h4 class="text-md font-bold mb-3 text-center">Giải thích năng lượng từng lá bài:</h4>
+                    <div id="ai-card-interpretations-row" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        </div>
+                </div>
+
+                <div id="ai-overall-interpretation" class="mt-4 hidden p-4 border rounded-lg">
+                    <h4 class="text-md font-bold mb-2 text-center">Thông điệp tổng quan:</h4>
+                    <p id="overall-text" class="text-gray-200"></p>
+                </div>
+                <div id="ai-suggestions" class="mt-4 hidden p-4 border rounded-lg">
+                    <h4 class="text-md font-bold mb-2 text-center">Gợi ý từ vũ trụ:</h4>
+                    <p id="suggestions-text" class="text-gray-200"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="history-header">
+            <h2 class="text-xl font-bold text-gray-200">Nhật ký hành trình</h2>
+            <button id="clear-history-button">Xóa Lịch Sử</button>
+        </div>
+        <div id="history-container" class="history-container">
+            </div>
+    </div>
+
+    <div id="card-modal-backdrop" class="hidden">
+        <div id="card-modal-content">
+            <img id="modal-card-image" src="" alt="Lá bài Tarot" />
+            <h3 id="modal-card-name">Tên Lá Bài</h3>
+            <button id="modal-close-button">Đóng</button>
+        </div>
+    </div>
+
+    <script>
+        // API Key for Gemini API.
+        const apiKey = ""; 
+
+        // Danh sách đầy đủ 78 lá bài Tarot 
+        const allTarotCards = [
+            "0 - The Fool", "I - The Magician", "II - The High Priestess", "III - The Empress",
+            "IV - The Emperor", "V - The Hierophant", "VI - The Lovers", "VII - The Chariot",
+            "VIII - Strength", "IX - The Hermit", "X - Wheel of Fortune", "XI - Justice",
+            "XII - The Hanged Man", "XIII - Death", "XIV - Temperance", "XV - The Devil",
+            "XVI - The Tower", "XVII - The Star", "XVIII - The Moon", "XIX - The Sun",
+            "XX - Judgement", "XXI - The World",
+            "Ace of Wands", "Two of Wands", "Three of Wands", "Four of Wands", "Five of Wands",
+            "Six of Wands", "Seven of Wands", "Eight of Wands", "Nine of Wands", "Ten of Wands",
+            "Page of Wands", "Knight of Wands", "Queen of Wands", "King of Wands",
+            "Ace of Cups", "Two of Cups", "Three of Cups", "Four of Cups", "Five of Cups",
+            "Six of Cups", "Seven of Cups", "Eight of Cups", "Nine of Cups", "Ten of Cups",
+            "Page of Cups", "Knight of Cups", "Queen of Cups", "King of Cups",
+            "Ace of Swords", "Two of Swords", "Three of Swords", "Four of Swords", "Five of Swords",
+            "Six of Swords", "Seven of Swords", "Eight of Swords", "Nine of Swords", "Ten of Swords",
+            "Page of Swords", "Knight of Swords", "Queen of Swords", "King of Swords",
+            "Ace of Pentacles", "Two of Pentacles", "Three of Pentacles", "Four of Pentacles",
+            "Five of Pentacles", "Six of Pentacles", "Seven of Pentacles", "Eight of Pentacles",
+            "Nine of Pentacles", "Ten of Pentacles", "Page of Pentacles", "Knight of Pentacles",
+            "Queen of Pentacles", "King of Pentacles"
+        ];
+
+        let currentDeck = []; 
+        let currentDrawnCards = []; 
+        let historySpreads = []; // [MỚI] Sẽ được load từ LocalStorage
+
+        let numCardsToDraw = 1; 
+
+        // DOM Elements
+        const currentCardElement = document.getElementById('current-card');
+        const cardImageFront = document.getElementById('card-image-front');
+        const drawButton = document.getElementById('draw-button');
+        const completeSpreadButton = document.getElementById('complete-spread-button');
+        const messageBox = document.getElementById('message-box');
+        const currentSpreadDisplay = document.getElementById('current-spread-display');
+        const historyContainer = document.getElementById('history-container');
+        const clearHistoryButton = document.getElementById('clear-history-button'); // [MỚI]
+
+        const spreadTypeRadios = document.querySelectorAll('input[name="spread-type"]');
+        const questionInput = document.getElementById('question-input');
+
+        const getAiReadingButton = document.getElementById('get-ai-reading-button');
+        const coiSauThemBtn = document.getElementById('coi-sau-them-btn'); 
+        const bocBaiMoiBtn = document.getElementById('boc-bai-moi-btn');   
+
+        const loadingAiResponse = document.getElementById('loading-ai-response');
+        const aiCardInterpretationsContainer = document.getElementById('ai-card-interpretations-container');
+        const aiCardInterpretationsRow = document.getElementById('ai-card-interpretations-row');
+        const aiOverallInterpretation = document.getElementById('ai-overall-interpretation');
+        const overallText = document.getElementById('overall-text');
+        const aiSuggestions = document.getElementById('ai-suggestions');
+        const suggestionsText = document.getElementById('suggestions-text');
+
+        // [MỚI] DOM Elements cho Modal
+        const modalBackdrop = document.getElementById('card-modal-backdrop');
+        const modalCardImage = document.getElementById('modal-card-image');
+        const modalCardName = document.getElementById('modal-card-name');
+        const modalCloseButton = document.getElementById('modal-close-button');
+
+
+        const MAX_RETRIES = 5;
+        const INITIAL_BACKOFF_DELAY = 1000; 
+
+        /**
+         * [*** PHIÊN BẢN CHÍNH XÁC ***]
+         * Hàm này ánh xạ tên lá bài trong mảng allTarotCards (ví dụ: "I - The Magician")
+         * sang tên file trong GitHub của bạn (ví dụ: "major_01.jpg").
+         * @param {string} cardName - Tên lá bài.
+         * @returns {string} URL hình ảnh.
+         */
+        function getCardImageUrl(cardName) {
+            let filename = '';
+            // Tách tên lá bài, VÍ DỤ: "Three of Swords"
+            const parts = cardName.toLowerCase().split(' ');
+
+            if (cardName.includes(' - ')) {
+                // === Xử lý Ẩn Chính (Major Arcana) ===
+                const numberRoman = cardName.split(' - ')[0]; 
+                let numStr = '';
+                switch (numberRoman) {
+                    case '0': numStr = '00'; break; case 'I': numStr = '01'; break;
+                    case 'II': numStr = '02'; break; case 'III': numStr = '03'; break;
+                    case 'IV': numStr = '04'; break; case 'V': numStr = '05'; break;
+                    case 'VI': numStr = '06'; break; case 'VII': numStr = '07'; break;
+                    case 'VIII': numStr = '08'; break; case 'IX': numStr = '09'; break;
+                    case 'X': numStr = '10'; break; case 'XI': numStr = '11'; break;
+                    case 'XII': numStr = '12'; break; case 'XIII': numStr = '13'; break;
+                    case 'XIV': numStr = '14'; break; case 'XV': numStr = '15'; break;
+                    case 'XVI': numStr = '16'; break; case 'XVII': numStr = '17'; break;
+                    case 'XVIII': numStr = '18'; break; case 'XIX': numStr = '19'; break;
+                    case 'XX': numStr = '20'; break; case 'XXI': numStr = '21'; break;
+                    default: numStr = '00'; 
+                }
+                filename = `major_${numStr}.jpg`;
+            } else {
+                // === Xử lý Ẩn Phụ (Minor Arcana) ===
+                // Tên trong mảng: "Ace of Wands", "Two of Cups", "Page of Swords", "King of Pentacles"
+                // Tên file: "minor_wands_01.jpg", "minor_cups_02.jpg", "minor_swords_11.jpg", "minor_pentacles_14.jpg"
+                
+                // 1. Lấy chất (suit). parts = ["three", "of", "swords"]
+                let suit = parts[parts.length - 1]; // "swords"
+
+                // 2. Lấy số (number/rank).
+                let rank = parts[0]; // "three"
+                let numStr = '';
+                switch (rank) {
+                    case 'ace': numStr = '01'; break; case 'two': numStr = '02'; break;
+                    case 'three': numStr = '03'; break; case 'four': numStr = '04'; break;
+                    case 'five': numStr = '05'; break; case 'six': numStr = '06'; break;
+                    case 'seven': numStr = '07'; break; case 'eight': numStr = '08'; break;
+                    case 'nine': numStr = '09'; break; case 'ten': numStr = '10'; break;
+                    case 'page': numStr = '11'; break; case 'knight': numStr = '12'; break;
+                    case 'queen': numStr = '13'; break; case 'king': numStr = '14'; break;
+                    default: numStr = '01';
+                }
+                
+                // filename = "minor_" + "swords" + "_" + "03" + ".jpg"
+                filename = `minor_${suit}_${numStr}.jpg`;
+            }
+
+            // [MỚI] Thêm code Debug
+            // console.log('Mapping:', cardName, '->', filename);
+
+            // Đường dẫn tuyệt đối từ root, trỏ đến đúng thư mục 'images' (có 's')
+            return `/assets/images/tarot/${filename}`;
+        }
+
+        /**
+         * Hiển thị thông báo.
+         */
+        function showMessage(message, type = 'info') {
+            messageBox.textContent = message;
+            messageBox.className = 'message-box show'; 
+            messageBox.classList.remove('bg-red-500', 'bg-green-500', 'bg-blue-500');
+
+            if (type === 'error') {
+                messageBox.classList.add('bg-red-500');
+            } else if (type === 'success') {
+                messageBox.classList.add('bg-green-500');
+            } else {
+                messageBox.classList.add('bg-blue-500'); // Màu Xanh/Cyan mặc định
+            }
+            setTimeout(() => {
+                messageBox.classList.remove('show');
+            }, 3000); 
+        }
+
+        /**
+         * Xáo trộn bộ bài và reset trạng thái.
+         */
+        function shuffleDeck() {
+            currentDeck = [...allTarotCards]; 
+            for (let i = currentDeck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentDeck[i], currentDeck[j]] = [currentDeck[j], currentDeck[i]]; 
+            }
+            showMessage("Bộ bài đã được xáo trộn. Hãy rút lá bài đầu tiên.", "success");
+        }
+
+        /**
+         * Cập nhật hiển thị lá bài chính (lá mới nhất).
+         */
+        function updateCurrentCardDisplay(cardName) {
+            currentCardElement.classList.add('drawn');
+            
+            const imageUrl = getCardImageUrl(cardName);
+            cardImageFront.src = imageUrl;
+            cardImageFront.alt = `Lá bài: ${cardName}`;
+            // [MỚI] Thêm code Debug
+            cardImageFront.onerror = () => {
+                console.error(`Lỗi tải ảnh (lá chính): ${imageUrl}`);
+                cardImageFront.src = ''; // Ẩn biểu tượng lỗi
+            };
+        }
+
+        /**
+         * Cập nhật hiển thị các lá bài trong lượt hiện tại.
+         */
+        function updateCurrentSpreadDisplay() {
+            currentSpreadDisplay.innerHTML = ''; 
+            currentDrawnCards.forEach(cardName => {
+                const cardDiv = document.createElement('div');
+                cardDiv.classList.add('current-spread-card');
+                cardDiv.onclick = () => showModal(cardName); // [MỚI] Thêm sự kiện click
+                
+                const img = document.createElement('img');
+                const imageUrl = getCardImageUrl(cardName);
+                img.src = imageUrl;
+                img.alt = cardName;
+                // [MỚI] Thêm code Debug
+                img.onerror = () => {
+                    console.error(`Lỗi tải ảnh (lượt bóc): ${imageUrl}`);
+                    cardDiv.innerHTML = `<div class="card-name-overlay">${cardName}<br>(Lỗi ảnh)</div>`;
+                };
+
+                const overlay = document.createElement('div');
+                overlay.classList.add('card-name-overlay');
+                overlay.textContent = cardName;
+
+                cardDiv.appendChild(img);
+                cardDiv.appendChild(overlay);
+                currentSpreadDisplay.appendChild(cardDiv);
+            });
+        }
+
+        /**
+         * Cập nhật hiển thị toàn bộ lịch sử.
+         */
+        function updateHistoryDisplay() {
+            historyContainer.innerHTML = ''; 
+            historySpreads.slice().reverse().forEach((spread, index) => {
+                const spreadGroupDiv = document.createElement('div');
+                spreadGroupDiv.classList.add('history-spread-group');
+
+                const headerDiv = document.createElement('div');
+                headerDiv.classList.add('history-spread-header', 'mb-2', 'flex', 'justify-between', 'items-center', 'text-sm');
+                headerDiv.innerHTML = `
+                    <span class="font-bold text-cyan-300">Hành trình ${historySpreads.length - index}: ${spread.spreadType} lá</span>
+                    <span class="text-gray-400">${spread.timestamp}</span>
+                `;
+                spreadGroupDiv.appendChild(headerDiv);
+
+                const cardsDiv = document.createElement('div');
+                cardsDiv.classList.add('history-spread-cards');
+
+                spread.cards.forEach(cardName => {
+                    const cardItemDiv = document.createElement('div');
+                    cardItemDiv.classList.add('history-card-item');
+                    cardItemDiv.onclick = () => showModal(cardName); // [MỚI] Thêm sự kiện click
+
+                    const img = document.createElement('img');
+                    const imageUrl = getCardImageUrl(cardName);
+                    img.src = imageUrl;
+                    img.alt = cardName;
+                    // [MỚI] Thêm code Debug
+                    img.onerror = () => {
+                        console.error(`Lỗi tải ảnh (lịch sử): ${imageUrl}`);
+                        cardItemDiv.innerHTML = `<div class="card-name-overlay">${cardName}<br>(Lỗi)</div>`;
+                    };
+
+                    const overlay = document.createElement('div');
+                    overlay.classList.add('card-name-overlay');
+                    overlay.textContent = cardName;
+
+                    cardItemDiv.appendChild(img);
+                    cardItemDiv.appendChild(overlay);
+                    cardsDiv.appendChild(cardItemDiv);
+                });
+                spreadGroupDiv.appendChild(cardsDiv);
+                historyContainer.appendChild(spreadGroupDiv); 
+            });
+            historyContainer.scrollTop = 0; 
+        }
+
+        /**
+         * Bóc một lá bài.
+         */
+        function drawCard() {
+            if (currentDrawnCards.length >= numCardsToDraw) {
+                showMessage(`Bạn đã rút đủ ${numCardsToDraw} lá. Hãy lắng nghe lời giải đáp.`, "info");
+                return;
+            }
+            if (currentDeck.length === 0) {
+                shuffleDeck(); 
+            }
+            const randomIndex = Math.floor(Math.random() * currentDeck.length);
+            const drawnCard = currentDeck.splice(randomIndex, 1)[0]; 
+            currentDrawnCards.push(drawnCard); 
+            updateCurrentCardDisplay(drawnCard); 
+            updateCurrentSpreadDisplay(); 
+            if (currentDrawnCards.length === numCardsToDraw) {
+                drawButton.disabled = true; 
+                completeSpreadButton.disabled = false; 
+                getAiReadingButton.disabled = false; 
+                showMessage(`Bạn đã rút đủ ${numCardsToDraw} lá! Hãy nhập điều bạn trăn trở và 'Lắng nghe lời giải'.`, "success");
+            } else {
+                drawButton.textContent = `Rút lá bài (Lá ${currentDrawnCards.length + 1} / ${numCardsToDraw})`;
+            }
+        }
+
+        /**
+         * Hoàn tất lượt bóc, lưu vào lịch sử và bắt đầu lượt mới.
+         */
+        function completeSpread() {
+            if (currentDrawnCards.length > 0) {
+                const timestamp = new Date().toLocaleString('vi-VN', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit',
+                    hour12: false
+                });
+                historySpreads.push({
+                    timestamp: timestamp,
+                    cards: [...currentDrawnCards], 
+                    spreadType: numCardsToDraw
+                });
+                saveHistory(); // [MỚI] Lưu vào LocalStorage
+                showMessage("Hành trình này đã được ghi lại.", "success");
+            }
+            currentDrawnCards = []; 
+            currentSpreadDisplay.innerHTML = ''; 
+            clearAiResponseDisplay(); 
+            questionInput.value = ''; 
+            updateHistoryDisplay(); 
+            resetGameVisuals(); 
+            shuffleDeck(); 
+        }
+
+        /**
+         * Đặt lại giao diện về trạng thái ban đầu.
+         */
+        function resetGameVisuals() {
+            currentCardElement.classList.remove('drawn');
+            cardImageFront.src = ""; 
+            drawButton.textContent = "Rút một lá bài";
+            drawButton.disabled = false;
+            completeSpreadButton.disabled = true;
+            getAiReadingButton.disabled = true; 
+            coiSauThemBtn.disabled = true;       
+            bocBaiMoiBtn.disabled = true;       
+        }
+
+        /**
+         * Clear AI response display sections.
+         */
+        function clearAiResponseDisplay() {
+            aiCardInterpretationsRow.innerHTML = '';
+            overallText.textContent = '';
+            suggestionsText.textContent = '';
+            aiCardInterpretationsContainer.classList.add('hidden');
+            aiOverallInterpretation.classList.add('hidden');
+            aiSuggestions.classList.add('hidden');
+            loadingAiResponse.classList.add('hidden');
+        }
+
+        // --- [MỚI] Các hàm xử lý LocalStorage ---
+        function saveHistory() {
+            localStorage.setItem('tarotHistory', JSON.stringify(historySpreads));
+        }
+
+        function loadHistory() {
+            const savedHistory = localStorage.getItem('tarotHistory');
+            if (savedHistory) {
+                historySpreads = JSON.parse(savedHistory);
+                updateHistoryDisplay();
+            }
+        }
+        
+        function clearHistory() {
+            if (confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử bóc bài không?')) {
+                historySpreads = [];
+                localStorage.removeItem('tarotHistory');
+                updateHistoryDisplay();
+                showMessage('Đã xóa lịch sử.', 'success');
+            }
+        }
+
+        // --- [MỚI] Các hàm xử lý Modal ---
+        function showModal(cardName) {
+            const imageUrl = getCardImageUrl(cardName);
+            modalCardImage.src = imageUrl;
+            modalCardImage.alt = cardName;
+            modalCardName.textContent = cardName;
+            
+            modalBackdrop.classList.remove('hidden');
+            setTimeout(() => modalBackdrop.classList.add('show'), 10); // Thêm hiệu ứng fade
+        }
+
+        function closeModal() {
+            modalBackdrop.classList.remove('show');
+            setTimeout(() => modalBackdrop.classList.add('hidden'), 300); // Đợi hiệu ứng kết thúc
+        }
+        
+        /**
+         * Hàm chính để gọi API Gemini và nhận giải thích Tarot.
+         */
+        async function getAiReading(retries = 0) {
+            if (currentDrawnCards.length !== numCardsToDraw) {
+                showMessage(`Hãy rút đủ ${numCardsToDraw} lá bài trước khi lắng nghe thông điệp.`, "error");
+                return;
+            }
+            const userQuestion = questionInput.value.trim();
+            if (!userQuestion) {
+                showMessage("Hãy nhập điều bạn đang trăn trở.", "error");
+                return;
+            }
+            clearAiResponseDisplay(); 
+            loadingAiResponse.classList.remove('hidden'); 
+            getAiReadingButton.disabled = true;
+            const cardsString = currentDrawnCards.join(", ");
+            const cardInterpretationsPrompt = currentDrawnCards.map((card, index) => 
+                `{ "cardName": "${card}", "interpretation": "Giải mã năng lượng của lá bài ${index + 1} (${card}). Lá bài này mang thông điệp gì trong bối cảnh trải bài, và nó liên kết thế nào với điều người dùng trăn trở? Đưa ra lời thì thầm ngắn gọn." }`
+            ).join(',');
+            const prompt = `Bạn là một nhà thông thái huyền bí, một người giải mã tarot với năng lượng tâm linh sâu sắc. Bạn sử dụng ngôn từ ma mị, đầy ẩn ý nhưng sâu sắc (theo kiểu sentence case, không viết hoa tất cả). Tôi đã rút được ${numCardsToDraw} lá bài: "${cardsString}". Điều tôi trăn trở là: "${userQuestion}".
+            Hãy giải mã những thông điệp vũ trụ đang gửi gắm, tập trung vào năng lượng của các lá bài và mối liên kết của chúng với câu hỏi. Đừng tập trung vào kinh doanh hay marketing, mà hãy tập trung vào năng lượng, tinh thần và sự phát triển nội tâm.
+            Phản hồi của bạn phải theo định dạng JSON nghiêm ngặt sau:
+            {
+              "cardInterpretations": [
+                ${cardInterpretationsPrompt}
+              ],
+              "overallInterpretation": "Đây là thông điệp tổng quan từ vũ trụ. Khi các năng lượng này hội tụ, chúng nói lên điều gì về câu hỏi của người dùng? Hãy trả lời trực tiếp và sâu sắc.",
+              "nextStepsSuggestion": "Dựa trên các lá bài, vũ trụ gợi ý 3 hành động hoặc suy ngẫm tiếp theo. Những câu hỏi nào người dùng nên tự vấn mình để khai mở con đường?"
+            }
+            Đảm bảo phản hồi chỉ là một đối tượng JSON hợp lệ và không chứa bất kỳ văn bản nào khác ngoài JSON.`;
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = {
+                contents: chatHistory,
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            "cardInterpretations": {
+                                type: "ARRAY",
+                                items: {
+                                    type: "OBJECT",
+                                    properties: {
+                                        "cardName": { "type": "STRING" },
+                                        "interpretation": { "type": "STRING" }
+                                    }
+                                }
+                            },
+                            "overallInterpretation": { "type": "STRING" },
+                            "nextStepsSuggestion": { "type": "STRING" }
+                        },
+                        "propertyOrdering": ["cardInterpretations", "overallInterpretation", "nextStepsSuggestion"]
+                    }
+                }
+            };
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    if (response.status === 429 && retries < MAX_RETRIES) {
+                        const delay = INITIAL_BACKOFF_DELAY * Math.pow(2, retries) + Math.random() * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        return getAiReading(retries + 1); // Retry
+                    } else {
+                        throw new Error(`API request failed with status ${response.status}: ${response.statusText}`);
+                    }
+                }
+                const result = await response.json();
+                const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (jsonText) {
+                    try {
+                        const parsedJson = JSON.parse(jsonText);
+                        displayAiResponse(parsedJson);
+                        showMessage("Thông điệp đã được giải mã!", "success");
+                        coiSauThemBtn.disabled = false;
+                        bocBaiMoiBtn.disabled = false;
+                        getAiReadingButton.disabled = false;
+                    } catch (parseError) {
+                        console.error("Lỗi khi phân tích JSON từ AI:", parseError);
+                        loadingAiResponse.textContent = "Lỗi: Năng lượng vũ trụ bị nhiễu loạn. Xin hãy thử lại.";
+                        showMessage("Lỗi: Định dạng thông điệp không rõ ràng.", "error");
+                    }
+                } else {
+                    loadingAiResponse.textContent = "Không thể nhận được thông điệp. Xin hãy thử lại.";
+                    showMessage("Lỗi: Không có phản hồi từ vũ trụ.", "error");
+                }
+            } catch (error) {
+                console.error("Lỗi khi gọi API AI:", error);
+                loadingAiResponse.textContent = "Đã xảy ra lỗi khi kết nối với các đấng tối cao. Xin hãy thử lại sau.";
+                showMessage(`Lỗi: ${error.message}`, "error");
+            } finally {
+                loadingAiResponse.classList.add('hidden'); 
+            }
+        }
+
+        /**
+         * Hiển thị phản hồi AI có cấu trúc.
+         */
+        function displayAiResponse(responseData) {
+            aiCardInterpretationsRow.innerHTML = ''; 
+            if (responseData.cardInterpretations && responseData.cardInterpretations.length > 0) {
+                responseData.cardInterpretations.forEach(card => {
+                    const cardInterpretationDiv = document.createElement('div');
+                    cardInterpretationDiv.style.backgroundColor = '#030629';
+                    cardInterpretationDiv.style.border = '1px solid #005f7c';
+                    cardInterpretationDiv.classList.add('p-3', 'rounded-lg', 'shadow-md');
+                    cardInterpretationDiv.innerHTML = `
+                        <h5 class="font-bold text-cyan-300 mb-1">${card.cardName}:</h5>
+                        <p class="text-sm text-gray-300">${card.interpretation}</p>
+                    `;
+                    aiCardInterpretationsRow.appendChild(cardInterpretationDiv);
+                });
+                aiCardInterpretationsContainer.classList.remove('hidden');
+            } else {
+                 aiCardInterpretationsContainer.classList.add('hidden');
+            }
+            overallText.innerHTML = responseData.overallInterpretation.replace(/\n/g, '<br>');
+            aiOverallInterpretation.classList.remove('hidden');
+            suggestionsText.innerHTML = responseData.nextStepsSuggestion.replace(/\n/g, '<br>');
+            aiSuggestions.classList.remove('hidden');
+        }
+
+        // --- Event Listeners ---
+        
+        spreadTypeRadios.forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                numCardsToDraw = parseInt(event.target.value);
+                currentDrawnCards = []; 
+                currentSpreadDisplay.innerHTML = ''; 
+                resetGameVisuals(); 
+                shuffleDeck(); 
+                showMessage(`Bạn đã chọn hành trình ${numCardsToDraw} lá.`, "info");
+            });
+        });
+
+        coiSauThemBtn.addEventListener('click', () => {
+            coiSauThemBtn.disabled = true; 
+            bocBaiMoiBtn.disabled = false; 
+            questionInput.value = ''; 
+            clearAiResponseDisplay();
+            showMessage("Hãy nhập câu hỏi tiếp theo cho bộ bài này và 'Lắng nghe lời giải'.", "info");
+        });
+
+        bocBaiMoiBtn.addEventListener('click', () => {
+            completeSpread(); 
+        });
+
+        // Initialize the game
+        document.addEventListener('DOMContentLoaded', () => {
+            drawButton.addEventListener('click', drawCard);
+            completeSpreadButton.addEventListener('click', completeSpread);
+            getAiReadingButton.addEventListener('click', getAiReading); 
+            
+            // [MỚI] Các listener cho tính năng mới
+            clearHistoryButton.addEventListener('click', clearHistory);
+            modalCloseButton.addEventListener('click', closeModal);
+            modalBackdrop.addEventListener('click', (event) => {
+                if (event.target === modalBackdrop) {
+                    closeModal();
+                }
+            });
+
+            loadHistory(); // [MỚI] Tải lịch sử khi vào trang
+            shuffleDeck(); 
+            resetGameVisuals(); 
+        });
+    </script>
+
+</body>
+</html>
