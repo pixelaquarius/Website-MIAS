@@ -1,0 +1,8 @@
+<header class="container flex items-center justify-between py-6">
+  <a href="/" class="font-semibold text-xl">Miasteam</a>
+  <nav class="flex gap-6">
+    <a href="/agency/" class="{% if page.url contains '/agency/' %}text-blue-600 font-medium{% else %}hover:text-blue-600{% endif %}">Agency</a>
+    <a href="/blog/" class="{% if page.url contains '/blog/' %}text-blue-600 font-medium{% else %}hover:text-blue-600{% endif %}">Blog</a>
+    <a href="/about/" class="{% if page.url == '/about/' %}text-blue-600 font-medium{% else %}hover:text-blue-600{% endif %}">About</a>
+  </nav>
+</header>
