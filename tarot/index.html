@@ -10,6 +10,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Spectral:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
+        /* --- [MỚI] Định nghĩa font tùy chỉnh của bạn --- */
+        @font-face {
+          font-family: 'KD Hidayatullah v2';
+          /* * Đường dẫn trỏ đến file font bạn đã upload.
+           * (Thêm .woff2 nếu bạn có convert để tối ưu)
+           */
+          src: url('/assets/fonts/KD-Hidayatullah-v2.ttf') format('truetype');
+          font-weight: 400; /* 400 = normal */
+          font-style: normal;
+          font-display: swap; 
+        }
+
+        /* --- [CẬP NHẬT] Áp dụng font mới cho tiêu đề/nút --- */
+        h1, h2, h3, h4, h5, h6, .button-area button, .ai-reading-actions button {
+            /* * [THAY ĐỔI] Dùng font của bạn làm ưu tiên, 
+             * 'Cinzel' làm dự phòng nếu font mới lỗi.
+             */
+            font-family: 'KD Hidayatullah v2', 'Cinzel', serif;
+            font-weight: 700; /* Giữ nguyên font-weight 700 */
+        }
+
+        /* --- [KHÔNG ĐỔI] Giữ nguyên font văn bản (Spectral) --- */
+        body {
+            font-family: 'Spectral', serif; 
+            /* (Các thuộc tính khác giữ nguyên...) */
         body {
             font-family: 'Spectral', serif; /* Font chữ tâm linh hơn cho nội dung */
             background: linear-gradient(135deg, #110c1c 0%, #2a203f 100%); /* Nền tối, tím than */
