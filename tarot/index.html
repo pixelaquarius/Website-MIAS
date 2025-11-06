@@ -525,8 +525,7 @@
         const INITIAL_BACKOFF_DELAY = 1000; 
 
         /**
-         * [*** ĐÃ VIẾT LẠI HOÀN TOÀN ***]
-         * Tạo URL hình ảnh TĨNH cho mỗi lá bài từ thư mục assets.
+         * [*** PHIÊN BẢN CHÍNH XÁC ***]
          * Hàm này ánh xạ tên lá bài trong mảng allTarotCards (ví dụ: "I - The Magician")
          * sang tên file trong GitHub của bạn (ví dụ: "major_01.jpg").
          * @param {string} cardName - Tên lá bài.
@@ -577,10 +576,6 @@
                 
                 // 1. Lấy chất (suit)
                 let suit = parts[parts.length - 1]; // wands, cups, swords, pentacles
-                if (suit === 'pentacles') {
-                    suit = 'pentacles'; // Đảm bảo đúng tên file
-                }
-                // (wands, cups, swords đã đúng)
 
                 // 2. Lấy số (number/rank)
                 let rank = parts[0]; // ace, two, three, ..., page, knight, queen, king
@@ -607,7 +602,7 @@
                 filename = `minor_${suit}_${numStr}.jpg`;
             }
 
-            // [ĐÃ CẬP NHẬT] Đường dẫn tuyệt đối từ root, trỏ đến đúng thư mục 'images' (có 's')
+            // Đường dẫn tuyệt đối từ root, trỏ đến đúng thư mục 'images' (có 's')
             return `/assets/images/tarot/${filename}`;
         }
 
@@ -863,7 +858,7 @@
                                 }
                             },
                             "overallInterpretation": { "type": "STRING" },
-                            "nextStepsSuggestion": { "type": "STRING" }
+S                            "nextStepsSuggestion": { "type": "STRING" }
                         },
                         "propertyOrdering": ["cardInterpretations", "overallInterpretation", "nextStepsSuggestion"]
                     }
