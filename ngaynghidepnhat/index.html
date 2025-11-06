@@ -33,6 +33,47 @@
             max-width: 32rem; /* Giới hạn chiều rộng để dễ đọc */
             width: 100%;
         }
+        /* CSS cho Modal (Thêm mới) */
+        .modal {
+            display: none; /* Ẩn mặc định */
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 24px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 0.75rem;
+            position: relative;
+            animation: fadeIn 0.3s;
+        }
+        .close-btn {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+        }
+        @keyframes fadeIn {
+            from {opacity: 0; transform: scale(0.95);}
+            to {opacity: 1; transform: scale(1);}
+        }
     </style>
 </head>
 <body>
@@ -92,6 +133,11 @@
 
             <p class="text-lg font-medium">Ngày nghỉ của bạn là: <strong id="vacationDateDisplay" class="text-blue-600"></strong></p>
             
+            <!-- Nút mở Modal (Thêm mới) -->
+            <button id="showAnalysisBtn" class="mt-4 bg-gray-600 text-white py-2 px-5 rounded-lg font-semibold hover:bg-gray-700 transition duration-300">
+                Xem phân tích thần số học
+            </button>
+            
             <a href="/" class="inline-block mt-6 text-sm text-blue-600 hover:underline">Quay lại trang chủ</a>
         </section>
 
@@ -102,8 +148,30 @@
                 Xem lại đồng hồ đếm ngược
             </button>
         </section>
-
     </div>
+
+    <!-- Modal Phân Tích Thần Số Học (Thêm mới) -->
+    <div id="analysisModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModalBtn">&times;</span>
+            <h3 class="text-2xl font-bold text-blue-600 mb-4">Phân Tích Thần Số Học Của Bạn</h3>
+            
+            <div class="mb-4">
+                <p class="text-lg">Số chủ đạo của bạn là: <strong id="lifePathNumberDisplay" class="text-gray-800"></strong></p>
+            </div>
+            
+            <div class="mb-4">
+                <h4 class="text-lg font-semibold text-gray-700 mb-2">Đặc điểm tính cách của bạn:</h4>
+                <p id="personalityAnalysis" class="text-gray-600"></p>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-semibold text-gray-700 mb-2">Tại sao chúng tôi chọn ngày này cho bạn:</h4>
+                <p id="dateReasoning" class="text-gray-600"></p>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         const STORAGE_KEY = 'companyVacationFinder';
@@ -144,6 +212,69 @@
             
             // Lần rút gọn cuối cùng kiểm tra số master
             return reduceDigits(total.toString(), true);
+        }
+
+        /**
+         * Cung cấp phân tích dựa trên số chủ đạo. (Thêm mới)
+         * @param {number} lifePath - Số chủ đạo (1-9, 11, 22).
+         * @returns {object} - { personality: string, reasoning: string }
+         */
+        function getNumerologyAnalysis(lifePath) {
+            const analysis = {
+                personality: "",
+                reasoning: ""
+            };
+
+            switch (lifePath) {
+                case 1:
+                    analysis.personality = "Bạn là người tiên phong, độc lập và có tố chất lãnh đạo. Bạn đầy tham vọng, quyết đoán và thích tự mình giải quyết vấn đề.";
+                    analysis.reasoning = "Ngày nghỉ được chọn (ngày 1 của tháng) tượng trưng cho sự khởi đầu mới. Đây là cơ hội để bạn 'sạc' lại năng lượng lãnh đạo và bắt đầu một dự án cá nhân mới mà bạn hằng ấp ủ.";
+                    break;
+                case 2:
+                    analysis.personality = "Bạn là người nhạy cảm, giàu lòng trắc ẩn và là nhà ngoại giao bẩm sinh. Bạn coi trọng sự hợp tác, hòa bình và các mối quan hệ.";
+                    analysis.reasoning = "Ngày 2 là ngày của sự kết nối. Ngày nghỉ này lý tưởng để bạn hàn gắn hoặc củng cố các mối quan hệ, dành thời gian chất lượng cho người thân yêu và tìm lại sự cân bằng nội tâm.";
+                    break;
+                case 3:
+                    analysis.personality = "Bạn là người sáng tạo, lạc quan và có khả năng giao tiếp tuyệt vời. Bạn truyền cảm hứng và mang lại niềm vui cho những người xung quanh.";
+                    analysis.reasoning = "Ngày 3 là ngày của sự thể hiện. Hãy dùng ngày nghỉ này để theo đuổi một sở thích sáng tạo (vẽ, viết, chơi nhạc) hoặc đơn giản là đi giao lưu, kết nối và lan tỏa năng lượng tích cực của bạn.";
+                    break;
+                case 4:
+                    analysis.personality = "Bạn là người thực tế, có tổ chức, đáng tin cậy và chăm chỉ. Bạn là nền tảng vững chắc của bất kỳ tổ chức nào.";
+                    analysis.reasoning = "Ngày 4 tượng trưng cho sự ổn định. Sau thời gian làm việc chăm chỉ, ngày nghỉ này là để bạn xây dựng lại 'nền móng' của mình: nghỉ ngơi, dọn dẹp nhà cửa, hoặc lập kế hoạch cho tương lai một cách có hệ thống.";
+                    break;
+                case 5:
+                    analysis.personality = "Bạn là người yêu tự do, thích phiêu lưu và tò mò. Bạn dễ thích nghi và luôn tìm kiếm những trải nghiệm mới.";
+                    analysis.reasoning = "Ngày 5 là ngày của sự tự do và thay đổi. Ngày nghỉ này hoàn hảo cho một chuyến đi ngẫu hứng, thử một điều gì đó hoàn toàn mới, hoặc đơn giản là thoát khỏi mọi lịch trình để làm bất cứ điều gì bạn muốn.";
+                    break;
+                case 6:
+                    analysis.personality = "Bạn là người có trách nhiệm, giàu tình yêu thương và luôn chăm sóc người khác. Bạn coi trọng gia đình và sự hòa hợp trong cộng đồng.";
+                    analysis.reasoning = "Ngày 6 là ngày của gia đình và trách nhiệm. Hãy dùng ngày nghỉ này để chăm sóc bản thân (điều bạn thường quên) hoặc dành trọn vẹn thời gian để vun đắp cho tổ ấm và những người bạn yêu thương.";
+                    break;
+                case 7:
+                    analysis.personality = "Bạn là nhà phân tích, có trực giác tốt và là người tìm kiếm tri thức. Bạn thích dành thời gian một mình để suy ngẫm và tìm hiểu sâu về thế giới.";
+                    analysis.reasoning = "Ngày 7 là ngày của tâm linh và trí tuệ. Đây là ngày nghỉ lý tưởng để bạn 'ẩn mình', đọc một cuốn sách hay, thiền, hoặc đi dạo một mình trong thiên nhiên để kết nối lại với tiếng nói bên trong bạn.";
+                    break;
+                case 8:
+                    analysis.personality = "Bạn là người mạnh mẽ, có uy quyền và có tư duy về thành công, vật chất. Bạn có khả năng điều hành và tổ chức xuất sắc.";
+                    analysis.reasoning = "Ngày 8 là ngày của sức mạnh và sự thịnh vượng. Ngày nghỉ này là để bạn tận hưởng thành quả của mình (ví dụ: một bữa tối sang trọng) hoặc lập kế hoạch chiến lược cho các mục tiêu tài chính tiếp theo của bạn.";
+                    break;
+                case 9:
+                    analysis.personality = "Bạn là người nhân ái, có lý tưởng và luôn quan tâm đến lợi ích cộng đồng. Bạn là một nhà nhân đạo bẩm sinh.";
+                    analysis.reasoning = "Ngày 9 là ngày của sự hoàn thành và cho đi. Ngày nghỉ này là cơ hội để bạn nhìn lại những gì đã qua, buông bỏ những điều cũ và có thể làm một việc tốt cho cộng đồng hoặc người khác.";
+                    break;
+                case 11:
+                    analysis.personality = "Bạn là người có trực giác cực kỳ nhạy bén (Số Master). Bạn có khả năng truyền cảm hứng và tầm nhìn sâu sắc, nhưng cũng dễ bị căng thẳng.";
+                    analysis.reasoning = "Ngày 11 (Master) là ngày của sự khai sáng tâm linh. Ngày nghỉ này là thời điểm hoàn hảo để bạn tin tưởng vào trực giác của mình. Hãy làm điều gì đó giúp bạn kết nối với mục đích cao cả hơn, như thiền định hoặc viết nhật ký.";
+                    break;
+                case 22:
+                    analysis.personality = "Bạn là 'Kiến trúc sư bậc thầy' (Số Master). Bạn có khả năng biến những giấc mơ lớn thành hiện thực, kết hợp lý tưởng (11) với tính thực tế (4).";
+                    analysis.reasoning = "Ngày 22 (Master) là ngày của sự kiến tạo. Ngày nghỉ này là để bạn nghỉ ngơi một cách có mục đích, lên kế hoạch chi tiết cho 'dự án lớn' tiếp theo của bạn, dù đó là sự nghiệp hay cuộc sống cá nhân.";
+                    break;
+                default:
+                    analysis.personality = "Số của bạn rất đặc biệt, hãy tận hưởng ngày nghỉ!";
+                    analysis.reasoning = "Ngày nghỉ này được chọn để bạn có thời gian thư giãn và tái tạo năng lượng.";
+            }
+            return analysis;
         }
 
         /**
@@ -201,6 +332,17 @@
             
             showView(countdownView);
 
+            // Xử lý Modal (Thêm mới)
+            const urlParams = new URLSearchParams(window.location.search);
+            const lifePath = parseInt(urlParams.get('lp')); // Lấy số chủ đạo từ URL
+            
+            if (lifePath) {
+                const analysis = getNumerologyAnalysis(lifePath);
+                document.getElementById('lifePathNumberDisplay').textContent = lifePath;
+                document.getElementById('personalityAnalysis').textContent = analysis.personality;
+                document.getElementById('dateReasoning').textContent = analysis.reasoning;
+            }
+
             // Bắt đầu đếm ngược
             startCountdown(dateString);
         }
@@ -216,7 +358,8 @@
             document.getElementById('viewCountdownBtn').onclick = () => {
                 // Điều hướng đến trang "subhtml" (trang countdown)
                 // SỬA LỖI: Cần cung cấp đường dẫn đầy đủ (pathname), không chỉ query string
-                window.location.href = window.location.pathname + `?date=${storedData.date}&name=${encodeURIComponent(storedData.name)}`;
+                // THÊM MỚI: Truyền cả lifePath (lp) qua URL
+                window.location.href = window.location.pathname + `?date=${storedData.date}&name=${encodeURIComponent(storedData.name)}&lp=${storedData.lifePath}`;
             };
         }
 
@@ -278,18 +421,23 @@
             const month = (vacationDate.getMonth() + 1).toString().padStart(2, '0');
             const day = vacationDate.getDate().toString().padStart(2, '0');
             const vacationDateISO = `${year}-${month}-${day}`;
+            
+            // Tính toán số chủ đạo (Thêm mới)
+            const lifePath = calculateLifePath(dob);
 
             // Lưu trữ (giả lập "ID máy")
             const storedData = {
                 date: vacationDateISO,
                 name: name,
-                position: position
+                position: position,
+                lifePath: lifePath // Thêm số chủ đạo vào bộ nhớ
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(storedData));
 
             // Chuyển hướng sang trang "subhtml" (countdown)
             // SỬA LỖI: Cần cung cấp đường dẫn đầy đủ (pathname), không chỉ query string
-            window.location.href = window.location.pathname + `?date=${vacationDateISO}&name=${encodeURIComponent(name)}`;
+            // THÊM MỚI: Truyền cả lifePath (lp) qua URL
+            window.location.href = window.location.pathname + `?date=${vacationDateISO}&name=${encodeURIComponent(name)}&lp=${lifePath}`;
         });
 
         // --- Logic Khởi Động (Initialization Logic) ---
@@ -311,6 +459,27 @@
             } else {
                 // Người dùng mới, hiển thị form
                 showView(formView);
+            }
+            
+            // Xử lý sự kiện cho Modal (Thêm mới)
+            const modal = document.getElementById('analysisModal');
+            const showBtn = document.getElementById('showAnalysisBtn');
+            const closeBtn = document.getElementById('closeModalBtn');
+
+            if (showBtn) {
+                showBtn.onclick = () => {
+                    modal.style.display = 'block';
+                }
+            }
+            if (closeBtn) {
+                closeBtn.onclick = () => {
+                    modal.style.display = 'none';
+                }
+            }
+            window.onclick = (event) => {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
             }
         });
 
