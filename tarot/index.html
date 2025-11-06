@@ -20,8 +20,6 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
-            /* Thêm hiệu ứng sao lấp lánh (nếu muốn) */
-            /* background-image: url('...'); */
         }
         h1, h2, h3, h4, h5, h6, .button-area button, .ai-reading-actions button {
             font-family: 'Cinzel', serif; /* Font chữ huyền bí cho tiêu đề & nút */
@@ -373,7 +371,7 @@
         <div class="card-display-area">
             <div id="current-card" class="card">
                 <img id="card-image-back" class="card-image-back" 
-                    src="/assets/image/tarot/card_back.jpg" 
+                    src="/assets/images/tarot/cardback.jpg" 
                     alt="Mặt sau lá bài Tarot"
                 >
                 <img id="card-image-front" class="card-image-front" 
@@ -502,22 +500,90 @@
         const INITIAL_BACKOFF_DELAY = 1000; 
 
         /**
-         * [ĐÃ CẬP NHẬT]
+         * [*** ĐÃ VIẾT LẠI HOÀN TOÀN ***]
          * Tạo URL hình ảnh TĨNH cho mỗi lá bài từ thư mục assets.
-         * @param {string} cardName - Tên lá bài (ví dụ: "I - The Magician").
+         * Hàm này ánh xạ tên lá bài trong mảng allTarotCards (ví dụ: "I - The Magician")
+         * sang tên file trong GitHub của bạn (ví dụ: "major_01.jpg").
+         * @param {string} cardName - Tên lá bài.
          * @returns {string} URL hình ảnh.
          */
         function getCardImageUrl(cardName) {
-            // Chuyển tên bài thành tên file (ví dụ: "I - The Magician" -> "i_the_magician")
-            // Quy tắc này PHẢI khớp với tên file ảnh bạn đã tải lên.
-            const filename = cardName.toLowerCase()
-                .replace(/\s-\s/g, '_') // "0 - The Fool" -> "0_the_fool"
-                .replace(/\s+/g, '_') // "ace of wands" -> "ace_of_wands"
-                .replace(/[^a-z0-9_]/g, ''); // Loại bỏ ký tự đặc biệt
+            let filename = '';
+            const parts = cardName.toLowerCase().split(' ');
 
-            // Trả về đường dẫn tĩnh trong thư mục /assets/image/tarot/
-            // (Đảm bảo bạn dùng đuôi .jpg, nếu dùng .png thì đổi ở đây)
-            return `/assets/image/tarot/${filename}.jpg`;
+            if (cardName.includes(' - ')) {
+                // === Xử lý Ẩn Chính (Major Arcana) ===
+                // Tên trong mảng: "0 - The Fool", "I - The Magician", "XXI - The World"
+                // Tên file: "major_00.jpg", "major_01.jpg", "major_21.jpg"
+                const numberRoman = cardName.split(' - ')[0]; 
+                let numStr = '';
+
+                switch (numberRoman) {
+                    case '0': numStr = '00'; break;
+                    case 'I': numStr = '01'; break;
+                    case 'II': numStr = '02'; break;
+                    case 'III': numStr = '03'; break;
+                    case 'IV': numStr = '04'; break;
+                    case 'V': numStr = '05'; break;
+                    case 'VI': numStr = '06'; break;
+                    case 'VII': numStr = '07'; break;
+                    case 'VIII': numStr = '08'; break;
+                    case 'IX': numStr = '09'; break;
+                    case 'X': numStr = '10'; break;
+                    case 'XI': numStr = '11'; break;
+                    case 'XII': numStr = '12'; break;
+                    case 'XIII': numStr = '13'; break;
+                    case 'XIV': numStr = '14'; break;
+                    case 'XV': numStr = '15'; break;
+                    case 'XVI': numStr = '16'; break;
+                    case 'XVII': numStr = '17'; break;
+                    case 'XVIII': numStr = '18'; break;
+                    case 'XIX': numStr = '19'; break;
+                    case 'XX': numStr = '20'; break;
+                    case 'XXI': numStr = '21'; break;
+                    default: numStr = '00'; // Mặc định về The Fool nếu lỗi
+                }
+                filename = `major_${numStr}.jpg`;
+
+            } else {
+                // === Xử lý Ẩn Phụ (Minor Arcana) ===
+                // Tên trong mảng: "Ace of Wands", "Two of Cups", "Page of Swords", "King of Pentacles"
+                // Tên file: "minor_wands_01.jpg", "minor_cups_02.jpg", "minor_swords_11.jpg", "minor_pentacles_14.jpg"
+                
+                // 1. Lấy chất (suit)
+                let suit = parts[parts.length - 1]; // wands, cups, swords, pentacles
+                if (suit === 'pentacles') {
+                    suit = 'pentacles'; // Đảm bảo đúng tên file
+                }
+                // (wands, cups, swords đã đúng)
+
+                // 2. Lấy số (number/rank)
+                let rank = parts[0]; // ace, two, three, ..., page, knight, queen, king
+                let numStr = '';
+
+                switch (rank) {
+                    case 'ace': numStr = '01'; break;
+                    case 'two': numStr = '02'; break;
+                    case 'three': numStr = '03'; break;
+                    case 'four': numStr = '04'; break;
+                    case 'five': numStr = '05'; break;
+                    case 'six': numStr = '06'; break;
+                    case 'seven': numStr = '07'; break;
+                    case 'eight': numStr = '08'; break;
+                    case 'nine': numStr = '09'; break;
+                    case 'ten': numStr = '10'; break;
+                    case 'page': numStr = '11'; break;
+                    case 'knight': numStr = '12'; break;
+                    case 'queen': numStr = '13'; break;
+                    case 'king': numStr = '14'; break;
+                    default: numStr = '01'; // Mặc định về Ace nếu lỗi
+                }
+                
+                filename = `minor_${suit}_${numStr}.jpg`;
+            }
+
+            // [ĐÃ CẬP NHẬT] Đường dẫn tuyệt đối từ root, trỏ đến đúng thư mục 'images' (có 's')
+            return `/assets/images/tarot/${filename}`;
         }
 
         /**
@@ -739,7 +805,7 @@
                 `{ "cardName": "${card}", "interpretation": "Giải mã năng lượng của lá bài ${index + 1} (${card}). Lá bài này mang thông điệp gì trong bối cảnh trải bài, và nó liên kết thế nào với điều người dùng trăn trở? Đưa ra lời thì thầm ngắn gọn." }`
             ).join(',');
 
-            // [ĐÃ CẬP NHẬT] Prompt với ngôn từ ma mị hơn
+            // Prompt với ngôn từ ma mị
             const prompt = `Bạn là một nhà thông thái huyền bí, một người giải mã tarot với năng lượng tâm linh sâu sắc. Bạn sử dụng ngôn từ ma mị, đầy ẩn ý nhưng sâu sắc (theo kiểu sentence case, không viết hoa tất cả). Tôi đã rút được ${numCardsToDraw} lá bài: "${cardsString}". Điều tôi trăn trở là: "${userQuestion}".
             Hãy giải mã những thông điệp vũ trụ đang gửi gắm, tập trung vào năng lượng của các lá bài và mối liên kết của chúng với câu hỏi. Đừng tập trung vào kinh doanh hay marketing, mà hãy tập trung vào năng lượng, tinh thần và sự phát triển nội tâm.
             Phản hồi của bạn phải theo định dạng JSON nghiêm ngặt sau:
