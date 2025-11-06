@@ -4,11 +4,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>{{ page.title | default: site.title }}</title>
+  
   <script src="https://cdn.tailwindcss.com"></script>
+  
   <link rel="stylesheet" href="/assets/css/typography.css">
+  
+  <link rel="stylesheet" href="/assets/css/custom.css">
+  
   <link rel="icon" href="/assets/uploads/favicon.png">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="bg-white">
+
+<body class="bg-gray-50 text-gray-800">
 
   {% include header.html %}
 
