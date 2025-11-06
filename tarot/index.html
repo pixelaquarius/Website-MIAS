@@ -888,6 +888,9 @@
         /**
          * Bóc một lá bài.
          */
+       /**
+         * [NÂNG CẤP] Bóc một lá bài (với hiệu ứng lật úp lại)
+         */
         function drawCard() {
             if (currentDrawnCards.length >= numCardsToDraw) {
                 showMessage(`Bạn đã rút đủ ${numCardsToDraw} lá. Hãy lắng nghe lời giải đáp.`, "info");
@@ -897,13 +900,39 @@
                 shuffleDeck(); 
             }
             
-            // Lật lá bài về mặt úp trước khi rút (nếu nó đang ngửa)
+            // 1. Kiểm tra xem lá bài có đang ngửa không
             if (currentCardElement.classList.contains('drawn')) {
+                // 2. Nếu đang ngửa -> Lật úp lại
                 currentCardElement.classList.remove('drawn');
-                // Đợi lật xong mới rút lá mới
+                // 3. Đợi 300ms (nửa thời gian lật) rồi mới rút lá mới
                 setTimeout(drawNewCard, 300); // 300ms = 0.6s / 2
             } else {
+                // 4. Nếu đang úp (lần đầu) -> Rút luôn
                 drawNewCard();
+            }
+        }
+        
+        /**
+         * [MỚI] Hàm con để rút lá bài mới (sau khi đã lật úp)
+         */
+        function drawNewCard() {
+            const randomIndex = Math.floor(Math.random() * currentDeck.length);
+            const drawnCard = currentDeck.splice(randomIndex, 1)[0]; 
+            currentDrawnCards.push(drawnCard); 
+            
+            // Cập nhật hình ảnh (khi lá bài đang úp) và lật ngửa ra
+            updateCurrentCardDisplay(drawnCard); 
+            
+            // Cập nhật danh sách các lá đã rút bên dưới
+            updateCurrentSpreadDisplay(); 
+            
+            if (currentDrawnCards.length === numCardsToDraw) {
+                drawButton.disabled = true; 
+                completeSpreadButton.disabled = false; 
+                getAiReadingButton.disabled = false; 
+                showMessage(`Bạn đã rút đủ ${numCardsToDraw} lá! Hãy nhập điều bạn trăn trở và 'Lắng nghe lời giải'.`, "success");
+            } else {
+                drawButton.textContent = `Rút lá bài (Lá ${currentDrawnCards.length + 1} / ${numCardsToDraw})`;
             }
         }
         
