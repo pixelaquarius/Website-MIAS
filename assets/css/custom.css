@@ -1,0 +1,103 @@
+/* ==============================================
+   TYPOGRAPHY & BASE
+   ============================================== */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  /* [Suy luận] Dùng font chữ đậm, rõ ràng cho tiêu đề giống Dentsu */
+  font-weight: 700; 
+  letter-spacing: -0.02em;
+}
+
+/* ==============================================
+   BUTTON & LINK STATES (Giao diện lia chuột)
+   ============================================== */
+
+/* Nút chính (Primary Button) */
+.btn-primary {
+  @apply bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md;
+  transition: all 0.3s ease;
+}
+.btn-primary:hover {
+  @apply bg-blue-700 shadow-lg;
+  transform: translateY(-2px); /* Hiệu ứng "nâng" nút lên */
+}
+
+/* Nút phụ (Outline Button) */
+.btn-outline {
+  @apply bg-transparent border-2 border-blue-600 text-blue-600 font-semibold py-3 px-6 rounded-lg;
+  transition: all 0.3s ease;
+}
+.btn-outline:hover {
+  @apply bg-blue-600 text-white;
+  transform: translateY(-2px);
+}
+
+/* Nút text có mũi tên */
+.link-arrow {
+  @apply inline-flex items-center text-blue-600 font-semibold;
+  transition: transform 0.3s ease;
+}
+.link-arrow::after {
+  content: '→';
+  margin-left: 6px;
+  transition: transform 0.3s ease;
+}
+.link-arrow:hover {
+  @apply text-blue-700;
+}
+.link-arrow:hover::after {
+  transform: translateX(4px); /* Mũi tên di chuyển khi hover */
+}
+
+
+/* ==============================================
+   MOTION EFFECTS (Hiệu ứng chuyển động)
+   ============================================== */
+
+/* Keyframes cho hiệu ứng fade-in-up */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Áp dụng animation cho các section */
+/* [Suy luận] Thêm class .section-animate vào các <section> để kích hoạt */
+.section-animate {
+  opacity: 0; /* Ẩn ban đầu */
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Delay cho các item con (nếu cần) */
+.section-animate .item-1 { animation-delay: 0.1s; }
+.section-animate .item-2 { animation-delay: 0.2s; }
+.section-animate .item-3 { animation-delay: 0.3s; }
+
+/* ==============================================
+   CARD & OTHER COMPONENTS
+   ============================================== */
+
+/* Hiệu ứng cho card (Dịch vụ, Case Study) */
+.card-hover {
+  @apply bg-white rounded-xl shadow-lg border border-gray-100;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); /* Transition mượt */
+}
+.card-hover:hover {
+  @apply shadow-2xl;
+  transform: scale(1.03) translateY(-5px); /* Phóng to và nâng lên */
+}
+
+/* Thẻ Badge */
+.badge-pro {
+  @apply inline-block bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider;
+}
