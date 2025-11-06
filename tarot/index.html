@@ -3,31 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ứng Dụng Bóc Bài Tarot Với Hình Ảnh</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Hành Trình Huyền Bí</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Spectral:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Màu nền nhẹ nhàng */
+            font-family: 'Spectral', serif; /* Font chữ tâm linh hơn cho nội dung */
+            background: linear-gradient(135deg, #110c1c 0%, #2a203f 100%); /* Nền tối, tím than */
+            color: #e0e0e0; /* Màu chữ chính (trắng ngà) */
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Căn trên cùng */
+            align-items: flex-start;
             min-height: 100vh;
             margin: 0;
             padding: 20px;
+            /* Thêm hiệu ứng sao lấp lánh (nếu muốn) */
+            /* background-image: url('...'); */
+        }
+        h1, h2, h3, h4, h5, h6, .button-area button, .ai-reading-actions button {
+            font-family: 'Cinzel', serif; /* Font chữ huyền bí cho tiêu đề & nút */
+            font-weight: 700;
         }
         .app-container {
-            background-color: #ffffff;
+            background-color: rgba(26, 20, 44, 0.85); /* Nền container mờ, màu tím đậm */
             border-radius: 1.5rem; 
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); 
+            box-shadow: 0 10px 35px rgba(243, 196, 15, 0.1); /* Shadow màu vàng gold */
+            border: 1px solid rgba(241, 196, 15, 0.3); /* Viền vàng mờ */
             padding: 2rem;
             width: 100%;
-            max-width: 850px; /* Tăng chiều rộng tối đa */
+            max-width: 850px;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 1.5rem;
+            backdrop-filter: blur(5px); /* Hiệu ứng mờ kính */
         }
         .card-display-area {
             width: 100%;
@@ -36,22 +48,22 @@
             margin-bottom: 1rem;
         }
         .card {
-            width: 180px; /* Kích thước lá bài chính */
+            width: 180px;
             height: 300px;
-            background-color: #2c3e50; /* Màu mặt sau lá bài */
+            background-color: #1a142c;
             border-radius: 0.75rem; 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.2);
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 3px solid #f39c12; /* Viền vàng cam nổi bật */
+            border: 3px solid #f1c40f; /* Viền vàng gold */
             overflow: hidden; 
             position: relative;
         }
         .card-image-back, .card-image-front {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Phủ kín khung */
+            object-fit: cover;
             border-radius: 0.75rem;
             transition: opacity 0.5s ease-in-out;
         }
@@ -75,19 +87,12 @@
             flex-wrap: wrap; 
         }
         .current-spread-card {
-            width: calc(33.33% - 0.5rem); /* 3 cards per row */
+            width: calc(33.33% - 0.5rem);
             max-width: 110px; 
             height: 180px;
-            background-color: #ecf0f1; 
             border-radius: 0.5rem;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: #2c3e50;
-            text-align: center;
-            border: 2px solid #3498db;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            border: 2px solid #8e44ad; /* Viền tím */
             overflow: hidden;
             position: relative;
         }
@@ -102,29 +107,20 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            color: #f1c40f; /* Chữ vàng */
             padding: 4px 2px;
             font-size: 0.65rem;
             line-height: 1.2;
+            font-family: 'Spectral', serif;
             font-weight: bold;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
         }
 
-        /* Responsive adjustments */
         @media (max-width: 640px) {
-            .app-container {
-                padding: 1rem;
-            }
-            .card {
-                width: 150px;
-                height: 250px;
-            }
-            .current-spread-card {
-                width: calc(50% - 0.375rem); /* 2 cards per row on mobile */
-                max-width: 140px;
-                height: 220px;
-            }
+            .app-container { padding: 1rem; }
+            .card { width: 150px; height: 250px; }
+            .current-spread-card { width: calc(50% - 0.375rem); max-width: 140px; height: 220px; }
         }
 
         .button-area {
@@ -133,27 +129,26 @@
             margin-top: 1rem;
         }
         .button-area button {
-            background-color: #3498db; 
+            background-color: #8e44ad; /* Màu tím chính */
             color: white;
             padding: 0.75rem 2rem;
             border-radius: 9999px; 
             font-size: 1.125rem;
-            font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
-            border: none;
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4); 
+            border: 1px solid #c39bd3;
+            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.4); 
         }
         .button-area button:hover:not(:disabled) {
-            background-color: #2980b9; 
+            background-color: #f1c40f; /* Vàng gold khi hover */
+            color: #1a142c;
+            border-color: #f1c40f;
             transform: translateY(-2px); 
         }
-        .button-area button:active:not(:disabled) {
-            transform: translateY(0);
-            box-shadow: 0 2px 5px rgba(52, 152, 219, 0.4);
-        }
         .button-area button:disabled {
-            background-color: #cccccc;
+            background-color: #4a4a4a;
+            color: #888;
+            border-color: #555;
             cursor: not-allowed;
             box-shadow: none;
             transform: none;
@@ -161,12 +156,23 @@
 
         /* AI Reading Area Styles */
         .ai-reading-area {
-            background-color: #f5f5f5;
+            background-color: rgba(17, 12, 28, 0.9); /* Nền tối hơn */
             border-radius: 0.75rem;
             padding: 1.5rem;
             margin-top: 0.5rem;
             width: 100%;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #8e44ad;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        textarea#question-input {
+            background-color: #2a203f;
+            color: #e0e0e0;
+            border: 1px solid #8e44ad;
+            font-family: 'Spectral', serif;
+        }
+        textarea#question-input::placeholder {
+            color: #9b7bbc;
+            font-style: italic;
         }
         .ai-reading-actions {
             display: flex;
@@ -179,43 +185,57 @@
             padding: 0.6rem 1.2rem;
             border-radius: 9999px;
             font-size: 0.95rem;
-            font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s;
-            border: none;
+            transition: all 0.3s;
+            border: 1px solid;
         }
         .ai-reading-actions .primary-btn {
-            background-color: #f39c12; /* Orange */
+            background-color: #f1c40f; /* Vàng Gold */
+            color: #1a142c;
+            border-color: #f1c40f;
         }
         .ai-reading-actions .primary-btn:hover:not(:disabled) {
-            background-color: #e67e22;
+            background-color: #f39c12;
+            transform: scale(1.05);
         }
         .ai-reading-actions .secondary-btn {
-            background-color: #3498db; /* Blue */
+            background-color: #8e44ad; /* Tím */
+            color: white;
+            border-color: #c39bd3;
         }
         .ai-reading-actions .secondary-btn:hover:not(:disabled) {
-            background-color: #2980b9;
+            background-color: #9b59b6;
+            transform: scale(1.05);
         }
         .ai-reading-actions .reset-btn {
-            background-color: #e74c3c; /* Red */
+            background-color: #c0392b; /* Đỏ (cho reset) */
+            color: white;
+            border-color: #e74c3c;
         }
         .ai-reading-actions .reset-btn:hover:not(:disabled) {
-            background-color: #c0392b;
+            background-color: #e74c3c;
+            transform: scale(1.05);
         }
         .ai-reading-actions button:disabled {
-            background-color: #cccccc;
+            background-color: #4a4a4a;
+            color: #888;
+            border-color: #555;
             cursor: not-allowed;
+            transform: none;
         }
         .ai-response.loading {
             text-align: center;
             font-style: italic;
-            color: #555;
+            color: #f1c40f; /* Vàng */
             padding: 1rem;
         }
+        .ai-response.loading svg {
+            color: #f1c40f;
+        }
 
-        /* History and Message Box styles (kept clean) */
+        /* Message Box */
         .message-box {
-            background-color: #e74c3c; 
+            background-color: #8e44ad; 
             color: white;
             padding: 1rem;
             border-radius: 0.5rem;
@@ -226,27 +246,30 @@
             transform: translateY(-10px);
             transition: opacity 0.3s, transform 0.3s;
             max-width: 80%;
+            font-family: 'Spectral', serif;
         }
-        .message-box.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .message-box.show { opacity: 1; transform: translateY(0); }
+        .message-box.bg-red-500 { background-color: #c0392b; }
+        .message-box.bg-green-500 { background-color: #27ae60; }
+        .message-box.bg-blue-500 { background-color: #8e44ad; }
+
+        /* History */
         .history-container {
             width: 100%;
             max-height: 350px; 
             overflow-y: auto; 
-            border: 1px solid #e0e0e0;
+            border: 1px solid #8e44ad;
             border-radius: 0.75rem;
             padding: 1rem;
-            background-color: #f9fafb;
+            background-color: #1a142c;
         }
         .history-spread-group {
-            border: 1px solid #dcdcdc;
+            border: 1px solid #5d3d7e;
             border-radius: 0.75rem;
             padding: 0.75rem;
             margin-bottom: 1.5rem;
-            background-color: #ffffff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            background-color: #2a203f;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
         .history-spread-cards {
             display: flex;
@@ -255,12 +278,11 @@
             justify-content: center;
         }
         .history-card-item {
-            width: calc(25% - 0.4rem); /* 4 cards per row for history */
+            width: calc(25% - 0.4rem);
             max-width: 70px;
             height: 110px;
-            background-color: #ecf0f1;
             border-radius: 0.5rem;
-            border: 1px solid #3498db;
+            border: 1px solid #8e44ad;
             overflow: hidden;
             position: relative;
         }
@@ -272,39 +294,88 @@
         }
         .history-card-item .card-name-overlay {
             font-size: 0.55rem;
+            color: #f1c40f;
+        }
+        .selection-area {
+            background-color: rgba(17, 12, 28, 0.9);
+            border: 1px solid #8e44ad;
+        }
+        .selection-area h3 {
+            color: #e6c8ff;
+        }
+        .radio-group label {
+            color: #d5b8ff;
+            cursor: pointer;
+        }
+        .radio-group input[type="radio"] {
+            accent-color: #f1c40f; /* Màu vàng cho radio button */
+        }
+        .ai-card-interpretations-container {
+            background-color: #2a203f;
+            border-color: #8e44ad;
+        }
+        .ai-card-interpretations-container h4 {
+            color: #f1c40f;
+        }
+        .ai-card-interpretations-container .bg-white { /* Override */
+            background-color: #1a142c !important;
+            border: 1px solid #5d3d7e;
+        }
+        .ai-card-interpretations-container h5 {
+            color: #e6c8ff;
+        }
+        .ai-card-interpretations-container p {
+            color: #d5b8ff;
+        }
+
+        .ai-overall-interpretation {
+            background-color: #2a203f;
+            border-color: #f1c40f;
+        }
+        .ai-overall-interpretation h4 {
+            color: #f1c40f;
+        }
+        .ai-overall-interpretation p {
+            color: #e0e0e0;
+        }
+        .ai-suggestions {
+            background-color: #2a203f;
+            border-color: #27ae60; /* Green for suggestions */
+        }
+        .ai-suggestions h4 {
+            color: #27ae60;
+        }
+        .ai-suggestions p {
+            color: #e0e0e0;
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <h1 class="text-3xl font-extrabold text-gray-800 mb-4">Ứng Dụng Bóc Bài Tarot (Có Hình Ảnh)</h1>
-        <p class="text-gray-600 text-center">Bóc bài, đặt câu hỏi, và nhận giải thích chuyên sâu từ AI.</p>
+        <h1 class="text-3xl font-extrabold text-gray-100 mb-4 text-center">Giải mã thông điệp vũ trụ</h1>
+        <p class="text-gray-300 text-center text-lg">Chọn một lá bài. Đặt một câu hỏi. Và lắng nghe lời thì thầm của định mệnh.</p>
 
-        <!-- Spread Options -->
-        <div class="selection-area w-full bg-gray-50 p-4 rounded-lg shadow-sm">
-            <h3 class="font-bold text-gray-700 mb-2 text-center">Chọn cách trải bài:</h3>
-            <div class="radio-group flex flex-wrap gap-x-4 gap-y-2 mb-4 justify-center">
+        <div class="selection-area w-full p-4 rounded-lg shadow-sm">
+            <h3 class="font-bold text-gray-200 mb-2 text-center text-xl">Chọn một hành trình</h3>
+            <div class="radio-group flex flex-wrap gap-x-4 gap-y-2 mb-4 justify-center text-base">
                 <label>
-                    <input type="radio" name="spread-type" value="1" checked> 1 Lá Tổng Quan
+                    <input type="radio" name="spread-type" value="1" checked> Một lá bài cho ngày mới
                 </label>
                 <label>
-                    <input type="radio" name="spread-type" value="3"> 3 Lá (Quá Khứ - Hiện Tại - Tương Lai)
+                    <input type="radio" name="spread-type" value="3"> Ba lá bài (Quá khứ - Hiện tại - Tương lai)
                 </label>
                 <label>
-                    <input type="radio" name="spread-type" value="5"> 5 Lá (Giải quyết Vấn Đề)
+                    <input type="radio" name="spread-type" value="5"> Năm lá bài khai mở vấn đề
                 </label>
             </div>
         </div>
 
-        <!-- Main Card Display -->
         <div class="card-display-area">
             <div id="current-card" class="card">
-                <!-- Mặt sau (luôn hiển thị khi chưa bóc) -->
                 <img id="card-image-back" class="card-image-back" 
-                    src="https://placehold.co/180x300/2c3e50/f39c12?text=B%C3%92C+B%C3%80I" 
+                    src="/assets/image/tarot/card_back.jpg" 
                     alt="Mặt sau lá bài Tarot"
                 >
-                <!-- Mặt trước (hiển thị khi bóc) - Placeholder sẽ được thay đổi bằng JS -->
                 <img id="card-image-front" class="card-image-front" 
                     src="" 
                     alt="Lá bài Tarot đã bóc"
@@ -312,64 +383,58 @@
             </div>
         </div>
 
-        <!-- Current Spread Area -->
         <div id="current-spread-display" class="current-spread-display">
-            <!-- Các lá bài đang bóc trong lượt hiện tại sẽ hiển thị ở đây -->
-        </div>
+            </div>
 
         <div class="button-area">
-            <button id="draw-button">Bóc Bài</button>
-            <button id="complete-spread-button" disabled>Hoàn Tất Lượt Bóc</button>
+            <button id="draw-button">Rút một lá bài</button>
+            <button id="complete-spread-button" disabled>Hoàn tất trải bài</button>
         </div>
         <div class="message-box" id="message-box"></div>
 
-        <!-- AI Reading Area -->
         <div class="ai-reading-area">
-            <h3 class="text-lg font-bold text-gray-700 mb-2 text-center">Bước 2: Đặt Câu Hỏi và Nhận Giải Thích</h3>
+            <h3 class="text-lg font-bold text-gray-200 mb-2 text-center">Bước 2: Kết nối với tiềm thức</h3>
             
             <textarea id="question-input" 
-                      placeholder="Nhập câu hỏi của bạn cho bộ bài (ví dụ: Tương lai tài chính của tôi sẽ ra sao?)" 
-                      class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      placeholder="Nhập điều bạn đang trăn trở... (ví dụ: Năng lượng nào đang cản trở dòng chảy tài chính của tôi?)" 
+                      class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
                       rows="3"></textarea>
 
             <div class="ai-reading-actions">
-                <button id="get-ai-reading-button" disabled class="primary-btn">Nhận Giải Thích Từ AI</button>
-                <button id="coi-sau-them-btn" disabled class="secondary-btn">Hỏi Sâu Thêm (Cùng Bộ Bài)</button>
-                <button id="boc-bai-moi-btn" disabled class="reset-btn">Bóc Bài Mới</button>
+                <button id="get-ai-reading-button" disabled class="primary-btn">Lắng nghe lời giải</button>
+                <button id="coi-sau-them-btn" disabled class="secondary-btn">Hỏi sâu hơn</button>
+                <button id="boc-bai-moi-btn" disabled class="reset-btn">Bắt đầu vòng gieo mới</button>
             </div>
 
             <div id="ai-response-display" class="mt-4">
                 <div id="loading-ai-response" class="ai-response loading hidden">
-                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Đang phân tích và giải thích bài Tarot...
+                    Các đấng tối cao đang luận giải...
                 </div>
 
-                <!-- AI Response Sections -->
-                <div id="ai-card-interpretations-container" class="mt-4 hidden p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <h4 class="text-md font-bold text-blue-800 mb-3 text-center">Giải Thích Từng Lá Bài:</h4>
+                <div id="ai-card-interpretations-container" class="mt-4 hidden p-4 border rounded-lg">
+                    <h4 class="text-md font-bold mb-3 text-center">Giải thích năng lượng từng lá bài:</h4>
                     <div id="ai-card-interpretations-row" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <!-- Individual card interpretations -->
-                    </div>
+                        </div>
                 </div>
 
-                <div id="ai-overall-interpretation" class="mt-4 hidden p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <h4 class="text-md font-bold text-green-800 mb-2 text-center">Tổng Quan và Trả Lời Câu Hỏi:</h4>
-                    <p id="overall-text" class="text-gray-700"></p>
+                <div id="ai-overall-interpretation" class="mt-4 hidden p-4 border rounded-lg">
+                    <h4 class="text-md font-bold mb-2 text-center">Thông điệp tổng quan:</h4>
+                    <p id="overall-text" class="text-gray-200"></p>
                 </div>
-                <div id="ai-suggestions" class="mt-4 hidden p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <h4 class="text-md font-bold text-yellow-800 mb-2 text-center">Gợi Ý và Lời Khuyên:</h4>
-                    <p id="suggestions-text" class="text-gray-700"></p>
+                <div id="ai-suggestions" class="mt-4 hidden p-4 border rounded-lg">
+                    <h4 class="text-md font-bold mb-2 text-center">Gợi ý từ vũ trụ:</h4>
+                    <p id="suggestions-text" class="text-gray-200"></p>
                 </div>
             </div>
         </div>
 
-        <h2 class="text-xl font-bold text-gray-700 mt-6">Lịch Sử Các Lượt Bóc:</h2>
+        <h2 class="text-xl font-bold text-gray-200 mt-6">Nhật ký hành trình</h2>
         <div id="history-container" class="history-container">
-            <!-- Lịch sử các lượt bóc đã hoàn tất -->
-        </div>
+            </div>
     </div>
 
     <script>
@@ -437,35 +502,22 @@
         const INITIAL_BACKOFF_DELAY = 1000; 
 
         /**
-         * Tạo URL hình ảnh placeholder độc đáo cho mỗi lá bài.
-         * Sử dụng placehold.co với màu sắc và chữ khác nhau.
+         * [ĐÃ CẬP NHẬT]
+         * Tạo URL hình ảnh TĨNH cho mỗi lá bài từ thư mục assets.
          * @param {string} cardName - Tên lá bài (ví dụ: "I - The Magician").
          * @returns {string} URL hình ảnh.
          */
         function getCardImageUrl(cardName) {
-            // Loại bỏ khoảng trắng và ký tự đặc biệt để dùng làm seed màu
-            const cleanName = cardName.replace(/[^a-zA-Z0-9]/g, ''); 
-            const seed = cleanName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-            
-            // Tạo màu sắc và văn bản placeholder
-            const hue = (seed * 137.508) % 360; 
-            const saturation = 50 + (seed % 30); 
-            const lightness = 70 + (seed % 20);
-            const color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-            
-            // Màu nền tối và màu chữ sáng
-            const bgColorHex = '1c305a'; // Màu xanh đậm
-            const textColorHex = 'ffffff'; 
+            // Chuyển tên bài thành tên file (ví dụ: "I - The Magician" -> "i_the_magician")
+            // Quy tắc này PHẢI khớp với tên file ảnh bạn đã tải lên.
+            const filename = cardName.toLowerCase()
+                .replace(/\s-\s/g, '_') // "0 - The Fool" -> "0_the_fool"
+                .replace(/\s+/g, '_') // "ace of wands" -> "ace_of_wands"
+                .replace(/[^a-z0-9_]/g, ''); // Loại bỏ ký tự đặc biệt
 
-            // Rút ngắn tên để hiển thị trên placeholder (dễ nhận biết hơn)
-            const shortName = cardName.split(' ').map(word => {
-                if (word.length > 2 && !['of', 'The', 'and', 'or'].includes(word)) {
-                    return word.substring(0, 3);
-                }
-                return word;
-            }).join('+');
-
-            return `https://placehold.co/400x600/${bgColorHex}/${textColorHex}?text=${shortName}`;
+            // Trả về đường dẫn tĩnh trong thư mục /assets/image/tarot/
+            // (Đảm bảo bạn dùng đuôi .jpg, nếu dùng .png thì đổi ở đây)
+            return `/assets/image/tarot/${filename}.jpg`;
         }
 
         /**
@@ -481,7 +533,7 @@
             } else if (type === 'success') {
                 messageBox.classList.add('bg-green-500');
             } else {
-                messageBox.classList.add('bg-blue-500');
+                messageBox.classList.add('bg-blue-500'); // Màu tím mặc định
             }
             setTimeout(() => {
                 messageBox.classList.remove('show');
@@ -497,7 +549,7 @@
                 const j = Math.floor(Math.random() * (i + 1));
                 [currentDeck[i], currentDeck[j]] = [currentDeck[j], currentDeck[i]]; 
             }
-            showMessage("Bộ bài đã được xáo trộn! Mời bạn bóc lá đầu tiên.", "success");
+            showMessage("Bộ bài đã được xáo trộn. Hãy rút lá bài đầu tiên.", "success");
         }
 
         /**
@@ -543,10 +595,10 @@
                 spreadGroupDiv.classList.add('history-spread-group');
 
                 const headerDiv = document.createElement('div');
-                headerDiv.classList.add('history-spread-header', 'mb-2', 'flex', 'justify-between', 'items-center', 'text-sm', 'font-semibold');
+                headerDiv.classList.add('history-spread-header', 'mb-2', 'flex', 'justify-between', 'items-center', 'text-sm');
                 headerDiv.innerHTML = `
-                    <span>Bộ ${historySpreads.length - index}: ${spread.spreadType} Lá</span>
-                    <span class="text-gray-500">${spread.timestamp}</span>
+                    <span class="font-bold text-purple-300">Hành trình ${historySpreads.length - index}: ${spread.spreadType} lá</span>
+                    <span class="text-gray-400">${spread.timestamp}</span>
                 `;
                 spreadGroupDiv.appendChild(headerDiv);
 
@@ -580,7 +632,7 @@
          */
         function drawCard() {
             if (currentDrawnCards.length >= numCardsToDraw) {
-                showMessage(`Bạn đã bóc đủ ${numCardsToDraw} lá. Vui lòng nhấn 'Nhận Giải Thích Từ AI'.`, "info");
+                showMessage(`Bạn đã rút đủ ${numCardsToDraw} lá. Hãy lắng nghe lời giải đáp.`, "info");
                 return;
             }
 
@@ -599,9 +651,9 @@
                 drawButton.disabled = true; 
                 completeSpreadButton.disabled = false; 
                 getAiReadingButton.disabled = false; 
-                showMessage(`Bạn đã bóc đủ ${numCardsToDraw} lá! Mời bạn nhập câu hỏi và nhấn 'Nhận Giải Thích Từ AI'.`, "success");
+                showMessage(`Bạn đã rút đủ ${numCardsToDraw} lá! Hãy nhập điều bạn trăn trở và 'Lắng nghe lời giải'.`, "success");
             } else {
-                drawButton.textContent = `Bóc Bài (Lá ${currentDrawnCards.length + 1} / ${numCardsToDraw})`;
+                drawButton.textContent = `Rút lá bài (Lá ${currentDrawnCards.length + 1} / ${numCardsToDraw})`;
             }
         }
 
@@ -620,7 +672,7 @@
                     cards: [...currentDrawnCards], 
                     spreadType: numCardsToDraw
                 });
-                showMessage("Lượt bóc đã được lưu vào lịch sử!", "success");
+                showMessage("Hành trình này đã được ghi lại.", "success");
             }
 
             // Reset và bắt đầu lượt mới
@@ -641,7 +693,7 @@
             currentCardElement.classList.remove('drawn');
             cardImageFront.src = ""; // Clear front image
             
-            drawButton.textContent = "Bóc Bài";
+            drawButton.textContent = "Rút một lá bài";
             drawButton.disabled = false;
             completeSpreadButton.disabled = true;
             getAiReadingButton.disabled = true; 
@@ -668,13 +720,13 @@
          */
         async function getAiReading(retries = 0) {
             if (currentDrawnCards.length !== numCardsToDraw) {
-                showMessage(`Vui lòng bóc đủ ${numCardsToDraw} lá bài trước khi yêu cầu AI đọc bài.`, "error");
+                showMessage(`Hãy rút đủ ${numCardsToDraw} lá bài trước khi lắng nghe thông điệp.`, "error");
                 return;
             }
 
             const userQuestion = questionInput.value.trim();
             if (!userQuestion) {
-                showMessage("Vui lòng nhập câu hỏi của bạn.", "error");
+                showMessage("Hãy nhập điều bạn đang trăn trở.", "error");
                 return;
             }
 
@@ -684,17 +736,19 @@
 
             const cardsString = currentDrawnCards.join(", ");
             const cardInterpretationsPrompt = currentDrawnCards.map((card, index) => 
-                `{ "cardName": "${card}", "interpretation": "Giải thích chi tiết cho lá bài ${index + 1} (${card}), bao gồm ý nghĩa của nó trong bối cảnh trải bài, liên hệ với câu hỏi của người dùng và đưa ra lời khuyên ngắn gọn." }`
+                `{ "cardName": "${card}", "interpretation": "Giải mã năng lượng của lá bài ${index + 1} (${card}). Lá bài này mang thông điệp gì trong bối cảnh trải bài, và nó liên kết thế nào với điều người dùng trăn trở? Đưa ra lời thì thầm ngắn gọn." }`
             ).join(',');
 
-            const prompt = `Bạn là một người đọc bài Tarot chuyên nghiệp, tập trung vào việc tư vấn các vấn đề về sự nghiệp, kinh doanh, và tối ưu hiệu suất. Tôi đã bóc được ${numCardsToDraw} lá bài Tarot: "${cardsString}". Câu hỏi của tôi là: "${userQuestion}".
-            Vui lòng phân tích và đưa ra lời giải thích chi tiết, tập trung vào mối liên hệ giữa các lá bài và câu hỏi của tôi, đặc biệt là trong bối cảnh kinh doanh, marketing (CPM, GMV) và phát triển bản thân. Phản hồi của bạn phải theo định dạng JSON sau:
+            // [ĐÃ CẬP NHẬT] Prompt với ngôn từ ma mị hơn
+            const prompt = `Bạn là một nhà thông thái huyền bí, một người giải mã tarot với năng lượng tâm linh sâu sắc. Bạn sử dụng ngôn từ ma mị, đầy ẩn ý nhưng sâu sắc (theo kiểu sentence case, không viết hoa tất cả). Tôi đã rút được ${numCardsToDraw} lá bài: "${cardsString}". Điều tôi trăn trở là: "${userQuestion}".
+            Hãy giải mã những thông điệp vũ trụ đang gửi gắm, tập trung vào năng lượng của các lá bài và mối liên kết của chúng với câu hỏi. Đừng tập trung vào kinh doanh hay marketing, mà hãy tập trung vào năng lượng, tinh thần và sự phát triển nội tâm.
+            Phản hồi của bạn phải theo định dạng JSON nghiêm ngặt sau:
             {
               "cardInterpretations": [
                 ${cardInterpretationsPrompt}
               ],
-              "overallInterpretation": "Đây là phần tổng quan và tóm tắt ý nghĩa của cả ${numCardsToDraw} lá bài khi kết hợp lại, trả lời trực tiếp câu hỏi của người dùng. Hãy đưa ra cái nhìn sâu sắc và lời khuyên tổng thể dựa trên bộ bài, liên hệ với mục tiêu sự nghiệp/kinh doanh của người dùng.",
-              "nextStepsSuggestion": "Dựa trên bài đọc, hãy đưa ra 3 gợi ý cụ thể về hành động tiếp theo mà người dùng có thể cân nhắc, hoặc gợi ý câu hỏi tiếp theo họ có thể đặt để làm rõ hơn vấn đề liên quan đến sự nghiệp/kinh doanh (ví dụ: Tối ưu CPM, mục tiêu GMV tiếp theo)."
+              "overallInterpretation": "Đây là thông điệp tổng quan từ vũ trụ. Khi các năng lượng này hội tụ, chúng nói lên điều gì về câu hỏi của người dùng? Hãy trả lời trực tiếp và sâu sắc.",
+              "nextStepsSuggestion": "Dựa trên các lá bài, vũ trụ gợi ý 3 hành động hoặc suy ngẫm tiếp theo. Những câu hỏi nào người dùng nên tự vấn mình để khai mở con đường?"
             }
             Đảm bảo phản hồi chỉ là một đối tượng JSON hợp lệ và không chứa bất kỳ văn bản nào khác ngoài JSON.`;
 
@@ -750,22 +804,22 @@
                     try {
                         const parsedJson = JSON.parse(jsonText);
                         displayAiResponse(parsedJson);
-                        showMessage("AI đã đưa ra lời giải thích!", "success");
+                        showMessage("Thông điệp đã được giải mã!", "success");
                         coiSauThemBtn.disabled = false;
                         bocBaiMoiBtn.disabled = false;
                         getAiReadingButton.disabled = false; // Re-enable for subsequent deep dive questions
                     } catch (parseError) {
                         console.error("Lỗi khi phân tích JSON từ AI:", parseError);
-                        loadingAiResponse.textContent = "Lỗi: AI trả về định dạng không hợp lệ. Vui lòng thử lại.";
-                        showMessage("Lỗi: Định dạng phản hồi AI không đúng.", "error");
+                        loadingAiResponse.textContent = "Lỗi: Năng lượng vũ trụ bị nhiễu loạn. Xin hãy thử lại.";
+                        showMessage("Lỗi: Định dạng thông điệp không rõ ràng.", "error");
                     }
                 } else {
-                    loadingAiResponse.textContent = "Không thể nhận được giải thích từ AI. Vui lòng thử lại.";
-                    showMessage("Lỗi: Không có phản hồi từ AI.", "error");
+                    loadingAiResponse.textContent = "Không thể nhận được thông điệp. Xin hãy thử lại.";
+                    showMessage("Lỗi: Không có phản hồi từ vũ trụ.", "error");
                 }
             } catch (error) {
                 console.error("Lỗi khi gọi API AI:", error);
-                loadingAiResponse.textContent = "Đã xảy ra lỗi khi kết nối với AI. Vui lòng thử lại sau.";
+                loadingAiResponse.textContent = "Đã xảy ra lỗi khi kết nối với các đấng tối cao. Xin hãy thử lại sau.";
                 showMessage(`Lỗi: ${error.message}`, "error");
             } finally {
                 loadingAiResponse.classList.add('hidden'); 
@@ -804,7 +858,7 @@
                 currentSpreadDisplay.innerHTML = ''; 
                 resetGameVisuals(); 
                 shuffleDeck(); 
-                showMessage(`Bạn đã chọn trải bài ${numCardsToDraw} lá.`, "info");
+                showMessage(`Bạn đã chọn hành trình ${numCardsToDraw} lá.`, "info");
             });
         });
 
@@ -813,7 +867,7 @@
             bocBaiMoiBtn.disabled = false; 
             questionInput.value = ''; // Clear question for the new deep dive
             clearAiResponseDisplay();
-            showMessage("Mời bạn nhập câu hỏi mới cho bộ bài hiện tại và nhấn 'Nhận Giải Thích Từ AI'.", "info");
+            showMessage("Hãy nhập câu hỏi tiếp theo cho bộ bài này và 'Lắng nghe lời giải'.", "info");
         });
 
         bocBaiMoiBtn.addEventListener('click', () => {
