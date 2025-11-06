@@ -78,6 +78,11 @@
 </head>
 <body>
 
+    <!-- [THÊM MỚI] Hộp chứa thông báo (Toast) -->
+    <div id="message-box-container" class="fixed top-5 right-5 z-50 w-64">
+        <!-- Messages will be injected here -->
+    </div>
+
     <div class="container-card">
         <!-- Header Công Ty --><header class="flex items-center justify-center mb-6">
             <div class="p-3 bg-blue-600 rounded-lg text-white">
@@ -133,10 +138,35 @@
 
             <p class="text-lg font-medium">Ngày nghỉ của bạn là: <strong id="vacationDateDisplay" class="text-blue-600"></strong></p>
             
-            <!-- Nút mở Modal (Thêm mới) -->
-            <button id="showAnalysisBtn" class="mt-4 bg-gray-600 text-white py-2 px-5 rounded-lg font-semibold hover:bg-gray-700 transition duration-300">
-                Xem phân tích thần số học
-            </button>
+            <!-- [THÊM MỚI] Thư Cảm Ơn -->
+            <div class="mt-8 bg-blue-50 border border-blue-200 p-4 rounded-lg text-left shadow-sm">
+                <h4 class="font-semibold text-lg text-blue-700">Một lời cảm ơn từ InnoTech...</h4>
+                <p class="text-gray-700 mt-2">
+                    Cảm ơn <strong id="thankYouName" class="text-blue-700"></strong>, vì tất cả những nỗ lực và cống hiến của bạn. Chúng tôi trân trọng thời gian bạn đã đồng hành cùng công ty.
+                </p>
+                <p class="text-gray-700 mt-2">
+                    Chúc bạn có một kỳ nghỉ thật sảng khoái, nạp đầy năng lượng và có những trải nghiệm tuyệt vời. Mong sớm được thấy bạn quay trở lại với những ý tưởng mới!
+                </p>
+            </div>
+
+            <!-- [CẬP NHẬT] Nhóm nút -->
+            <div class="mt-6 flex flex-col sm:flex-row justify-center gap-3">
+                <!-- Nút mở Modal (Cập nhật với icon) -->
+                <button id="showAnalysisBtn" class="bg-gray-600 text-white py-2 px-5 rounded-lg font-semibold hover:bg-gray-700 transition duration-300 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Xem phân tích thần số học
+                </button>
+                
+                <!-- [THÊM MỚI] Nút Copy Link -->
+                <button id="copyLinkBtn" class="bg-green-600 text-white py-2 px-5 rounded-lg font-semibold hover:bg-green-700 transition duration-300 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    Sao chép link kỷ niệm
+                </button>
+            </div>
             
             <a href="/" class="inline-block mt-6 text-sm text-blue-600 hover:underline">Quay lại trang chủ</a>
         </section>
@@ -175,6 +205,72 @@
 
     <script>
         const STORAGE_KEY = 'companyVacationFinder';
+
+        // --- [THÊM MỚI] Logic Hiển thị Thông báo (Toast) ---
+        /**
+         * Hiển thị thông báo toast ở góc trên bên phải.
+         * @param {string} message - Nội dung thông báo.
+         * @param {string} [type='success'] - 'success' (xanh) hoặc 'error' (đỏ).
+         */
+        function showMessage(message, type = 'success') {
+            const container = document.getElementById('message-box-container');
+            const msgId = 'msg-' + Date.now();
+            const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.id = msgId;
+            // Lớp Tailwind cho hiệu ứng
+            msgDiv.className = `p-4 rounded-lg text-white font-semibold shadow-lg mb-2 ${bgColor} transition-all duration-300 transform translate-x-10 opacity-0`;
+            msgDiv.textContent = message;
+            
+            container.appendChild(msgDiv);
+            
+            // Animate vào
+            setTimeout(() => {
+                msgDiv.classList.remove('translate-x-10', 'opacity-0');
+            }, 10);
+
+            // Animate ra và tự hủy
+            setTimeout(() => {
+                msgDiv.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => {
+                    if (msgDiv) {
+                        msgDiv.remove();
+                    }
+                }, 500);
+            }, 3000);
+        }
+
+        // --- [THÊM MỚI] Logic Sao Chép Link ---
+        /**
+         * Sao chép URL hiện tại vào clipboard.
+         */
+        function copyLinkToClipboard() {
+            const linkToCopy = window.location.href;
+            
+            // Tạo một textarea tạm thời để giữ text
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = linkToCopy;
+            tempTextArea.style.position = 'absolute';
+            tempTextArea.style.left = '-9999px'; // Ẩn nó đi
+            document.body.appendChild(tempTextArea);
+            
+            // Chọn và sao chép
+            tempTextArea.select();
+            tempTextArea.setSelectionRange(0, 99999); // Cho di động
+            
+            try {
+                document.execCommand('copy');
+                showMessage('Đã sao chép link!', 'success');
+            } catch (err) {
+                console.error('Không thể sao chép link: ', err);
+                showMessage('Lỗi! Không thể sao chép.', 'error');
+            }
+            
+            // Dọn dẹp
+            document.body.removeChild(tempTextArea);
+        }
+
 
         // --- Logic Thần Số Học (Numerology Logic) ---
 
@@ -317,6 +413,7 @@
          */
         function showCountdownView(dateString, name) {
             document.getElementById('countdownName').textContent = name;
+            document.getElementById('thankYouName').textContent = name; // [THÊM MỚI] Cập nhật tên trong thư cảm ơn
             
             // SỬA LỖI: Phân tích chuỗi YYYY-MM-DD thành ngày cục bộ (local)
             // Tránh new Date('YYYY-MM-DD') vì nó hiểu là UTC
@@ -465,6 +562,7 @@
             const modal = document.getElementById('analysisModal');
             const showBtn = document.getElementById('showAnalysisBtn');
             const closeBtn = document.getElementById('closeModalBtn');
+            const copyBtn = document.getElementById('copyLinkBtn'); // [THÊM MỚI]
 
             if (showBtn) {
                 showBtn.onclick = () => {
@@ -476,6 +574,11 @@
                     modal.style.display = 'none';
                 }
             }
+            // [THÊM MỚI] Gán sự kiện cho nút copy
+            if (copyBtn) {
+                copyBtn.onclick = copyLinkToClipboard;
+            }
+
             window.onclick = (event) => {
                 if (event.target == modal) {
                     modal.style.display = 'none';
