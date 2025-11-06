@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công Cụ Tính Ngày Nghỉ Phép - InnoTech</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Thêm hình nền nghỉ việc */
+            background-image: url('https://images.unsplash.com/photo-1517048676732-2d45ab40b106?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHwxNXx8bGVhdmUlMjBvZmZpY2V8ZW58MHx8fHwxNjk5MTYwNzEzfDA&ixlib=rb-4.0.3&q=80&w=1080'); /* Thay đổi URL hình ảnh tại đây */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        /* Ẩn các view ban đầu */
+        #formView, #countdownView, #submittedView {
+            display: none;
+        }
+        .container-card {
+            background-color: rgba(255, 255, 255, 0.9); /* Làm mờ nền trắng để dễ đọc hơn */
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            max-width: 32rem; /* Giới hạn chiều rộng để dễ đọc */
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container-card">
+        <!-- Header Công Ty --><header class="flex items-center justify-center mb-6">
+            <div class="p-3 bg-blue-600 rounded-lg text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                </svg>
+            </div>
+            <h1 class="ml-4 text-3xl font-bold text-gray-800">InnoTech Solutions</h1>
+        </header>
+
+        <!-- View 1: Form Đăng Ký --><main id="formView">
+            <h2 class="text-2xl font-semibold text-center text-gray-700 mb-2">Tìm ngày nghỉ đẹp nhất của bạn</h2>
+            <p class="text-center text-gray-500 mb-6">Dựa trên thần số học, hãy để chúng tôi tìm ngày nghỉ lý tưởng cho bạn!</p>
+            <form id="vacationForm">
+                <div class="mb-4">
+                    <label for="name" class="block text-sm font-medium text-gray-600 mb-1">Họ và tên</label>
+                    <input type="text" id="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Nguyễn Văn A" required>
+                </div>
+                <div class="mb-4">
+                    <label for="dob" class="block text-sm font-medium text-gray-600 mb-1">Ngày sinh</label>
+                    <input type="date" id="dob" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-6">
+                    <label for="position" class="block text-sm font-medium text-gray-600 mb-1">Vị trí công việc</label>
+                    <input type="text" id="position" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Nhân viên Marketing" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">Tính toán ngay</button>
+            </form>
+        </main>
+
+        <!-- View 2: Trang "SubHTML" - Đếm Ngược --><section id="countdownView" class="text-center">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-2">Chúc mừng, <span id="countdownName" class="text-blue-600"></span>!</h2>
+            <p class="text-gray-600 mb-6">Đây là thời gian đếm ngược đến ngày nghỉ hoàn hảo của bạn:</p>
+            
+            <div id="countdownTimer" class="flex justify-center space-x-4 text-gray-800 mb-8">
+                <div class="text-center bg-gray-100 p-4 rounded-lg w-20">
+                    <div id="days" class="text-4xl font-bold">00</div>
+                    <div class="text-sm text-gray-500">Ngày</div>
+                </div>
+                <div class="text-center bg-gray-100 p-4 rounded-lg w-20">
+                    <div id="hours" class="text-4xl font-bold">00</div>
+                    <div class="text-sm text-gray-500">Giờ</div>
+                </div>
+                <div class="text-center bg-gray-100 p-4 rounded-lg w-20">
+                    <div id="minutes" class="text-4xl font-bold">00</div>
+                    <div class="text-sm text-gray-500">Phút</div>
+                </div>
+                <div class="text-center bg-gray-100 p-4 rounded-lg w-20">
+                    <div id="seconds" class="text-4xl font-bold">00</div>
+                    <div class="text-sm text-gray-500">Giây</div>
+                </div>
+            </div>
+
+            <p class="text-lg font-medium">Ngày nghỉ của bạn là: <strong id="vacationDateDisplay" class="text-blue-600"></strong></p>
+            
+            <a href="/" class="inline-block mt-6 text-sm text-blue-600 hover:underline">Quay lại trang chủ</a>
+        </section>
+
+        <!-- View 3: Đã Đăng Ký --><section id="submittedView" class="text-center">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-2">Bạn đã đăng ký!</h2>
+            <p class="text-gray-600 mb-6">Xin chào <span id="submittedName" class="font-semibold"></span>, bạn đã tìm ngày nghỉ của mình trước đó. Hãy chuẩn bị cho kỳ nghỉ nhé!</p>
+            <button id="viewCountdownBtn" class="bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
+                Xem lại đồng hồ đếm ngược
+            </button>
+        </section>
+
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'companyVacationFinder';
+
+        // --- Logic Thần Số Học (Numerology Logic) ---
+
+        /**
+         * Rút gọn một chuỗi số thành một chữ số hoặc số master (11, 22).
+         * @param {string} str - Chuỗi số (ví dụ: "1995" hoặc "23").
+         * @param {boolean} [checkMaster=false] - Có kiểm tra số master (11, 22) không.
+         * @returns {number} - Số đã rút gọn.
+         */
+        function reduceDigits(str, checkMaster = false) {
+            let sum = str.split('').reduce((acc, digit) => acc + parseInt(digit), 0);
+
+            if (checkMaster && (sum === 11 || sum === 22)) {
+                return sum;
+            }
+            if (sum > 9) {
+                return reduceDigits(sum.toString(), checkMaster);
+            }
+            return sum;
+        }
+
+        /**
+         * Tính số chủ đạo (Life Path Number) từ ngày sinh.
+         * @param {string} dobString - Ngày sinh dạng "YYYY-MM-DD".
+         * @returns {number} - Số chủ đạo (1-9, 11, hoặc 22).
+         */
+        function calculateLifePath(dobString) {
+            const [year, month, day] = dobString.split('-');
+
+            const yearReduced = reduceDigits(year);
+            const monthReduced = reduceDigits(month);
+            const dayReduced = reduceDigits(day);
+
+            const total = yearReduced + monthReduced + dayReduced;
+            
+            // Lần rút gọn cuối cùng kiểm tra số master
+            return reduceDigits(total.toString(), true);
+        }
+
+        /**
+         * Tính ngày nghỉ dựa trên số chủ đạo.
+         * Logic: Lấy ngày (của tháng sau) bằng số chủ đạo.
+         * @param {string} dob - Ngày sinh "YYYY-MM-DD".
+         * @returns {Date} - Đối tượng Date của ngày nghỉ.
+         */
+        function calculateVacationDate(dob) {
+            const lifePath = calculateLifePath(dob); // Sẽ là 1-9, 11, hoặc 22
+            
+            // Ngày nghỉ trong tháng sẽ là số chủ đạo (ví dụ: lifePath 8 -> ngày 8)
+            // lifePath 11 -> ngày 11, lifePath 22 -> ngày 22
+            const vacationDayOfMonth = lifePath;
+
+            const today = new Date();
+            // Đặt ngày nghỉ vào tháng sau
+            const vacationDate = new Date(today.getFullYear(), today.getMonth() + 1, vacationDayOfMonth);
+            
+            return vacationDate;
+        }
+
+        // --- Logic Điều Hướng Trang (View Logic) ---
+
+        const formView = document.getElementById('formView');
+        const countdownView = document.getElementById('countdownView');
+        const submittedView = document.getElementById('submittedView');
+
+        function showView(view) {
+            formView.style.display = 'none';
+            countdownView.style.display = 'none';
+            submittedView.style.display = 'none';
+            view.style.display = 'block';
+        }
+
+        /**
+         * Hiển thị trang đếm ngược.
+         * @param {string} dateString - Ngày nghỉ dạng "YYYY-MM-DD".
+         * @param {string} name - Tên người dùng.
+         */
+        function showCountdownView(dateString, name) {
+            document.getElementById('countdownName').textContent = name;
+            
+            // SỬA LỖI: Phân tích chuỗi YYYY-MM-DD thành ngày cục bộ (local)
+            // Tránh new Date('YYYY-MM-DD') vì nó hiểu là UTC
+            const [year, month, day] = dateString.split('-').map(Number);
+            const vacationDate = new Date(year, month - 1, day); 
+
+            const displayDate = vacationDate.toLocaleDateString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            document.getElementById('vacationDateDisplay').textContent = displayDate;
+            
+            showView(countdownView);
+
+            // Bắt đầu đếm ngược
+            startCountdown(dateString);
+        }
+
+        /**
+         * Hiển thị trang "Đã đăng ký".
+         * @param {object} storedData - Dữ liệu từ localStorage.
+         */
+        function showSubmittedView(storedData) {
+            document.getElementById('submittedName').textContent = storedData.name;
+            showView(submittedView);
+
+            document.getElementById('viewCountdownBtn').onclick = () => {
+                // Điều hướng đến trang "subhtml" (trang countdown)
+                // SỬA LỖI: Cần cung cấp đường dẫn đầy đủ (pathname), không chỉ query string
+                window.location.href = window.location.pathname + `?date=${storedData.date}&name=${encodeURIComponent(storedData.name)}`;
+            };
+        }
+
+        // --- Logic Đếm Ngược (Countdown Logic) ---
+
+        let countdownInterval;
+        function startCountdown(targetDate) {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+
+            // SỬA LỖI: Phân tích ngày target thành ngày cục bộ
+            // const countDownDate = new Date(targetDate).getTime(); // Lỗi: Đây là UTC
+            const [year, month, day] = targetDate.split('-').map(Number);
+            const countDownDate = new Date(year, month - 1, day).getTime(); // Chuẩn: 00:00 giờ địa phương
+
+            countdownInterval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = countDownDate - now;
+
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById('countdownTimer').innerHTML = '<p class="text-2xl font-bold text-green-600">Chúc bạn có kỳ nghỉ vui vẻ!</p>';
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Thêm số 0 đằng trước nếu nhỏ hơn 10
+                const z = (n) => n < 10 ? '0' + n : n;
+
+                document.getElementById('days').textContent = z(days);
+                document.getElementById('hours').textContent = z(hours);
+                document.getElementById('minutes').textContent = z(minutes);
+                document.getElementById('seconds').textContent = z(seconds);
+
+            }, 1000);
+        }
+
+        // --- Xử Lý Sự Kiện (Event Handlers) ---
+
+        // Xử lý khi nộp form
+        document.getElementById('vacationForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const dob = document.getElementById('dob').value;
+            const position = document.getElementById('position').value;
+
+            // Tính toán
+            const vacationDate = calculateVacationDate(dob);
+            
+            // SỬA LỖI: Chuyển ngày cục bộ thành chuỗi YYYY-MM-DD mà không bị ảnh hưởng bởi múi giờ
+            // const vacationDateISO = vacationDate.toISOString().split('T')[0]; // Lỗi: Bị ảnh hưởng bởi UTC
+            const year = vacationDate.getFullYear();
+            const month = (vacationDate.getMonth() + 1).toString().padStart(2, '0');
+            const day = vacationDate.getDate().toString().padStart(2, '0');
+            const vacationDateISO = `${year}-${month}-${day}`;
+
+            // Lưu trữ (giả lập "ID máy")
+            const storedData = {
+                date: vacationDateISO,
+                name: name,
+                position: position
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(storedData));
+
+            // Chuyển hướng sang trang "subhtml" (countdown)
+            // SỬA LỖI: Cần cung cấp đường dẫn đầy đủ (pathname), không chỉ query string
+            window.location.href = window.location.pathname + `?date=${vacationDateISO}&name=${encodeURIComponent(name)}`;
+        });
+
+        // --- Logic Khởi Động (Initialization Logic) ---
+        
+        // Tự động điều hướng khi tải trang
+        window.addEventListener('load', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paramDate = urlParams.get('date');
+            const paramName = urlParams.get('name');
+            
+            const storedData = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+
+            if (paramDate && paramName) {
+                // Đây là trang "subhtml" (countdown)
+                showCountdownView(paramDate, paramName);
+            } else if (storedData) {
+                // Người dùng đã đăng ký trước đó
+                showSubmittedView(storedData);
+            } else {
+                // Người dùng mới, hiển thị form
+                showView(formView);
+            }
+        });
+
+    </script>
+</body>
+</html>
