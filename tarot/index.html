@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trải bài Tarot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+
+        @font-face {
+            font-family: 'Hidayatullah';
+            /* [ĐÃ SỬA] Đường dẫn tương đối */
+            src: url('../assets/fonts/KD-Hidayatullah-v2.ttf') format('truetype');
+        }
+
+        body {
+            font-family: 'Hidayatullah', sans-serif;
+            background: radial-gradient(circle at top, #0f172a, #020617);
+        }
+
+        .tarot-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tarot-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.7);
+        }
+
+        .tarot-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .tarot-card .card-face {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .tarot-card .card-front {
+            transform: rotateY(180deg);
+        }
+
+        .btn-primary {
+            @apply bg-cyan-600 text-white py-2 px-6 rounded-lg shadow-lg shadow-cyan-500/30 transition-all duration-300;
+        }
+
+        .btn-primary:hover {
+            @apply bg-cyan-500 shadow-xl shadow-cyan-500/50 scale-105;
+        }
+
+        .btn-secondary {
+            @apply bg-gray-700 text-gray-300 py-2 px-6 rounded-lg shadow-lg shadow-gray-900/30 transition-all duration-300;
+        }
+
+        .btn-secondary:hover {
+            @apply bg-gray-600 shadow-xl shadow-gray-900/50 scale-105;
+        }
+
+        /* [MỚI] CSS cho Modal Pop-up */
+        #card-modal-backdrop {
+            @apply fixed inset-0 bg-black/80 flex items-center justify-center z-50 transition-opacity duration-300;
+            opacity: 0;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        #card-modal-backdrop.show {
+            opacity: 1;
+        }
+
+        #card-modal-content {
+            @apply bg-slate-900 p-6 rounded-xl shadow-2xl shadow-cyan-900/50 border border-cyan-700 w-11/12 max-w-3xl;
+            @apply text-white relative transition-transform duration-300;
+            transform: scale(0.9);
+        }
+        
+        #card-modal-backdrop.show #card-modal-content {
+            transform: scale(1);
+        }
+
+        /* [MỚI] Tùy chỉnh thanh cuộn cho nội dung modal */
+        #modal-content-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        #modal-content-scroll::-webkit-scrollbar-track {
+            background: #1e293b; /* slate-800 */
+            border-radius: 10px;
+        }
+        #modal-content-scroll::-webkit-scrollbar-thumb {
+            background: #0891b2; /* cyan-600 */
+            border-radius: 10px;
+        }
+        #modal-content-scroll::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4; /* cyan-500 */
+        }
+
+    </style>
+    
+    <script src="tarot_data.js" defer></script>
+</head>
+
+<body class="min-h-screen text-white p-4 md:p-8 flex flex-col items-center">
+
+    <div class="w-full max-w-6xl mx-auto">
+        <header class="text-center py-8">
+            <h1 class="text-5xl md:text-7xl font-bold text-cyan-300 tracking-wider">Chọn Một Lá Bài</h1>
+            <p class="text-xl md:text-2xl text-cyan-100 mt-4">Hãy tập trung vào câu hỏi của bạn và chọn một lá bài để nhận thông điệp.</p>
+        </header>
+
+        <main>
+            <section id="setup-section" class="text-center p-6 bg-slate-800/50 rounded-xl shadow-lg border border-cyan-800/50">
+                <h2 class="text-3xl font-semibold text-cyan-300 mb-6">Bạn muốn rút mấy lá?</h2>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button class="btn-primary text-lg" onclick="startReading(1)">1 Lá (Thông điệp ngày)</button>
+                    <button class="btn-primary text-lg" onclick="startReading(3)">3 Lá (Quá khứ - Hiện tại - Tương lai)</button>
+                    <button class="btn-primary text-lg" onclick="startReading(5)">5 Lá (Trải bài Celtic Cross nhỏ)</button>
+                </div>
+            </section>
+
+            <section id="reading-section" class="hidden mt-12">
+                <div id="card-display-area" class="flex flex-wrap justify-center gap-6 md:gap-10">
+                    </div>
+
+                <div class="text-center mt-12">
+                    <button id="reveal-button" class="btn-primary text-xl px-10 py-3 hidden" onclick="revealCards()">Lật Bài</button>
+                    <button id="reset-button" class="btn-secondary text-xl px-10 py-3 hidden" onclick="resetReading()">Trải bài mới</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="card-modal-backdrop" class="hidden">
+        <div id="card-modal-content" class="flex flex-col md:flex-row gap-6 items-start">
+            
+            <div class="flex-shrink-0 w-full md:w-[250px] text-center">
+                <img id="modal-card-image" 
+                     src="" 
+                     alt="Lá bài Tarot" 
+                     class="w-full max-w-[250px] h-auto object-cover rounded-lg border-2 border-cyan-700 mx-auto" />
+                <h3 id="modal-card-name" class="text-2xl text-cyan-300 mt-4 mb-2">Tên Lá Bài</h3>
+            </div>
+
+            <div id="modal-content-scroll" class="flex-grow max-h-[300px] md:max-h-[417px] overflow-y-auto pr-2 md:pr-4">
+                
+                <div class="mb-4">
+                    <h4 class="text-lg font-bold text-cyan-400 border-b border-cyan-700 pb-1 mb-2">Từ khóa</h4>
+                    <p id="modal-card-keywords" class="text-gray-300 text-base italic"></p>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="text-lg font-bold text-green-400 border-b border-green-700 pb-1 mb-2">Ý nghĩa Xuôi</h4>
+                    <p id="modal-card-xuoi" class="text-gray-200 text-base whitespace-pre-line"></p>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="text-lg font-bold text-yellow-400 border-b border-yellow-700 pb-1 mb-2">Ý nghĩa Ngược</h4>
+                    <p id="modal-card-nguoc" class="text-gray-200 text-base whitespace-pre-line"></p>
+                </div>
+            </div>
+
+            <button id="modal-close-button" class="absolute top-2 right-3 text-3xl text-cyan-300 hover:text-white leading-none">&times;</button>
+        </div>
+    </div>
+
+
+    <script>
+        // --- Các biến toàn cục ---
+        const setupSection = document.getElementById('setup-section');
+        const readingSection = document.getElementById('reading-section');
+        const cardDisplayArea = document.getElementById('card-display-area');
+        const revealButton = document.getElementById('reveal-button');
+        const resetButton = document.getElementById('reset-button');
+
+        // [MỚI] Các biến của Modal
+        const modalBackdrop = document.getElementById('card-modal-backdrop');
+        const modalCardImage = document.getElementById('modal-card-image');
+        const modalCardName = document.getElementById('modal-card-name');
+        const modalCloseButton = document.getElementById('modal-close-button');
+
+        // [ĐÃ SỬA] Đường dẫn tương đối
+        const cardBackImageUrl = '../assets/images/tarot/cardback.jpg'; 
+        
+        // Danh sách đầy đủ 78 lá bài Tarot 
+        const allTarotCards = [
+            "0 - The Fool", "I - The Magician", "II - The High Priestess", "III - The Empress", "IV - The Emperor",
+            "V - The Hierophant", "VI - The Lovers", "VII - The Chariot", "VIII - Strength", "IX - The Hermit",
+            "X - Wheel of Fortune", "XI - Justice", "XII - The Hanged Man", "XIII - Death", "XIV - Temperance",
+            "XV - The Devil", "XVI - The Tower", "XVII - The Star", "XVIII - The Moon", "XIX - The Sun",
+            "XX - Judgement", "XXI - The World",
+            "Ace of Wands", "Two of Wands", "Three of Wands", "Four of Wands", "Five of Wands", "Six of Wands",
+            "Seven of Wands", "Eight of Wands", "Nine of Wands", "Ten of Wands", "Page of Wands", "Knight of Wands",
+            "Queen of Wands", "King of Wands",
+            "Ace of Cups", "Two of Cups", "Three of Cups", "Four of Cups", "Five of Cups", "Six of Cups",
+            "Seven of Cups", "Eight of Cups", "Nine of Cups", "Ten of Cups", "Page of Cups", "Knight of Cups",
+            "Queen of Cups", "King of Cups",
+            "Ace of Swords", "Two of Swords", "Three of Swords", "Four of Swords", "Five of Swords", "Six of Swords",
+            "Seven of Swords", "Eight of Swords", "Nine of Swords", "Ten of Swords", "Page of Swords", "Knight of Swords",
+            "Queen of Swords", "King of Swords",
+            "Ace of Pentacles", "Two of Pentacles", "Three of Pentacles", "Four of Pentacles", "Five of Pentacles",
+            "Six of Pentacles", "Seven of Pentacles", "Eight of Pentacles", "Nine of Pentacles", "Ten of Pentacles",
+            "Page of Pentacles", "Knight of Pentacles", "Queen of Pentacles", "King of Pentacles"
+        ];
+
+        let currentDeck = [];
+        let drawnCards = [];
+        const cardLabels = ["Quá khứ", "Hiện tại", "Tương lai", "Trở ngại", "Kết quả"];
+
+        // --- Các hàm xử lý Game Logic ---
+
+        /**
+         * Bắt đầu trải bài
+         */
+        function startReading(numCards) {
+            setupSection.classList.add('hidden');
+            readingSection.classList.remove('hidden');
+            revealButton.classList.remove('hidden');
+            resetButton.classList.add('hidden');
+            cardDisplayArea.innerHTML = ''; // Xóa bài cũ
+            
+            shuffleDeck();
+            drawnCards = [];
+
+            for (let i = 0; i < numCards; i++) {
+                const cardName = currentDeck.pop();
+                const cardElement = createCardElement(cardName, cardLabels[i] || `Lá ${i + 1}`);
+                cardDisplayArea.appendChild(cardElement);
+                drawnCards.push({ name: cardName, element: cardElement });
+            }
+        }
+
+        /**
+         * Xào bài (Thuật toán Fisher-Yates)
+         */
+        function shuffleDeck() {
+            currentDeck = [...allTarotCards];
+            for (let i = currentDeck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentDeck[i], currentDeck[j]] = [currentDeck[j], currentDeck[i]];
+            }
+        }
+
+        /**
+         * Tạo HTML cho một lá bài (mặt úp)
+         */
+        function createCardElement(cardName, label) {
+            const cardContainer = document.createElement('div');
+            cardContainer.className = 'flex flex-col items-center';
+
+            if (label) {
+                const labelElement = document.createElement('h3');
+                labelElement.className = 'text-xl text-cyan-300 mb-2';
+                labelElement.textContent = label;
+                cardContainer.appendChild(labelElement);
+            }
+            
+            // [ĐÃ SỬA] Đường dẫn tương đối
+            const imageUrl = getCardImageUrl(cardName);
+
+            cardContainer.innerHTML += `
+                <div class="tarot-card w-[150px] h-[250px] md:w-[200px] md:h-[333px] perspective-[1000px]">
+                    <div class="card-face card-back w-full h-full rounded-lg overflow-hidden shadow-lg transform-style-preserve-3d">
+                        <img src="${cardBackImageUrl}" alt="Mặt sau lá bài" class="w-full h-full object-cover">
+                    </div>
+                    <div class="card-face card-front w-full h-full rounded-lg overflow-hidden shadow-lg transform-style-preserve-3d absolute top-0 left-0">
+                        <img src="${imageUrl}" alt="${cardName}" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                <p class="card-name-label mt-3 text-lg text-white font-bold opacity-0 transition-opacity duration-500">${cardName}</p>
+            `;
+            return cardContainer;
+        }
+
+        /**
+         * Lật bài
+         */
+        function revealCards() {
+            drawnCards.forEach((card, index) => {
+                setTimeout(() => {
+                    const cardElement = card.element.querySelector('.tarot-card');
+                    cardElement.classList.add('flipped');
+                    
+                    const cardNameLabel = card.element.querySelector('.card-name-label');
+                    cardNameLabel.classList.remove('opacity-0');
+
+                    // [MỚI] Thêm sự kiện click để mở modal SAU KHI lật bài
+                    cardElement.addEventListener('click', () => showModal(card.name));
+
+                }, index * 300); // Lật từng lá một
+            });
+
+            revealButton.classList.add('hidden');
+            resetButton.classList.remove('hidden');
+        }
+
+        /**
+         * Đặt lại, chơi ván mới
+         */
+        function resetReading() {
+            setupSection.classList.remove('hidden');
+            readingSection.classList.add('hidden');
+            resetButton.classList.add('hidden');
+        }
+
+        /**
+         * Lấy URL hình ảnh từ tên lá bài
+         */
+        function getCardImageUrl(cardName) {
+            // [ĐÃ SỬA] Đường dẫn tương đối
+            const path = '../assets/images/tarot/';
+            let filename = "";
+
+            // Xử lý tên cho Ẩn Chính
+            if (cardName.includes(" - ")) {
+                filename = cardName.split(' - ')[1].replace(/ /g, '') + '.png';
+                const number = cardName.split(' - ')[0];
+                filename = (number.length === 1 ? '0' + number : number) + '-' + filename;
+            } 
+            // Xử lý tên cho Ẩn Phụ
+            else {
+                const parts = cardName.split(' '); // ["Ace", "of", "Wands"]
+                const suit = parts[parts.length - 1]; // "Wands"
+                let value = parts[0]; // "Ace"
+
+                switch(value) {
+                    case "Ace": filename = `${suit}01.png`; break;
+                    case "Two": filename = `${suit}02.png`; break;
+                    case "Three": filename = `${suit}03.png`; break;
+                    case "Four": filename = `${suit}04.png`; break;
+                    case "Five": filename = `${suit}05.png`; break;
+                    case "Six": filename = `${suit}06.png`; break;
+                    case "Seven": filename = `${suit}07.png`; break;
+                    case "Eight": filename = `${suit}08.png`; break;
+                    case "Nine": filename = `${suit}09.png`; break;
+                    case "Ten": filename = `${suit}10.png`; break;
+                    case "Page": filename = `${suit}11.png`; break;
+                    case "Knight": filename = `${suit}12.png`; break;
+                    case "Queen": filename = `${suit}13.png`; break;
+                    case "King": filename = `${suit}14.png`; break;
+                }
+            }
+            return path + filename;
+        }
+
+
+        // --- [MỚI] Các hàm xử lý Modal ---
+
+        /**
+         * [CẬP NHẬT] Hiển thị Modal với đầy đủ ý nghĩa lá bài.
+         */
+        function showModal(cardName) {
+            // 1. Cập nhật hình ảnh và tên
+            modalCardImage.src = getCardImageUrl(cardName);
+            modalCardImage.alt = cardName;
+            modalCardName.textContent = cardName;
+
+            // 2. Lấy dữ liệu ý nghĩa từ tệp tarot_data.js
+            // Cần kiểm tra xem 'cardMeanings' đã được tải và định nghĩa chưa
+            if (typeof cardMeanings !== 'undefined' && cardMeanings[cardName]) {
+                const meaning = cardMeanings[cardName];
+                
+                // 3. Đổ dữ liệu vào HTML
+                document.getElementById('modal-card-keywords').textContent = meaning.keywords || "Chưa có dữ liệu từ khóa...";
+                document.getElementById('modal-card-xuôi').textContent = meaning.xuoi || "Chưa có dữ liệu ý nghĩa xuôi...";
+                document.getElementById('modal-card-nguoc').textContent = meaning.nguoc || "Chưa có dữ liệu ý nghĩa ngược...";
+
+            } else {
+                // Xử lý trường hợp không tìm thấy dữ liệu (do bạn chưa nhập đủ 78 lá)
+                console.warn(`Không tìm thấy ý nghĩa cho lá bài: ${cardName}`);
+                const notFoundMsg = "Dữ liệu cho lá bài này đang được cập nhật. Xin quay lại sau...";
+                document.getElementById('modal-card-keywords').textContent = "Đang cập nhật...";
+                document.getElementById('modal-card-xuoi').textContent = notFoundMsg;
+                document.getElementById('modal-card-nguoc').textContent = notFoundMsg;
+            }
+            
+            // 4. Hiển thị modal
+            modalBackdrop.classList.remove('hidden');
+            setTimeout(() => {
+                modalBackdrop.classList.add('show');
+            }, 10); // Một khoảng trễ nhỏ để áp dụng transition
+        }
+
+        /**
+         * Đóng Modal
+         */
+        function closeModal() {
+            modalBackdrop.classList.remove('show');
+            setTimeout(() => {
+                modalBackdrop.classList.add('hidden');
+            }, 300); // Đợi hiệu ứng kết thúc
+        }
+
+        // --- Thêm sự kiện Click cho Modal ---
+        modalCloseButton.addEventListener('click', closeModal);
+        modalBackdrop.addEventListener('click', (event) => {
+            // Chỉ đóng nếu click vào backdrop, không phải content
+            if (event.target === modalBackdrop) {
+                closeModal();
+            }
+        });
+
+    </script>
+
+</body>
+</html>
