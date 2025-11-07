@@ -21,12 +21,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       
-      # DÙNG ACTION CHUẨN CỦA GITHUB PAGES
+      # ACTION CHUẨN CỦA GITHUB PAGES
+      # Nó sẽ tự động đọc _config.yml và cài theme 'cayman'
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v3
       - name: Build with Jekyll
-        # Action này sẽ tự động cài các theme và plugin chuẩn
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./
