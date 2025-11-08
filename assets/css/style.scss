@@ -1,0 +1,9 @@
+---
+---
+
+// Ghi đè file style.scss của theme
+// Chúng ta sẽ nạp (import) các file CSS của anh vào đây.
+
+@import "main.css";
+@import "custom.css";
+@import "typography.css";
