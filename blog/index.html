@@ -1,29 +1,27 @@
 ---
 layout: default
-title: Blog — Miasteam
+title: Blog
 permalink: /blog/
 ---
 
-<header class="container py-16 text-center">
-  <h1 class="text-5xl font-extrabold">Miasteam Blog</h1>
-  <p class="mt-4 text-lg text-slate-600">Chiến lược quảng cáo, phân tích dữ liệu, và case study e-commerce.</p>
-</header>
+<div class="page-container">
+  <h1 class="page-title">Blog Chia Sẻ</h1>
+  <p class="page-description">Tổng hợp các kiến thức, phân tích và case study về E-commerce, Marketing, và Vận hành hệ thống.</p>
 
-<section class="container pb-16">
-  <div class="max-w-3xl mx-auto grid gap-8">
-    
+  <div class="blog-grid-page">
     {% for post in site.posts %}
-    <article class="card">
-      <h2 class="text-2xl font-bold">
-        <a href="{{ post.url | relative_url }}" class="hover:text-blue-600">{{ post.title }}</a>
-      </h2>
-      <p class="mt-2 text-sm text-slate-500">{{ post.date | date: "%d/%m/%Y" }}</p>
-      <div class="mt-4 typography">
-        {{ post.excerpt }}
-      </div>
-      <a href="{{ post.url | relative_url }}" class="btn btn-outline mt-4">Đọc tiếp</a>
-    </article>
+      <article class="blog-post-card reveal-on-scroll">
+        <div class="post-content">
+          <p class="post-meta">{{ post.date | date: "%d/%m/%Y" }}</p>
+          <h3 class="post-title">
+            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          </h3>
+          <p class="post-excerpt">
+            {{ post.excerpt | strip_html | truncatewords: 30 }}
+          </p>
+          <a href="{{ post.url | relative_url }}" class="btn btn-secondary btn-small">Đọc tiếp</a>
+        </div>
+      </article>
     {% endfor %}
-    
   </div>
-</section>
+</div>
