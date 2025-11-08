@@ -3,9 +3,8 @@ email: your-email@domain.com
 description: >- # this means to ignore newlines until "baseurl:"
   Agency Tăng trưởng E-commerce & Performance Marketing.
 
-# QUAN TRỌNG: Thay đổi 2 dòng dưới đây cho đúng với repo của bạn
-url: "https://pixelaquarius.github.io" # Thay bằng username của bạn
-baseurl: "/panchan-korean-hitha" # Thay bằng tên repository chính xác của bạn (bắt đầu bằng dấu /)
+url: "https://miasteam.click" # SỬA DÒNG NÀY
+baseurl: ""
 
 permalink: /:title/
 
