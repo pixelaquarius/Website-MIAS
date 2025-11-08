@@ -1,32 +1,18 @@
-<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-100">
-  <div class="container mx-auto flex items-center justify-between py-5">
-    
-    <a href="/" class="text-2xl font-bold text-gray-900">
-      Miasteam<span class="text-blue-600">.</span> </a>
-    
-    <nav class="hidden md:flex items-center gap-8">
-      <a href="/agency/" class="font-medium {% if page.url contains '/agency/' %}text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} transition-colors">
-        Dịch vụ
-      </a>
-      <a href="/case-studies/" class="font-medium {% if page.url contains '/case-studies/' %}text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} transition-colors">
-        Case Studies
-      </a>
-      <a href="/blog/" class="font-medium {% if page.url contains '/blog/' %}text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} transition-colors">
-        Insights (Blog)
-      </a>
-      <a href="/about/" class="font-medium {% if page.url == '/about/' %}text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} transition-colors">
-        Về chúng tôi
-      </a>
-      
-      <a href="/agency/#contact-form" class="btn-primary ml-4">
-        Nhận tư vấn
-      </a>
-    </nav>
-    
-    <div class="md:hidden">
-      <button class="text-gray-700 hover:text-blue-600">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-      </button>
-    </div>
+<header class="page-header" role="banner">
+  <a href="{{ '/' | absolute_url }}" class="project-name-link">
+    <h1 class="project-name">{{ site.title | default: site.github.repository_name }}</h1>
+  </a>
+  <h2 class="project-tagline">{{ site.description | default: site.github.project_tagline }}</h2>
+
+  <nav class="nav-links">
+    {% for item in site.data.navigation %}
+      <a href="{{ item.link }}" class="nav-link" id="nav-link-{{ item.name | slugify }}">{{ item.name }}</a>
+    {% endfor %}
+  </nav>
+
+  <div class="menu-toggle">
+    <span></span>
+    <span></span>
+    <span></span>
   </div>
 </header>
