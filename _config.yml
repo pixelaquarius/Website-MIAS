@@ -1,14 +1,23 @@
-# ... (giữ nguyên các cài đặt khác) ...
+# ... (Nội dung file _config.yml của anh) ...
 
-# Cập nhật menu điều hướng
-navigation:
-  - name: Dịch vụ
-    link: /agency/
-  - name: Case Studies
-    link: /case-studies/
-  - name: Insights (Blog)
-    link: /blog/
-  - name: Về chúng tôi
-    link: /about/
-
-# ... (giữ nguyên các cài đặt khác) ...
+# Exclude from processing.
+# The following items will not be processed, or may be processed differently
+# relative to the location of this file.
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - README.md
+  - .github/
+  
+  # === THÊM CÁC DÒNG DƯỚI ĐÂY ĐỂ FIX LỖI BUILD ===
+  - admin/
+  - countdownlastdaysisterquyen/
+  - ngaynghidepnhat/
+  - tarot/index.html
+  - tarot/indexbackup.html
+  # === KẾT THÚC PHẦN THÊM MỚI ===
