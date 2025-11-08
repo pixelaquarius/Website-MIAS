@@ -1,9 +1,14 @@
-main:
-  - title: Home
-    url: /
-  - title: Agency
-    url: /agency/
-  - title: Blog
-    url: /blog/
-  - title: About
-    url: /about/
+# _data/navigation.yml
+
+- name: Trang chủ
+  link: /
+- name: Dịch vụ
+  link: /agency/
+- name: Case Studies
+  link: /case-studies/
+- name: Blog
+  link: /blog/
+- name: Tiện ích
+  link: /utilities/
+- name: Về chúng tôi
+  link: /about.html
