@@ -1,14 +1,11 @@
-# _data/navigation.yml
-
-- name: Trang chủ
-  link: /
-- name: Dịch vụ
-  link: /agency/
-- name: Case Studies
-  link: /case-studies/
-- name: Blog
-  link: /blog/
-- name: Tiện ích
-  link: /utilities/
-- name: Về chúng tôi
-  link: /about.html
+main:
+  - title: Dịch vụ
+    url: /agency/
+  - title: Case Studies
+    url: /case-studies/
+  - title: Blog
+    url: /blog/
+  - title: Tiện ích
+    url: /utilities/
+  - title: Về chúng tôi
+    url: /about/
