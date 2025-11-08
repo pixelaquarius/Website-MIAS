@@ -1,20 +1,26 @@
-# ... (Nội dung file _config.yml của anh) ...
+title: Miasteam Agency
+email: your-email@domain.com
+description: >- # this means to ignore newlines until "baseurl:"
+  Agency Tăng trưởng E-commerce & Performance Marketing.
+
+# QUAN TRỌNG: Thay đổi 2 dòng dưới đây cho đúng với repo của bạn
+url: "https://pixelaquarius.github.io" # Thay bằng username của bạn
+baseurl: "/panchan-korean-hitha" # Thay bằng tên repository chính xác của bạn (bắt đầu bằng dấu /)
+
+permalink: /:title/
+
+# Build settings
+markdown: kramdown
+theme: jekyll-theme-primer
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
 
 exclude:
   - Gemfile
   - Gemfile.lock
   - node_modules
-  - vendor/bundle/
-  - vendor/cache/
-  - vendor/gems/
-  - vendor/ruby/
+  - vendor/
   - README.md
   - .github/
   - admin/
-  - countdownlastdaysisterquyen/
-  - ngaynghidepnhat/
-  - tarot/index.html
-  - tarot/indexbackup.html
-  
-  # === THÊM DÒNG NÀY ĐỂ TRÁNH LỖI SCSS ===
-  - assets/css/style.scss
