@@ -23,3 +23,5 @@ exclude:
   - README.md
   - .github/
   - admin/
+include:
+  - admin
