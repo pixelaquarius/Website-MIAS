@@ -1,0 +1,12 @@
+{
+  "framework": "jekyll",
+  "build": {
+    "command": "jekyll build"
+  },
+  "outputDirectory": "_site",
+  "functions": {
+    "api/getReading.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
+}
