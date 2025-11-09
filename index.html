@@ -3,73 +3,117 @@ layout: default
 ---
 
 <section class="hero-section text-center">
-  <h1 class="hero-title">Giải Pháp Tăng Trưởng E-commerce Toàn Diện</h1>
-  <p class="hero-subtitle">Tư vấn chiến lược, tối ưu vận hành, và triển khai tracking hiệu quả cho doanh nghiệp của bạn.</p>
-  <div class="hero-cta">
-    <a href="#contact" class="btn btn-primary" id="home-cta-audit">Yêu cầu Audit Miễn Phí</a>
-    <a href="/case-studies/" class="btn btn-secondary" id="home-cta-case-study">Xem Case Study</a>
-  </div>
-</section>
-
-<section class="services-overview-section reveal-on-scroll">
-  <h2 class="section-title">Dịch Vụ Cốt Lõi</h2>
-  <div class="services-grid">
-    <div class="service-card">
-      <i class="fas fa-shopping-cart"></i>
-      <h3>Vận hành Sàn (Ecom)</h3>
-      <p>Tối ưu
-      setup shop, sản phẩm, chiến dịch (TikTok Shop, Shopee) và xử lý vi phạm.</p>
-    </div>
-    <div class="service-card">
-      <i class="fas fa-chart-line"></i>
-      <h3>Quảng Cáo Hiệu Năng</h3>
-      <p>Thiết lập phễu, chạy Google Ads & Facebook Ads, tối ưu ROAS, CPA.</p>
-    </div>
-    <div class="service-card">
-      <i class="fas fa-database"></i>
-      <h3>Hệ Thống & Tracking</h3>
-      <p>Setup GA4, GTM, và xây dựng Dashboard (P&L, Performance) tự động.</p>
-    </div>
-  </div>
-  <div class="text-center" style="margin-top: 2rem;">
-     <a href="/agency/" class="btn btn-primary" id="home-cta-services">Xem Chi Tiết Dịch Vụ</a>
-  </div>
-</section>
-
-<section class="partner-section reveal-on-scroll">
-  <h2 class="section-title">Đối Tác & Khách Hàng Tiêu Biểu</h2>
-  <div class="partner-grid">
-    <div class="partner-logo"><img src="/assets/uploads/logo-placeholder.png" alt="Partner 1"></div>
-    <div class="partner-logo"><img src="/assets/uploads/logo-placeholder.png" alt="Partner 2"></div>
-    <div class="partner-logo"><img src="/assets/uploads/logo-placeholder.png" alt="Partner 3"></div>
-    <div class="partner-logo"><img src="/assets/uploads/logo-placeholder.png" alt="Partner 4"></div>
-    <div class="partner-logo"><img src="/assets/uploads/logo-placeholder.png" alt="Partner 5"></div>
-    <div class="partner-logo"><img src="/assets/uploads/logo-placeholder.png" alt="Partner 6"></div>
-  </div>
-</section>
-
-<section class="home-blog-section reveal-on-scroll">
-  <h2 class="section-title">Blog</h2>
-  <p class="section-subtitle">Cập nhật kiến thức và phân tích mới nhất từ M'Project.</p>
-  
-  <div class="blog-grid-page">
-    {% for post in site.posts limit: 3 %}
-      <article class="blog-post-card">
-        <div class="post-content">
-          <p class="post-meta">{{ post.date | date: "%d/%m/%Y" }}</p>
-          <h3 class="post-title">
-            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-          </h3>
-          <p class="post-excerpt">
-            {{ post.excerpt | strip_html | truncatewords: 20 }}
-          </p>
-          <a href="{{ post.url | relative_url }}" class="btn btn-secondary btn-small">Đọc tiếp</a>
+  <div class="swiper-container hero-slider">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide" style="background-image: url('{{ site.baseurl }}/assets/uploads/slider-placeholder-1.jpg');">
+        <div class="hero-content">
+          <h1 class="hero-title">Giải Pháp Tăng Trưởng E-commerce Toàn Diện</h1>
+          <p class="hero-subtitle">Tư vấn chiến lược, tối ưu vận hành, và triển khai tracking hiệu quả.</p>
+          <div class="hero-cta">
+            <a href="#contact" class="btn btn-primary" id="home-cta-audit-1">Yêu cầu Audit Miễn Phí</a>
+          </div>
         </div>
-      </article>
-    {% endfor %}
+      </div>
+      <div class="swiper-slide" style="background-image: url('{{ site.baseurl }}/assets/uploads/slider-placeholder-2.jpg');">
+        <div class="hero-content">
+          <h1 class="hero-title">Tối Ưu Vận Hành Sàn TMĐT</h1>
+          <p class="hero-subtitle">Setup shop, sản phẩm, chiến dịch (TikTok Shop, Shopee) và xử lý vi phạm.</p>
+          <div class="hero-cta">
+            <a href="/agency/" class="btn btn-primary" id="home-cta-service-2">Xem Dịch Vụ</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="swiper-pagination"></div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
   </div>
+</section>
+
+<section class="services-tabs-section reveal-on-scroll container mx-auto px-4 py-16">
+  <h2 class="section-title text-3xl font-bold text-center mb-12">Dịch Vụ Cốt Lõi</h2>
   
-  <div class="text-center" style="margin-top: 2rem;">
-     <a href="/blog/" class="btn btn-primary" id="home-cta-blog">Xem Tất Cả Bài Viết</a>
+  <div class="service-tab-nav">
+    <button class="service-tab-button active" data-tab="tab-ecom">Vận hành Sàn (Ecom)</button>
+    <button class="service-tab-button" data-tab="tab-ads">Quảng Cáo Hiệu Năng</button>
+    <button class="service-tab-button" data-tab="tab-tracking">Hệ Thống & Tracking</button>
+  </div>
+
+  <div class="service-tab-content active" id="tab-ecom">
+    <p class="text-center text-gray-600 mb-8">Mô tả ngắn cho Vận hành Sàn Ecom.</p>
+    <div class="service-detail-grid">
+      <div class="service-detail-box">
+        <i class="fas fa-flag-checkered"></i>
+        <h4>Chiến lược</h4>
+        <p>[NỘI DUNG 4 Ô CHO VẬN HÀNH]</p>
+      </div>
+      <div class="service-detail-box">
+        <i class="fas fa-pencil-ruler"></i>
+        <h4>Nội dung</h4>
+        <p>[NỘI DUNG 4 Ô CHO VẬN HÀNH]</p>
+      </div>
+      <div class="service-detail-box">
+        <i class="fas fa-bullhorn"></i>
+        <h4>Quảng cáo</h4>
+        <p>[NỘI DUNG 4 Ô CHO VẬN HÀNH]</p>
+      </div>
+      <div class="service-detail-box">
+        <i class="fas fa-cogs"></i>
+        <h4>Hệ thống</h4>
+        <p>[NỘI DUNG 4 Ô CHO VẬN HÀNH]</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="service-tab-content" id="tab-ads">
+    <p class="text-center text-gray-600 mb-8">Mô tả ngắn cho Quảng Cáo Hiệu Năng.</p>
+    <div class="service-detail-grid">
+      <div class="service-detail-box">
+        <i class="fas fa-flag-checkered"></i>
+        <h4>Chiến lược</h4>
+        <p>[NỘI DUNG 4 Ô CHO QUẢNG CÁO]</p>
+      </div>
+      <div class="service-detail-box">
+        <i class="fas fa-pencil-ruler"></i>
+        <h4>Nội dung</h4>
+        <p>[NỘI DUNG 4 Ô CHO QUẢNG CÁO]</p>
+      </div>
+      <div class="service-detail-box">
+        <i class="fas fa-bullhorn"></i>
+        <h4>Quảng cáo</h4>
+        <p>[NỘI DUNG 4 Ô CHO QUẢNG CÁO]</p>
+      </div>
+      <div class="service-detail-box">
+        <i class="fas fa-cogs"></i>
+        <h4>Hệ thống</h4>
+        <p>[NỘI DUNG 4 Ô CHO QUẢNG CÁO]</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="service-tab-content" id="tab-tracking">
+    <p class="text-center text-gray-600 mb-8">Mô tả ngắn cho Hệ Thống & Tracking.</p>
+    <div class="service-detail-grid">
+      <div class="service-detail-box">
+        <i class="fas fa-flag-checkered"></i>
+        <h4>Chiến lược</h4>
+        <p>[NỘI DUNG 4 Ô CHO HỆ THỐNG]</p>
+      </div>
+      <div class="service-detail-box">
+        <i class="fas fa-pencil-ruler"></i>
+        <h4>Nội dung</h4>
+        <p>[NỘI DUNG 4 Ô CHO HỆ THỐNG]</p>
+      </div>
+      <div class="service-detail-box">
+        <i class="fas fa-bullhorn"></i>
+        <h4>Quảng cáo</h4>
+        <p>[NỘI DUNG 4 Ô CHO HỆ THỐNG]</p>
+      </div>
+      <div class="service-detail-box">
+        <i class="fas fa-cogs"></i>
+        <h4>Hệ thống</h4>
+        <p>[NỘI DUNG 4 Ô CHO HỆ THỐNG]</p>
+      </div>
+    </div>
   </div>
 </section>
