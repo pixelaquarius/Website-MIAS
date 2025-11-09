@@ -1086,9 +1086,12 @@
          * Hàm chính để gọi API Gemini và nhận giải thích Tarot.
          * (Giữ nguyên như file gốc của bạn)
          */
-        async function getAiReading(retries = 0) {
+        /**
+         * [NÂNG CẤP BẢO MẬT] Hàm gọi API qua Vercel (không lộ key)
+         */
+        async function getAiReading(retries = 0) { // Bỏ 'retries' vì Vercel sẽ xử lý
             if (currentDrawnCards.length !== numCardsToDraw) {
-                showMessage(`Hãy rút đủ ${numCardsToDraw} lá bài trước khi lắng nghe thông điệp.`, "error");
+                showMessage(`Hãy rút đủ ${numCardsToDraw} lá bài trước.`, "error");
                 return;
             }
             const userQuestion = questionInput.value.trim();
@@ -1096,28 +1099,40 @@
                 showMessage("Hãy nhập điều bạn đang trăn trở.", "error");
                 return;
             }
+            
             clearAiResponseDisplay(); 
             loadingAiResponse.classList.remove('hidden'); 
             getAiReadingButton.disabled = true;
-            const cardsString = currentDrawnCards.join(", ");
-            const cardInterpretationsPrompt = currentDrawnCards.map((card, index) => 
-                `{ "cardName": "${card}", "interpretation": "Giải mã năng lượng của lá bài ${index + 1} (${card}). Lá bài này mang thông điệp gì trong bối cảnh trải bài, và nó liên kết thế nào với điều người dùng trăn trở? Đưa ra lời thì thầm ngắn gọn." }`
-            ).join(',');
-            const prompt = `Bạn là một nhà thông thái huyền bí, một người giải mã tarot với năng lượng tâm linh sâu sắc. Bạn sử dụng ngôn từ ma mị, đầy ẩn ý nhưng sâu sắc (theo kiểu sentence case, không viết hoa tất cả). Tôi đã rút được ${numCardsToDraw} lá bài: "${cardsString}". Điều tôi trăn trở là: "${userQuestion}".
-            Hãy giải mã những thông điệp vũ trụ đang gửi gắm, tập trung vào năng lượng của các lá bài và mối liên kết của chúng với câu hỏi. Đừng tập trung vào kinh doanh hay marketing, mà hãy tập trung vào năng lượng, tinh thần và sự phát triển nội tâm.
-            Phản hồi của bạn phải theo định dạng JSON nghiêm ngặt sau:
-            {
-              "cardInterpretations": [
-                ${cardInterpretationsPrompt}
-              ],
-              "overallInterpretation": "Đây là thông điệp tổng quan từ vũ trụ. Khi các năng lượng này hội tụ, chúng nói lên điều gì về câu hỏi của người dùng? Hãy trả lời trực tiếp và sâu sắc.",
-              "nextStepsSuggestion": "Dựa trên các lá bài, vũ trụ gợi ý 3 hành động hoặc suy ngẫm tiếp theo. Những câu hỏi nào người dùng nên tự vấn mình để khai mở con đường?"
+            coiSauThemBtn.disabled = true;
+
+            // 1. Chuẩn bị nội dung chat (Giống hệt code cũ)
+            if (aiChatHistory.length === 0) {
+                const cardsString = currentDrawnCards.join(", ");
+                const cardInterpretationsPrompt = currentDrawnCards.map((card, index) => 
+                    `{ "cardName": "${card}", "interpretation": "Giải mã năng lượng của lá bài ${index + 1} (${card}). Lá bài này mang thông điệp gì trong bối cảnh trải bài, và nó liên kết thế nào với điều người dùng trăn trở? Đưa ra lời thì thầm ngắn gọn." }`
+                ).join(',');
+                
+                const prompt = `Bạn là một nhà thông thái huyền bí, một người giải mã tarot với năng lượng tâm linh sâu sắc. Bạn sử dụng ngôn từ ma mị, đầy ẩn ý nhưng sâu sắc (theo kiểu sentence case, không viết hoa tất cả). Tôi đã rút được ${numCardsToDraw} lá bài: "${cardsString}". Điều tôi trăn trở là: "${userQuestion}".
+                Hãy giải mã những thông điệp vũ trụ đang gửi gắm, tập trung vào năng lượng của các lá bài và mối liên kết của chúng với câu hỏi. Đừng tập trung vào kinh doanh hay marketing, mà hãy tập trung vào năng lượng, tinh thần và sự phát triển nội tâm.
+                Phản hồi của bạn phải theo định dạng JSON nghiêm ngặt sau:
+                {
+                  "cardInterpretations": [
+                    ${cardInterpretationsPrompt}
+                  ],
+                  "overallInterpretation": "Đây là thông điệp tổng quan từ vũ trụ. Khi các năng lượng này hội tụ, chúng nói lên điều gì về câu hỏi của người dùng? Hãy trả lời trực tiếp và sâu sắc.",
+                  "nextStepsSuggestion": "Dựa trên các lá bài, vũ trụ gợi ý 3 hành động hoặc suy ngẫm tiếp theo. Những câu hỏi nào người dùng nên tự vấn mình để khai mở con đường?"
+                }
+                Đảm bảo phản hồi chỉ là một đối tượng JSON hợp lệ và không chứa bất kỳ văn bản nào khác ngoài JSON.`;
+                
+                aiChatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            
+            } else {
+                aiChatHistory.push({ role: "user", parts: [{ text: userQuestion }] });
             }
-            Đảm bảo phản hồi chỉ là một đối tượng JSON hợp lệ và không chứa bất kỳ văn bản nào khác ngoài JSON.`;
-            let chatHistory = [];
-            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+
+            // 2. Chuẩn bị payload (Giống hệt code cũ)
             const payload = {
-                contents: chatHistory,
+                contents: aiChatHistory, 
                 generationConfig: {
                     responseMimeType: "application/json",
                     responseSchema: {
@@ -1140,23 +1155,31 @@
                     }
                 }
             };
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            // 3. [THAY ĐỔI QUAN TRỌNG] Gọi đến API của Vercel, không gọi Google
             try {
-                const response = await fetch(apiUrl, {
+                const response = await fetch('/api/getReading', { // <-- Đã đổi
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(payload) // Gửi toàn bộ payload cho serverless function
                 });
+
                 if (!response.ok) {
-                    if (response.status === 429 && retries < MAX_RETRIES) {
-                        const delay = INITIAL_BACKOFF_DELAY * Math.pow(2, retries) + Math.random() * 1000;
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        return getAiReading(retries + 1); // Retry
-                    } else {
-                        throw new Error(`API request failed with status ${response.status}: ${response.statusText}`);
+                    throw new Error(`Server function failed with status ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                // 4. Xử lý kết quả trả về (Giống hệt code cũ)
+                if (result.candidates && result.candidates[0].content) {
+                    aiChatHistory.push(result.candidates[0].content);
+                } else {
+                     if (result.candidates?.[0]?.finishReason) {
+                         showMessage(`Thông điệp bị chặn: ${result.candidates[0].finishReason}. Vui lòng hỏi khác.`, "error");
+                         aiChatHistory.pop(); 
                     }
                 }
-                const result = await response.json();
+
                 const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
                 if (jsonText) {
                     try {
@@ -1165,7 +1188,6 @@
                         showMessage("Thông điệp đã được giải mã!", "success");
                         coiSauThemBtn.disabled = false;
                         bocBaiMoiBtn.disabled = false;
-                        getAiReadingButton.disabled = false;
                     } catch (parseError) {
                         console.error("Lỗi khi phân tích JSON từ AI:", parseError);
                         loadingAiResponse.textContent = "Lỗi: Năng lượng vũ trụ bị nhiễu loạn. Xin hãy thử lại.";
@@ -1176,11 +1198,13 @@
                     showMessage("Lỗi: Không có phản hồi từ vũ trụ.", "error");
                 }
             } catch (error) {
-                console.error("Lỗi khi gọi API AI:", error);
-                loadingAiResponse.textContent = "Đã xảy ra lỗi khi kết nối với các đấng tối cao. Xin hãy thử lại sau.";
+                console.error("Lỗi khi gọi API (Vercel):", error);
+                loadingAiResponse.textContent = "Đã xảy ra lỗi kết nối. Xin hãy thử lại sau.";
                 showMessage(`Lỗi: ${error.message}`, "error");
+                aiChatHistory.pop(); 
             } finally {
                 loadingAiResponse.classList.add('hidden'); 
+                getAiReadingButton.disabled = false;
             }
         }
 
