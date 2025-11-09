@@ -1,734 +1,81 @@
-/* =============================================================================
-   Jekyll Now Base STYLES
-   ========================================================================== */
-
-/*
- *
- * Reset
- *
- */
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font: inherit;
-  font-size: 100%;
-  vertical-align: baseline;
-}
-
-body {
-  line-height: 1;
-}
-
-ol, ul {
-  list-style: none;
-}
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-caption, th, td {
-  text-align: left;
-  font-weight: normal;
-  vertical-align: middle;
-}
-
-q, blockquote {
-  quotes: none;
-}
-q:before, q:after, blockquote:before, blockquote:after {
-  content: "";
-  content: none;
-}
-
-a img {
-  border: none;
-}
-
-article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
-  display: block;
-}
-
-/*
- *
- * Base
- *
- */
-
-html {
-  font-size: 100%;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
-  color: #333;
-  background-color: #fff;
-}
-
-a {
-  color: #0076df;
-  text-decoration: none;
-  transition: all 0.2s ease-in-out;
-}
-a:hover {
-  color: #0056b3;
-  text-decoration: underline;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  line-height: 1.2;
-  margin-top: 1.5em;
-  margin-bottom: 0.5em;
-}
-h1 { font-size: 2.25em; }
-h2 { font-size: 1.75em; }
-h3 { font-size: 1.25em; }
-h4 { font-size: 1.1em; }
-h5 { font-size: 1em; }
-h6 { font-size: 0.9em; }
-
-p {
-  margin-bottom: 1em;
-}
-
-strong { font-weight: bold; }
-em { font-style: italic; }
-
-code, pre {
-  font-family: "Menlo", "Consolas", monospace;
-  font-size: 0.9em;
-  background-color: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-code {
-  padding: 2px 4px;
-}
-pre {
-  padding: 10px;
-  overflow-x: auto;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 4px;
-}
-
-/*
- *
- * Layout
- *
- */
-
-.wrapper {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-.page-header {
-  padding: 30px 0;
-  text-align: center;
-  border-bottom: 1px solid #eee;
-  position: relative;
-}
-
-.project-name {
-  font-size: 2.5em;
-  font-weight: 700;
-  margin: 0;
-}
-.project-name-link {
-  color: #333;
-}
-.project-name-link:hover {
-  color: #333;
-  text-decoration: none;
-}
-
-.project-tagline {
-  font-size: 1.2em;
-  font-weight: 300;
-  color: #666;
-  margin: 0.5em 0 0;
-}
-
-.main-content {
-  padding: 40px 0;
-}
-
-.page-footer {
-  padding: 20px 0;
-  text-align: center;
-  border-top: 1px solid #eee;
-  color: #777;
-  font-size: 0.9em;
-}
-
-/* =============================================================================
-   M'PROJECT CUSTOM STYLES (Yêu cầu 1-12)
-   ========================================================================== */
-
-/* 0. Biến và Tiện ích chung */
-:root {
-  --primary-color: #0076df;
-  --secondary-color: #f0f0f0;
-  --text-color: #333;
-  --text-light: #666;
-  --border-color: #eee;
-  --white: #fff;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.1);
-  --border-radius: 8px;
-}
-
-body {
-  background-color: #f9f9f9;
-}
-
-.wrapper {
-  max-width: 1100px;
-}
-
-.main-content {
-  padding-top: 0;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.section-title {
-  text-align: center;
-  font-size: 2em;
-  margin-top: 2rem;
-  margin-bottom: 1.5rem;
-  color: var(--text-color);
-}
-.section-subtitle {
-  text-align: center;
-  font-size: 1.1em;
-  color: var(--text-light);
-  margin-top: -1rem;
-  margin-bottom: 2rem;
-}
-
-.page-container {
-  background: var(--white);
-  padding: 2rem 2.5rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
-}
-.page-title {
-  margin-top: 0;
-}
-.page-description {
-  font-size: 1.15em;
-  color: var(--text-light);
-  margin-bottom: 2rem;
-}
-
-
-/* 1. Yêu cầu 2: Buttons */
-.btn {
-  display: inline-block;
-  padding: 10px 20px;
-  font-size: 1em;
-  font-weight: 600;
-  text-align: center;
-  text-decoration: none;
-  border: 2px solid transparent;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.btn:hover {
-  text-decoration: none;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
-}
-
-.btn-primary {
-  background-color: var(--primary-color);
-  color: var(--white);
-}
-.btn-primary:hover {
-  background-color: #0056b3;
-  color: var(--white);
-}
-
-.btn-secondary {
-  background-color: var(--white);
-  color: var(--primary-color);
-  border-color: var(--primary-color);
-}
-.btn-secondary:hover {
-  background-color: var(--primary-color);
-  color: var(--white);
-}
-
-.btn-small {
-  padding: 6px 12px;
-  font-size: 0.9em;
-}
-
-
-/* 2. Yêu cầu 4: Pricing Table (Trang /agency/) */
-.pricing-section {
-  padding-top: 1rem;
-}
-.pricing-table {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-}
-.pricing-card {
-  background: #fdfdfd;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  padding: 2rem;
-  text-align: center;
-  box-shadow: var(--shadow);
-  transition: all 0.3s ease;
-  position: relative;
-}
-/* Hiệu ứng nổi lên */
-.pricing-card:hover {
-  transform: scale(1.05);
-  box-shadow: var(--shadow-hover);
-  z-index: 10;
-}
-.pricing-card h3 {
-  font-size: 1.4em;
-  color: var(--primary-color);
-  margin-top: 0;
-}
-.pricing-card .price {
-  font-size: 2.5em;
-  font-weight: 700;
-  margin: 1rem 0;
-}
-.pricing-card .price span {
-  font-size: 0.5em;
-  font-weight: 400;
-  color: var(--text-light);
-}
-.pricing-card .pricing-desc {
-  color: var(--text-light);
-  min-height: 40px;
-  margin-bottom: 1.5rem;
-}
-.pricing-card .features-list {
-  text-align: left;
-  margin: 1.5rem 0;
-  color: var(--text-color);
-}
-.pricing-card .features-list li {
-  margin-bottom: 0.75rem;
-}
-.pricing-card .features-list .fas {
-  margin-right: 10px;
-}
-.pricing-card .features-list .fa-check { color: #28a745; }
-.pricing-card .features-list .fa-times { color: #dc3545; }
-
-.pricing-card .btn {
-  width: 100%;
-}
-
-.pricing-card.popular {
-  border: 2px solid var(--primary-color);
-}
-.popular-badge {
-  position: absolute;
-  top: -15px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--primary-color);
-  color: var(--white);
-  padding: 5px 15px;
-  border-radius: 20px;
-  font-size: 0.9em;
-  font-weight: 600;
-}
-
-
-/* 3. Yêu cầu 5: Blog Grid (Homepage & Trang Blog) */
-.blog-grid-page {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-}
-.blog-post-card {
-  background: var(--white);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-.blog-post-card .post-image {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
-}
-.blog-post-card .post-content {
-  padding: 1.5rem;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-}
-.blog-post-card .post-meta {
-  font-size: 0.9em;
-  color: var(--text-light);
-  margin-bottom: 0.5rem;
-}
-.blog-post-card .post-title {
-  font-size: 1.25em;
-  margin-top: 0;
-  margin-bottom: 0.75rem;
-}
-.blog-post-card .post-title a {
-  color: var(--text-color);
-  text-decoration: none;
-}
-.blog-post-card .post-title a:hover {
-  color: var(--primary-color);
-}
-.blog-post-card .post-excerpt {
-  color: var(--text-light);
-  margin-bottom: 1.5rem;
-  flex-grow: 1;
-}
-
-
-/* 4. Yêu cầu 6: Scroll Animation */
-.reveal-on-scroll {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
-.reveal-on-scroll.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-
-/* 5. Yêu cầu 7: Mobile Menu & Header */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.page-header .project-name {
-  font-size: 1.8em;
-  margin: 0;
-  text-align: left;
-}
-.page-header .project-tagline {
-  display: none; /* Ẩn tagline trên header cho gọn */
-}
-.nav-links {
-  display: flex;
-  gap: 1.5rem;
-}
-.nav-link {
-  font-size: 1.1em;
-  font-weight: 500;
-  color: #555;
-  text-decoration: none;
-}
-.nav-link:hover {
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-.menu-toggle {
-  display: none;
-  flex-direction: column;
-  gap: 4px;
-  cursor: pointer;
-}
-.menu-toggle span {
-  display: block;
-  width: 25px;
-  height: 3px;
-  background-color: var(--text-color);
-  border-radius: 2px;
-  transition: all 0.3s ease;
-}
-
-
-/* 6. Yêu cầu 8: Trang Tiện ích */
-.utilities-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-}
-.utility-card {
-  background: #fdfdfd;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  padding: 2rem;
-  box-shadow: var(--shadow);
-}
-.utility-card h3 {
-  margin-top: 0;
-  color: var(--primary-color);
-}
-
-
-/* 7. Yêu cầu 10: Floating Buttons (Call/Zalo) */
-.floating-contact {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.floating-contact a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  transition: all 0.3s ease;
-}
-.floating-contact a:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-}
-.floating-contact .zalo-float {
-  background-color: #0076df;
-}
-.floating-contact .zalo-float img {
-  width: 30px;
-  height: 30px;
-}
-.floating-contact .phone-float {
-  background-color: #28a745;
-  color: var(--white);
-  font-size: 1.4em;
-}
-
-
-/* 8. Yêu cầu 11 & 12: Partner Grid (Homepage) */
-.partner-section {
-  background: var(--white);
-  padding: 3rem 2rem;
-  margin: 3rem 0;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
-}
-.partner-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 2rem;
-  align-items: center;
-}
-.partner-logo {
-  text-align: center;
-}
-.partner-logo img {
-  max-width: 120px;
-  height: auto;
-  filter: grayscale(100%);
-  opacity: 0.7;
-  transition: all 0.3s ease;
-}
-.partner-logo img:hover {
-  filter: grayscale(0%);
-  opacity: 1;
-}
-
-
-/* 9. Yêu cầu 3: Trang Case Studies */
-.case-study-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2.5rem;
-}
-.case-study-card {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 2rem;
-  background: var(--white);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-}
-.case-study-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 0;
-}
-.case-study-content {
-  padding: 2rem 2rem 2rem 0;
-}
-.case-study-content h3 {
-  margin-top: 0;
-  font-size: 1.5em;
-  color: var(--primary-color);
-}
-
-
-/* 10. Trang chủ (index.html) sections */
-.hero-section {
-  background: var(--white);
-  padding: 4rem 2rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
-  margin-bottom: 3rem;
-}
-.hero-title {
-  font-size: 2.8em;
-  margin: 0;
-}
-.hero-subtitle {
-  font-size: 1.25em;
-  color: var(--text-light);
-  margin: 1rem 0 2rem;
-}
-.hero-cta {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-.services-overview-section {
-  padding: 2rem 0;
-}
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-}
-.service-card {
-  background: var(--white);
-  padding: 2rem;
-  text-align: center;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
-  transition: all 0.3s ease;
-}
-.service-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-hover);
-}
-.service-card .fas {
-  font-size: 2.5em;
-  color: var(--primary-color);
-  margin-bottom: 1rem;
-}
-.service-card h3 {
-  font-size: 1.3em;
-  margin-top: 0;
-}
-
-.home-blog-section {
-  padding: 2rem 0;
-}
-
-
-/* 11. Responsive (Yêu cầu 7) */
-
-@media (max-width: 960px) {
-  /* Giảm cỡ chữ trên tablet */
-  h1 { font-size: 2em; }
-  h2 { font-size: 1.5em; }
-  .hero-title { font-size: 2.4em; }
-  .pricing-table { grid-template-columns: 1fr; }
-  .pricing-card:hover { transform: none; }
-  .pricing-card.popular { order: -1; } /* Đẩy gói popular lên đầu */
-  .services-grid { grid-template-columns: 1fr; }
-  .blog-grid-page { grid-template-columns: repeat(2, 1fr); }
-  .partner-grid { grid-template-columns: repeat(3, 1fr); }
-  .case-study-card { grid-template-columns: 1fr; }
-  .utilities-grid { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 768px) {
-  /* Mobile Menu */
-  .page-header {
-    padding: 20px 0;
-  }
-  .menu-toggle {
-    display: flex;
-    z-index: 1001;
-  }
-  .nav-links {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 250px;
-    height: 100vh;
-    background: var(--white);
-    padding: 6rem 2rem;
-    gap: 1.5rem;
-    transform: translateX(100%);
-    transition: transform 0.3s ease-in-out;
-    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-    z-index: 1000;
-  }
-  .nav-links.active {
-    transform: translateX(0);
-  }
-  .nav-link {
-    font-size: 1.3em;
-    color: var(--text-color);
-  }
-
-  /* Style cho nút hamburger khi active (X) */
-  .menu-toggle.active span:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
-  }
-  .menu-toggle.active span:nth-child(2) {
-    opacity: 0;
-  }
-  .menu-toggle.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(5px, -5px);
-  }
-
-  /* Layout mobile */
-  .wrapper { padding: 0 15px; }
-  .main-content { padding: 20px 0; }
-  .page-container { padding: 1.5rem; }
-  .hero-section { padding: 2.5rem 1.5rem; }
-  .hero-title { font-size: 2em; }
-  .hero-subtitle { font-size: 1.1em; }
-  .hero-cta { flex-direction: column; }
-  .blog-grid-page { grid-template-columns: 1fr; }
-  .partner-grid { grid-template-columns: repeat(2, 1fr); }
-  .partner-logo img { filter: grayscale(0%); opacity: 1; }
-  .case-study-content { padding: 1.5rem; }
-}
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // 1. Mobile Menu Toggle (Nếu anh dùng Alpine.js thì có thể không cần cái này)
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (menuToggle && navLinks) {
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+    }
+
+    // 2. Scroll Animation (Nếu anh có dùng .reveal-on-scroll)
+    const revealElements = document.querySelectorAll('.reveal-on-scroll');
+
+    if (revealElements.length > 0) {
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1 // Kích hoạt khi 10% element lọt vào màn hình
+        });
+
+        revealElements.forEach(el => {
+            revealObserver.observe(el);
+        });
+    }
+
+    // 3. Hero Slider (Swiper.js) (Yêu cầu 1)
+    // Đảm bảo rằng Swiper đã được load (từ file _layouts/default.html)
+    if (typeof Swiper !== 'undefined') {
+        const heroSlider = new Swiper('.hero-slider', {
+            loop: true,
+            autoplay: {
+                delay: 5000,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+    } else {
+        console.log('Swiper library not loaded');
+    }
+
+    // 4. Service Tabs (Yêu cầu 2 & 3)
+    // ĐÂY LÀ LOGIC ĐỂ TAB BẤM ĐƯỢC
+    const tabButtons = document.querySelectorAll('.service-tab-button');
+    const tabContents = document.querySelectorAll('.service-tab-content');
+
+    if (tabButtons.length > 0 && tabContents.length > 0) {
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+
+                // Tắt active ở tất cả button và content
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                // Kích hoạt button và content tương ứng
+                button.classList.add('active');
+                const activeContent = document.getElementById(tabId);
+                if (activeContent) {
+                    activeContent.classList.add('active');
+                }
+            });
+        });
+    } else {
+        console.log('Tab buttons or tab content not found.');
+    }
+
+});
